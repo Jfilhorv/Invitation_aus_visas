@@ -1,39 +1,39 @@
-# Vistos de convites (Austrália)
+# Australia invitation visas
 
-Fonte: **somente sites oficiais `.gov.au`**.  
-Um documento vigente por governo; arquivo extra só quando o próprio governo publicou uma versão nova (round / ano-programa mudou).
+Sources: **official `.gov.au` sites only**.  
+One current document per government; extra files only when the government published a new version (round / program year changed).
 
-## Página de análise
+## Analysis page
 
-Abra `analise/index.html` no navegador (carrega `analise/data.js` gerado do JSON).
+Open `analise/index.html` in a browser (loads `analise/data.js` generated from JSON).
 
-Filtros: estado, visto, categoria, ocupação, métrica. Tabela empilhada: data · estado · visto · ocupação · pontuação.
+Filters: state, visa, category, occupation, metric. Stacked table: date · state · visa · occupation · score.
 
-## Arquivo único agregado
+## Aggregated dataset
 
 - `dados/agregado/vistos-de-convites.csv`
 - `dados/agregado/vistos-de-convites.json`
-- `analise/data.js` (mesmo conteúdo para a página)
+- `analise/data.js` (same content for the page)
 
-Categoria: `visto_de_convite`. Cada linha tem `fonte_url`, `sha256_fonte` e `validado`.
+Category: `visto_de_convite`. Each row has `fonte_url`, `sha256_fonte`, and `validado`.
 
-## Validação
+## Validation
 
 `dados/fontes/manifesto-validacao.csv`
 
-Critérios: HTTP 200, host final `.gov.au`, PDF começa com `%PDF` (ou HTML oficial), SHA256.
+Criteria: HTTP 200, final host `.gov.au`, PDF starts with `%PDF` (or official HTML), SHA256.
 
-Inventário: `dados/fontes/inventario-oficial.md`
+Inventory: `dados/fontes/inventario-oficial.md`
 
-## O que o governo publica hoje
+## What governments publish today
 
-| Governo | Documento vigente | Por profissão? | Histórico no site oficial |
+| Government | Current document | By occupation? | History on official site |
 |---|---|---|---|
-| Federal (Home Affairs) | HTML SkillSelect invitation rounds | Sim (189 / 491 family) | `previous-rounds` (2020–2026) |
-| ACT | 1 PDF: 2025-26 Invitation round rankings | Sim (grupo ANZSCO) | Só o ano vigente |
-| WA | 1 PDF: last invited EOI (May 2026) | Sim (trades atuais) | Totais HTML 2023-24 e 2024-25 |
-| SA | HTML “Invitations issued” | Por grupo ANZSCO | Dec 2025–May 2026 no índice |
-| NSW, VIC, QLD, NT | Não publicam resultados | Não | — |
-| TAS | Totais 190/491 | Não | — |
+| Federal (Home Affairs) | HTML SkillSelect invitation rounds | Yes (189 / 491 family) | `previous-rounds` (2020–2026) |
+| ACT | 1 PDF: 2025-26 Invitation round rankings | Yes (ANZSCO unit group) | Current program year only |
+| WA | 1 PDF: last invited EOI (May 2026) | Yes (current trades) | HTML totals 2023-24 and 2024-25 |
+| SA | HTML “Invitations issued” | By ANZSCO sub-major group | Dec 2025–May 2026 in index |
+| NSW, VIC, QLD, NT | Do not publish results | No | — |
+| TAS | 190/491 totals only | No | — |
 
-Não foram usados blogs, agentes, archive.org nem sites fora de `.gov.au`.
+No blogs, migration agents, archive.org, or non-`.gov.au` sites were used.

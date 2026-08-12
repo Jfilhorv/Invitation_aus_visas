@@ -668,11 +668,26 @@
 
     const $ = (id) => document.getElementById(id);
 
+    const CATEGORY_LABELS = { visto_de_convite: "Invitation visa" };
+    const METRIC_LABELS = {
+      pontos_minimos: "Minimum score",
+      ultimo_eoi_pontos: "Last EOI score",
+      matrix_score: "Matrix score",
+      convites_emitidos: "Invitations issued",
+      eois_convidados: "EOIs invited",
+    };
+    function labelCategory(v) {
+      return CATEGORY_LABELS[v] || v;
+    }
+    function labelMetric(v) {
+      return METRIC_LABELS[v] || v;
+    }
+
     function uniq(arr) {
       return [...new Set(arr)].filter(Boolean).sort((a, b) => a.localeCompare(b));
     }
 
-    function fillSelect(sel, values, multi) {
+    function fillSelect(sel, values, multi, labelFn = (v) => v) {
       sel.innerHTML = "";
       if (!multi) {
         const o = document.createElement("option");
@@ -683,7 +698,7 @@
       for (const v of values) {
         const o = document.createElement("option");
         o.value = v;
-        o.textContent = v;
+        o.textContent = labelFn(v);
         sel.appendChild(o);
       }
     }
@@ -1005,7 +1020,7 @@
             <td><span class="badge">${escapeHtml(r.jurisdicao || "—")}</span></td>
             <td>${escapeHtml(r.visto || "—")}</td>
             <td class="score">${escapeHtml(String(r.valor ?? "—"))}</td>
-            <td>${escapeHtml(r.metrica || "—")}</td>
+            <td>${escapeHtml(labelMetric(r.metrica) || "—")}</td>
             <td>${r.fonte_url ? `<a class="fonte" href="${r.fonte_url}" target="_blank" rel="noopener">official</a>` : "—"}</td>
           </tr>`
         )
@@ -1168,7 +1183,7 @@
       const vistos = selectedValues($("fVisto"));
       $("filterSummary").textContent = [
         vistos.length ? vistos.join(",") : "all visas",
-        $("fCategoria").value || "visto_de_convite",
+        labelCategory($("fCategoria").value || "visto_de_convite"),
       ].join(" · ");
 
       $("topMeta").textContent = `${occupations.length} occupations · ${rows.length} official score rows`;
@@ -1218,7 +1233,7 @@
     }
 
     fillSelect($("fVisto"), uniq(scoreRows.map((r) => r.visto)), true);
-    fillSelect($("fCategoria"), uniq(raw.map((r) => r.categoria)), false);
+    fillSelect($("fCategoria"), uniq(raw.map((r) => r.categoria)), false, labelCategory);
     $("fCategoria").value = "visto_de_convite";
 
     ["fVisto"].forEach((id) => {
