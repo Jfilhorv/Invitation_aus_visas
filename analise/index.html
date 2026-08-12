@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Invitations · occupation history</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./bustle-tokens.css" />
+  <style>
+    /* Page layout only — colours/type/density come from bustle-tokens.css */
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .shell {
+      width: 100%;
+      height: 100vh;
+      margin: 0;
+      padding: var(--bt-sp-1) var(--bt-inset-page) var(--bt-inset-page);
+      display: grid;
+      gap: var(--bt-sp-1);
+      grid-template-rows: auto auto minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--bt-sp-15);
+      min-height: 36px;
+      padding: 0 2px;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: var(--bt-sp-15);
+    }
+
+    .top-meta { color: var(--bt-text-secondary); }
+
+    .theme-toggle {
+      display: inline-flex;
+      gap: 2px;
+      padding: 3px;
+      border-radius: var(--bt-r-segment-track);
+      background: var(--bt-segment-track);
+    }
+    .theme-btn {
+      border: 0;
+      background: transparent;
+      color: var(--bt-text-secondary);
+      width: 30px;
+      height: 28px;
+      padding: 0;
+      border-radius: var(--bt-r-surface);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .theme-btn svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+    }
+    .theme-btn.on {
+      background: var(--bt-paper);
+      color: var(--bt-text);
+      box-shadow: var(--bt-shadow-2);
+      border: 1px solid var(--bt-divider);
+    }
+
+    .rank-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+      vertical-align: middle;
+    }
+    .rank-bars i {
+      display: block;
+      width: 3px;
+      border-radius: 1px;
+      background: color-mix(in srgb, var(--bt-text) 12%, transparent);
+      flex: 0 0 auto;
+    }
+    .rank-bars i:nth-child(1) { height: 4px; }
+    .rank-bars i:nth-child(2) { height: 6px; }
+    .rank-bars i:nth-child(3) { height: 8px; }
+    .rank-bars i:nth-child(4) { height: 10px; }
+    .rank-bars i:nth-child(5) { height: 12px; }
+    .rank-bars i.full {
+      background: var(--bt-primary);
+    }
+    .rank-bars i.half {
+      background: linear-gradient(
+        to top,
+        var(--bt-primary) 0%,
+        var(--bt-primary) 50%,
+        color-mix(in srgb, var(--bt-text) 12%, transparent) 50%,
+        color-mix(in srgb, var(--bt-text) 12%, transparent) 100%
+      );
+    }
+    .occ-table thead th.rankh,
+    .occ-table tbody td.rank {
+      text-align: center;
+      width: 1%;
+      white-space: nowrap;
+    }
+    .occ-table thead th.sortable {
+      cursor: pointer;
+      user-select: none;
+    }
+    .occ-table thead th.sortable:hover {
+      color: var(--bt-text);
+    }
+    .occ-table thead th.sortable .sort-ind {
+      display: inline-block;
+      margin-left: 3px;
+      font-size: 9px;
+      opacity: 0.35;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .occ-table thead th.sortable.on .sort-ind {
+      opacity: 1;
+      color: var(--bt-primary);
+    }
+
+    details.filters {
+      background: var(--bt-paper);
+      border: 1px solid var(--bt-divider);
+      border-radius: var(--bt-r-surface);
+      overflow: hidden;
+    }
+    details.filters > summary {
+      cursor: pointer;
+      list-style: none;
+      padding: var(--bt-sp-1) var(--bt-sp-15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--bt-sp-1);
+      user-select: none;
+      background: var(--bt-filter-header-tint);
+    }
+    details.filters > summary::-webkit-details-marker { display: none; }
+    details.filters > summary::after {
+      content: "▾";
+      font-size: 10px;
+      opacity: 0.7;
+      color: var(--bt-text-secondary);
+    }
+    details.filters[open] > summary {
+      border-bottom: 1px solid var(--bt-divider);
+    }
+    details.filters[open] > summary::after { content: "▴"; }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+      gap: var(--bt-sp-1);
+      padding: var(--bt-sp-125) var(--bt-sp-15) var(--bt-sp-15);
+    }
+    @media (max-width: 900px) {
+      .filter-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    label {
+      display: grid;
+      gap: var(--bt-sp-05);
+    }
+    label > :is(select, input) {
+      width: 100%;
+      height: 34px;
+      padding: 7px 12px;
+      border: 1px solid var(--bt-divider);
+      border-radius: var(--bt-r-input);
+      background: var(--bt-input-fill);
+      font: var(--bt-fw-regular) var(--bt-fs-input) / 1.45 var(--bt-font);
+      color: var(--bt-text);
+      text-transform: none;
+      letter-spacing: -0.002em;
+    }
+    label > :is(select, input):hover {
+      background: var(--bt-input-fill-hover);
+      border-color: var(--bt-input-border-hover);
+    }
+    label > :is(select, input):focus {
+      outline: none;
+      border-color: var(--bt-primary);
+      box-shadow: var(--bt-focus-ring);
+      background: transparent;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: end;
+      gap: var(--bt-sp-075);
+    }
+
+    .body {
+      display: grid;
+      grid-template-columns: minmax(320px, 28vw) minmax(0, 1fr);
+      gap: var(--bt-sp-1);
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    @media (max-width: 920px) {
+      .body { grid-template-columns: 1fr; overflow: auto; }
+      html, body { overflow: auto; }
+      .shell { height: auto; min-height: 100vh; overflow: visible; }
+    }
+
+    .panel {
+      min-height: 0;
+      height: 100%;
+    }
+
+    .panel-h {
+      padding: var(--bt-sp-1) var(--bt-inset-band);
+      border-bottom: 1px solid var(--bt-divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--bt-sp-1);
+      flex-wrap: wrap;
+      background: var(--bt-surface-tint);
+    }
+    .panel-h h2 {
+      margin: 0;
+      font-size: 0.8125rem;
+      font-weight: var(--bt-fw-semibold);
+      letter-spacing: -0.004em;
+      color: var(--bt-text);
+    }
+
+    .tabs {
+      display: inline-flex;
+      gap: 2px;
+      padding: 3px;
+      border-radius: var(--bt-r-segment-track);
+      background: var(--bt-segment-track);
+    }
+    .tab {
+      border: 0;
+      background: transparent;
+      color: var(--bt-text-secondary);
+      padding: 5px 10px;
+      border-radius: var(--bt-r-surface);
+      font-size: var(--bt-fs-segment);
+      font-weight: var(--bt-fw-semibold);
+      line-height: 1.45;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .tab.active {
+      background: var(--bt-paper);
+      color: var(--bt-text);
+      box-shadow: var(--bt-shadow-2);
+      border: 1px solid var(--bt-divider);
+    }
+
+    .search-wrap {
+      padding: var(--bt-sp-1) var(--bt-sp-15);
+      border-bottom: 1px solid var(--bt-divider);
+      background: var(--bt-surface-tint);
+    }
+    .search-wrap input {
+      width: 100%;
+      height: 34px;
+      padding: 7px 12px;
+      border: 1px solid var(--bt-divider);
+      border-radius: var(--bt-r-input);
+      background: var(--bt-paper);
+      font: var(--bt-fw-regular) var(--bt-fs-input) / 1.45 var(--bt-font);
+      color: var(--bt-text);
+    }
+    .search-wrap input:focus {
+      outline: none;
+      border-color: var(--bt-primary);
+      box-shadow: var(--bt-focus-ring);
+    }
+
+    .rank-scroll,
+    .hist-table-wrap {
+      overflow: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      overscroll-behavior: contain;
+    }
+
+    .occ-table,
+    table.hist-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--bt-fs-table-body);
+    }
+    .occ-table thead th,
+    table.hist-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: color-mix(in srgb, var(--bt-text) 2.5%, var(--bt-paper));
+      text-align: left;
+      font-size: var(--bt-fs-table-head);
+      font-weight: var(--bt-fw-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: var(--bt-text-secondary);
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--bt-divider);
+      white-space: nowrap;
+    }
+    .occ-table thead th.numh { text-align: right; }
+    .occ-table tbody td,
+    table.hist-table td {
+      padding: 3.6px 8px;
+      border-bottom: 1px solid var(--bt-divider);
+      vertical-align: middle;
+      color: var(--bt-text);
+    }
+    .occ-table tbody tr { cursor: pointer; }
+    .occ-table tbody tr:nth-child(even) td,
+    table.hist-table tr:nth-child(even) td {
+      background: var(--bt-zebra-odd);
+    }
+    .occ-table tbody tr:hover td,
+    table.hist-table tr:hover td {
+      background: var(--bt-hover-tint);
+    }
+    .occ-table tbody tr.active td {
+      background: var(--bt-selected-tint);
+    }
+    .occ-table tbody tr.active:hover td {
+      background: var(--bt-selected-hover-tint);
+    }
+
+    .code {
+      font-family: var(--bt-font-mono-finance);
+      font-variant-numeric: tabular-nums;
+      font-weight: var(--bt-fw-medium);
+      font-size: 12px;
+      white-space: nowrap;
+      width: 1%;
+    }
+    .name {
+      font-weight: var(--bt-fw-semibold);
+      font-size: 0.8125rem;
+      letter-spacing: -0.004em;
+      line-height: 1.4;
+    }
+    .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-weight: var(--bt-fw-semibold);
+      font-family: var(--bt-font-mono);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .num.low { color: var(--bt-warning); }
+    .num.mid { color: var(--bt-text); }
+    .num.hi { color: var(--bt-success); }
+
+    .hist { min-height: 0; overflow: hidden; }
+    .hist-empty {
+      margin: auto;
+      padding: var(--bt-sp-4);
+      color: var(--bt-text-secondary);
+      text-align: center;
+    }
+    #histContent { min-height: 0; overflow: hidden; }
+    .hist-fixed { flex: 0 0 auto; }
+
+    .hist-head {
+      padding: var(--bt-sp-125) var(--bt-inset-page) var(--bt-sp-1);
+      display: flex;
+      justify-content: space-between;
+      gap: var(--bt-sp-15);
+      align-items: start;
+      flex-wrap: wrap;
+    }
+    .hist-head h2 {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: var(--bt-fw-semibold);
+      letter-spacing: -0.014em;
+      color: var(--bt-text);
+    }
+
+    .hist-kpis {
+      display: flex;
+      gap: var(--bt-sp-05);
+      flex-wrap: wrap;
+      background: var(--bt-surface-tint);
+      border: 1px solid var(--bt-divider);
+      border-radius: 10px;
+      padding: var(--bt-sp-05);
+    }
+    .kpi {
+      min-width: 72px;
+      padding: var(--bt-sp-075) var(--bt-sp-125);
+      border-radius: var(--bt-r-item);
+    }
+    .kpi .k {
+      font-size: var(--bt-fs-summary-label);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--bt-text-secondary);
+      font-weight: var(--bt-fw-bold);
+    }
+    .kpi .v {
+      font-size: var(--bt-fs-summary-value);
+      font-weight: var(--bt-fw-heavy);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--bt-font-mono);
+      color: var(--bt-text);
+      line-height: 1.2;
+    }
+
+    .estado-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--bt-sp-075);
+      flex-wrap: wrap;
+      padding: var(--bt-sp-1) var(--bt-inset-page);
+      border-top: 1px solid var(--bt-divider);
+      background: var(--bt-filter-header-tint);
+    }
+    .estado-bar .lbl {
+      font-size: 11px;
+      font-weight: var(--bt-fw-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--bt-text-secondary);
+      margin-right: 2px;
+    }
+    .estado-chip {
+      border: 1px solid var(--bt-divider);
+      background: var(--bt-paper);
+      border-radius: var(--bt-r-round);
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: var(--bt-fw-bold);
+      color: var(--bt-text);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .estado-chip.on {
+      background: var(--bt-menu-selected);
+      border-color: color-mix(in srgb, var(--bt-primary) 35%, var(--bt-paper));
+      color: var(--bt-primary-dark);
+    }
+
+    .chart-box {
+      padding: var(--bt-inset-page) var(--bt-inset-page) 4px;
+      height: 280px;
+      flex: 0 0 280px;
+    }
+    canvas { width: 100% !important; height: 100% !important; }
+
+    .legend {
+      display: flex;
+      gap: var(--bt-sp-1);
+      flex-wrap: wrap;
+      padding: 0 var(--bt-inset-page) var(--bt-sp-125);
+      font-size: 0.6875rem;
+      font-weight: var(--bt-fw-semibold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--bt-text-secondary);
+    }
+    .legend i {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      margin-right: 6px;
+      vertical-align: 0;
+    }
+
+    .hist-table-wrap { border-top: 1px solid var(--bt-divider); }
+    .score {
+      font-variant-numeric: tabular-nums;
+      font-family: var(--bt-font-mono);
+      font-weight: var(--bt-fw-semibold);
+    }
+    .badge {
+      display: inline-block;
+      border: 0;
+      border-radius: var(--bt-r-round);
+      padding: 2px 8px;
+      font-size: var(--bt-fs-pill);
+      font-weight: var(--bt-fw-bold);
+      background: color-mix(in srgb, var(--bt-info) calc(var(--bt-pill-fill-alpha) * 100%), transparent);
+      color: var(--bt-info-dark);
+    }
+    a.fonte {
+      color: var(--bt-primary);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: var(--bt-fw-semibold);
+    }
+    a.fonte:hover { text-decoration: underline; }
+  </style>
+</head>
+<body class="bt-body">
+  <div class="shell">
+    <div class="top">
+      <h1 class="bt-page-title">Invitations · occupation history</h1>
+      <div class="top-right">
+        <div class="top-meta" id="topMeta">…</div>
+        <div class="theme-toggle" role="group" aria-label="Theme">
+          <button type="button" class="theme-btn" id="themeLight" data-theme-set="light" title="Light" aria-label="Light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+            </svg>
+          </button>
+          <button type="button" class="theme-btn" id="themeDark" data-theme-set="dark" title="Dark" aria-label="Dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <details class="filters">
+      <summary>
+        <span>Filters</span>
+        <span id="filterSummary" class="bt-hint">visa · category</span>
+      </summary>
+      <div class="filter-grid">
+        <label>Visa
+          <select id="fVisto" multiple size="1"></select>
+        </label>
+        <label>Category
+          <select id="fCategoria"></select>
+        </label>
+        <label>Sort
+          <select id="fSort">
+            <option value="nome" selected>Name A–Z</option>
+            <option value="baixa">Lowest last score</option>
+            <option value="frequente">Highest frequency</option>
+            <option value="media">Lowest average</option>
+          </select>
+        </label>
+        <label>Search occupation
+          <input id="fBusca" type="search" placeholder="Nurse, Engineer…" />
+        </label>
+        <div class="filter-actions">
+          <button type="button" class="bt-btn bt-btn--contained bt-btn--sm" id="btnGo">Apply</button>
+          <button type="button" class="bt-btn bt-btn--outlined bt-btn--sm" id="btnClear">Clear</button>
+        </div>
+      </div>
+    </details>
+
+    <div class="body">
+      <aside class="bt-panel panel panel-left">
+        <div class="panel-h">
+          <h2>Occupations</h2>
+          <div class="tabs">
+            <button type="button" class="tab active" data-mode="baixa">Low score</button>
+            <button type="button" class="tab" data-mode="frequente">Frequent</button>
+            <button type="button" class="tab" data-mode="rara">Rare</button>
+          </div>
+        </div>
+        <div class="search-wrap">
+          <input id="fLista" type="search" placeholder="Filter list…" />
+        </div>
+        <div class="rank-scroll">
+          <table class="occ-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th class="sortable" data-col="nome">Name <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="rankh sortable" data-col="rank" title="Invitation frequency">Rank <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh sortable" data-col="last">Last <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh sortable" data-col="avg">Avg <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh sortable" data-col="freq">Freq <span class="sort-ind" aria-hidden="true"></span></th>
+              </tr>
+            </thead>
+            <tbody id="rankBody"></tbody>
+          </table>
+        </div>
+      </aside>
+
+      <section class="bt-panel panel panel-right hist" id="histPanel">
+        <div class="hist-empty" id="histEmpty">Select an occupation to view history and chart.</div>
+        <div id="histContent" hidden style="display:none;flex-direction:column;min-height:0;flex:1;overflow:hidden;">
+          <div class="hist-fixed">
+            <div class="hist-head">
+              <div>
+                <h2 id="histTitle">—</h2>
+                <div class="bt-hint" id="histSub"></div>
+              </div>
+              <div class="hist-kpis">
+                <div class="kpi"><div class="k">Min</div><div class="v" id="kMin">—</div></div>
+                <div class="kpi"><div class="k">Max</div><div class="v" id="kMax">—</div></div>
+                <div class="kpi"><div class="k">Last</div><div class="v" id="kLast">—</div></div>
+                <div class="kpi"><div class="k">Rounds</div><div class="v" id="kRounds">—</div></div>
+              </div>
+            </div>
+
+            <div class="estado-bar" id="estadoBar" aria-label="State filter">
+              <span class="lbl">State</span>
+            </div>
+
+            <div class="chart-box"><canvas id="chart"></canvas></div>
+            <div class="legend" id="legend"></div>
+          </div>
+
+          <div class="hist-table-wrap">
+            <table class="hist-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>State</th>
+                  <th>Visa</th>
+                  <th>Score</th>
+                  <th>Metric</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody id="histBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="./data.js"></script>
+  <script>
+    const SCORE = new Set(["pontos_minimos", "ultimo_eoi_pontos", "matrix_score"]);
+    const COLORS = (() => {
+      const s = getComputedStyle(document.documentElement);
+      const keys = [
+        "--bt-cat-violet", "--bt-cat-green", "--bt-cat-blue", "--bt-cat-amber",
+        "--bt-cat-slate", "--bt-cat-rust", "--bt-cat-brown", "--bt-cat-olive",
+      ];
+      const out = keys.map((k) => s.getPropertyValue(k).trim()).filter(Boolean);
+      return out.length ? out : ["#6d4bd8", "#2f8f6b", "#2f6fd8", "#c77d1a", "#5a6b7a", "#b0562a", "#7a5a2a", "#4a8f2f"];
+    })();
+    const SCORE_CAP_PLAUSIBLE = 200;
+    const Y_FLOOR_MAX = 105;
+
+    const raw = Array.isArray(window.CONVITES_DATA) ? window.CONVITES_DATA : [];
+    const scoreRows = raw.filter((r) => {
+      if (!SCORE.has(r.metrica) || !r.ocupacao || r.ocupacao === "agregado") return false;
+      const n = Number(r.valor);
+      return Number.isFinite(n) && n > 0 && n <= SCORE_CAP_PLAUSIBLE;
+    });
+
+    let mode = "baixa";
+    let selected = null;
+    let occupations = [];
+    let chartEstados = new Set();
+    let colSort = { key: "nome", dir: "asc" };
+
+    const $ = (id) => document.getElementById(id);
+
+    function uniq(arr) {
+      return [...new Set(arr)].filter(Boolean).sort((a, b) => a.localeCompare(b));
+    }
+
+    function fillSelect(sel, values, multi) {
+      sel.innerHTML = "";
+      if (!multi) {
+        const o = document.createElement("option");
+        o.value = "";
+        o.textContent = "All";
+        sel.appendChild(o);
+      }
+      for (const v of values) {
+        const o = document.createElement("option");
+        o.value = v;
+        o.textContent = v;
+        sel.appendChild(o);
+      }
+    }
+
+    function selectedValues(sel) {
+      return [...sel.selectedOptions].map((o) => o.value).filter(Boolean);
+    }
+
+    function num(v) {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function monthKey(d) {
+      if (!d) return "";
+      const s = String(d);
+      if (/^\d{4}-\d{2}/.test(s)) return s.slice(0, 7);
+      return s;
+    }
+
+    function avg(nums) {
+      if (!nums.length) return null;
+      return nums.reduce((a, b) => a + b, 0) / nums.length;
+    }
+
+    function activeFilterRows() {
+      const vistos = selectedValues($("fVisto"));
+      const categoria = $("fCategoria").value;
+      const busca = ($("fBusca").value || "").trim().toLowerCase();
+
+      return scoreRows.filter((r) => {
+        if (vistos.length && !vistos.includes(r.visto)) return false;
+        if (categoria && r.categoria !== categoria) return false;
+        if (busca && !(r.ocupacao || "").toLowerCase().includes(busca) && !(r.anzsco || "").includes(busca)) return false;
+        return true;
+      });
+    }
+
+    function buildOccupations(rows) {
+      const map = new Map();
+      for (const r of rows) {
+        const key = r.ocupacao;
+        let o = map.get(key);
+        if (!o) {
+          o = { nome: key, anzsco: r.anzsco || "", scores: [], dates: [], juris: new Set(), vistos: new Set(), rows: [] };
+          map.set(key, o);
+        }
+        const s = num(r.valor);
+        if (s != null) o.scores.push(s);
+        if (r.data_round) o.dates.push(r.data_round);
+        o.juris.add(r.jurisdicao);
+        o.vistos.add(r.visto);
+        o.rows.push(r);
+        if (!o.anzsco && r.anzsco) o.anzsco = r.anzsco;
+      }
+
+      return [...map.values()].map((o) => {
+        const scores = o.scores;
+        const dates = [...o.dates].sort();
+        const sortedRows = [...o.rows].sort((a, b) => String(b.data_round).localeCompare(String(a.data_round)));
+        const mean = avg(scores);
+        return {
+          nome: o.nome,
+          anzsco: o.anzsco || "—",
+          min: scores.length ? Math.min(...scores) : null,
+          max: scores.length ? Math.max(...scores) : null,
+          last: scores.length ? num(sortedRows[0].valor) : null,
+          avg: mean == null ? null : Math.round(mean * 10) / 10,
+          rounds: o.rows.length,
+          juris: [...o.juris],
+          vistos: [...o.vistos],
+          lastDate: dates[dates.length - 1] || "",
+          firstDate: dates[0] || "",
+          rows: o.rows,
+        };
+      });
+    }
+
+    function sortOccupations(list) {
+      const copy = [...list];
+      const dir = colSort.dir === "desc" ? -1 : 1;
+      const key = colSort.key;
+
+      copy.sort((a, b) => {
+        let cmp = 0;
+        if (key === "last") {
+          cmp = (a.last ?? 999) - (b.last ?? 999);
+        } else if (key === "avg") {
+          cmp = (a.avg ?? 999) - (b.avg ?? 999);
+        } else if (key === "freq" || key === "rank") {
+          cmp = (a.rounds ?? 0) - (b.rounds ?? 0);
+        } else {
+          cmp = a.nome.localeCompare(b.nome, undefined, { sensitivity: "base" });
+        }
+        if (cmp === 0 && key !== "nome") {
+          cmp = a.nome.localeCompare(b.nome, undefined, { sensitivity: "base" });
+          return cmp;
+        }
+        return cmp * dir;
+      });
+      return copy;
+    }
+
+    function defaultDirForCol(col) {
+      if (col === "rank" || col === "freq") return "desc";
+      if (col === "last" || col === "avg") return "asc";
+      return "asc";
+    }
+
+    function syncSortControls() {
+      const map = { nome: "nome", last: "baixa", avg: "media", freq: "frequente", rank: "frequente" };
+      const opt = map[colSort.key];
+      if (opt && $("fSort")) $("fSort").value = opt;
+
+      document.querySelectorAll(".occ-table thead th.sortable").forEach((th) => {
+        const on = th.dataset.col === colSort.key;
+        th.classList.toggle("on", on);
+        const ind = th.querySelector(".sort-ind");
+        if (ind) ind.textContent = on ? (colSort.dir === "asc" ? "▲" : "▼") : "";
+      });
+    }
+
+    function setColSort(col, { toggle = true } = {}) {
+      if (toggle && colSort.key === col) {
+        colSort.dir = colSort.dir === "asc" ? "desc" : "asc";
+      } else {
+        colSort.key = col;
+        colSort.dir = defaultDirForCol(col);
+      }
+      syncSortControls();
+      ensureSelection();
+    }
+
+    function applySortFromSelect() {
+      const v = $("fSort").value || "nome";
+      if (v === "baixa") colSort = { key: "last", dir: "asc" };
+      else if (v === "frequente") colSort = { key: "freq", dir: "desc" };
+      else if (v === "media") colSort = { key: "avg", dir: "asc" };
+      else colSort = { key: "nome", dir: "asc" };
+      syncSortControls();
+    }
+
+    function scoreClass(n) {
+      if (n == null) return "mid";
+      if (n <= 70) return "low";
+      if (n <= 85) return "mid";
+      return "hi";
+    }
+
+    /* 10 levels via 5 bars × (half | full) from invitation frequency */
+    function freqLevel(rounds) {
+      const r = Number(rounds) || 0;
+      if (r <= 0) return 0;
+      if (r === 1) return 1;
+      if (r === 2) return 2;
+      if (r === 3) return 3;
+      if (r === 4) return 4;
+      if (r <= 6) return 5;
+      if (r <= 9) return 6;
+      if (r <= 14) return 7;
+      if (r <= 22) return 8;
+      if (r <= 35) return 9;
+      return 10;
+    }
+
+    function freqLevelLabel(level) {
+      if (level <= 1) return "Very rare";
+      if (level <= 3) return "Rare";
+      if (level <= 5) return "Occasional";
+      if (level <= 7) return "Often";
+      if (level <= 9) return "Frequent";
+      return "Very often";
+    }
+
+    function rankBarsHtml(rounds) {
+      const level = freqLevel(rounds);
+      const bars = [];
+      for (let i = 0; i < 5; i++) {
+        const threshold = (i + 1) * 2;
+        let cls = "";
+        if (level >= threshold) cls = "full";
+        else if (level === threshold - 1) cls = "half";
+        bars.push(`<i class="${cls}"></i>`);
+      }
+      const label = `${freqLevelLabel(level)} · ${rounds} records · ${level}/10`;
+      return `<span class="rank-bars" title="${escapeAttr(label)}" aria-label="${escapeAttr(label)}">${bars.join("")}</span>`;
+    }
+
+    function visibleOccupations() {
+      const q = ($("fLista").value || "").trim().toLowerCase();
+      let list = sortOccupations(occupations);
+      if (mode === "rara") list = list.filter((o) => o.rounds <= 3);
+      if (mode === "frequente") list = list.filter((o) => o.rounds >= 5);
+      if (q) list = list.filter((o) => o.nome.toLowerCase().includes(q) || String(o.anzsco).includes(q));
+      return list;
+    }
+
+    function renderRank() {
+      const list = visibleOccupations();
+
+      const body = $("rankBody");
+      if (!list.length) {
+        body.innerHTML = `<tr><td colspan="6" style="padding:1.5rem;color:var(--bt-text-secondary);text-align:center;">No occupations for these filters.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = list
+        .slice(0, 500)
+        .map((o) => {
+          const active = selected && selected.nome === o.nome ? "active" : "";
+          return `<tr class="${active}" data-nome="${escapeAttr(o.nome)}">
+            <td class="code">${escapeHtml(o.anzsco)}</td>
+            <td class="name">${escapeHtml(o.nome)}</td>
+            <td class="rank">${rankBarsHtml(o.rounds)}</td>
+            <td class="num ${scoreClass(o.last)}">${o.last ?? "—"}</td>
+            <td class="num ${scoreClass(o.avg)}">${o.avg ?? "—"}</td>
+            <td class="num">${o.rounds}</td>
+          </tr>`;
+        })
+        .join("");
+
+      body.querySelectorAll("tr[data-nome]").forEach((tr) => {
+        tr.addEventListener("click", () => {
+          const occ = occupations.find((o) => o.nome === tr.dataset.nome);
+          if (occ) selectOccupation(occ);
+        });
+      });
+    }
+
+    function ensureSelection() {
+      const list = visibleOccupations();
+      if (!list.length) {
+        selected = null;
+        renderRank();
+        $("histEmpty").hidden = false;
+        $("histContent").hidden = true;
+        $("histContent").style.display = "none";
+        return;
+      }
+      if (selected && list.some((o) => o.nome === selected.nome)) {
+        selected = occupations.find((o) => o.nome === selected.nome) || list.find((o) => o.nome === selected.nome);
+        renderRank();
+        renderHistory(selected);
+        return;
+      }
+      selectOccupation(list[0]);
+    }
+
+    function selectOccupation(occ) {
+      selected = occ;
+      chartEstados = new Set(occ.juris);
+      renderRank();
+      renderHistory(occ);
+    }
+
+    function renderEstadoBar(occ) {
+      const bar = $("estadoBar");
+      const juris = uniq(occ.rows.map((r) => r.jurisdicao));
+      bar.innerHTML =
+        `<span class="lbl">State</span>` +
+        juris
+          .map((j) => {
+            const on = chartEstados.has(j) ? "on" : "";
+            return `<button type="button" class="estado-chip ${on}" data-j="${escapeAttr(j)}">${escapeHtml(j)}</button>`;
+          })
+          .join("") +
+        `<button type="button" class="estado-chip" id="estadoAll">All</button>`;
+
+      bar.querySelectorAll(".estado-chip[data-j]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const j = btn.dataset.j;
+          if (chartEstados.has(j)) {
+            if (chartEstados.size > 1) chartEstados.delete(j);
+          } else {
+            chartEstados.add(j);
+          }
+          renderHistory(selected);
+        });
+      });
+      $("estadoAll").addEventListener("click", () => {
+        chartEstados = new Set(juris);
+        renderHistory(selected);
+      });
+    }
+
+    function renderHistory(occ) {
+      $("histEmpty").hidden = true;
+      const content = $("histContent");
+      content.hidden = false;
+      content.style.display = "flex";
+
+      $("histTitle").textContent = occ.nome;
+      $("histSub").textContent = [
+        occ.anzsco && occ.anzsco !== "—" ? `ANZSCO ${occ.anzsco}` : null,
+        `${occ.rounds} records`,
+        occ.vistos.join(" · "),
+        "Y-axis: 0 → max (min 105)",
+      ]
+        .filter(Boolean)
+        .join(" · ");
+
+      const filteredRows = occ.rows.filter((r) => chartEstados.has(r.jurisdicao));
+      const scores = filteredRows.map((r) => num(r.valor)).filter((n) => n != null);
+
+      $("kMin").textContent = scores.length ? Math.min(...scores) : "—";
+      $("kMax").textContent = scores.length ? Math.max(...scores) : "—";
+      const lastRow = [...filteredRows].sort((a, b) => String(b.data_round).localeCompare(String(a.data_round)))[0];
+      $("kLast").textContent = lastRow ? lastRow.valor : "—";
+      $("kRounds").textContent = filteredRows.length;
+
+      renderEstadoBar(occ);
+
+      const rowsAsc = [...filteredRows].sort((a, b) => String(a.data_round).localeCompare(String(b.data_round)));
+      $("histBody").innerHTML = [...rowsAsc]
+        .reverse()
+        .map(
+          (r) => `<tr>
+            <td>${escapeHtml(r.data_round || "—")}</td>
+            <td><span class="badge">${escapeHtml(r.jurisdicao || "—")}</span></td>
+            <td>${escapeHtml(r.visto || "—")}</td>
+            <td class="score">${escapeHtml(String(r.valor ?? "—"))}</td>
+            <td>${escapeHtml(r.metrica || "—")}</td>
+            <td>${r.fonte_url ? `<a class="fonte" href="${r.fonte_url}" target="_blank" rel="noopener">official</a>` : "—"}</td>
+          </tr>`
+        )
+        .join("");
+
+      drawChart(rowsAsc);
+    }
+
+    function chartToken(name, fallback) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+    }
+
+    function drawChart(rows) {
+      const canvas = $("chart");
+      const ctx = canvas.getContext("2d");
+      const box = canvas.parentElement;
+      const w = box.clientWidth;
+      const h = box.clientHeight;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      const months = uniq(rows.map((r) => monthKey(r.data_round)).filter(Boolean));
+
+      const seriesMap = new Map();
+      for (const r of rows) {
+        const key = `${r.jurisdicao} · ${r.visto}`;
+        if (!seriesMap.has(key)) seriesMap.set(key, new Map());
+        const s = num(r.valor);
+        const mk = monthKey(r.data_round);
+        if (s != null && mk) {
+          const prev = seriesMap.get(key).get(mk);
+          seriesMap.get(key).set(mk, prev == null ? s : Math.min(prev, s));
+        }
+      }
+
+      const series = [...seriesMap.entries()].map(([name, m], i) => ({
+        name,
+        color: COLORS[i % COLORS.length],
+        points: months.map((d) => (m.has(d) ? m.get(d) : null)),
+      }));
+
+      $("legend").innerHTML = series
+        .map((s) => `<span><i style="background:${s.color}"></i>${escapeHtml(s.name)}</span>`)
+        .join("") || `<span>no points for selected states</span>`;
+
+      if (!months.length) return;
+
+      const vals = series.flatMap((s) => s.points.filter((p) => p != null));
+      const dataMax = vals.length ? Math.max(...vals) : Y_FLOOR_MAX;
+      const ymin = 0;
+      const ymax = Math.max(Y_FLOOR_MAX, Math.ceil(dataMax / 5) * 5);
+
+      const pad = { t: 18, r: 14, b: 42, l: 40 };
+      const plotW = w - pad.l - pad.r;
+      const plotH = h - pad.t - pad.b;
+
+      ctx.strokeStyle = chartToken("--bt-divider", "rgba(33,33,31,0.1)");
+      ctx.fillStyle = chartToken("--bt-text-secondary", "rgba(33,33,31,0.62)");
+      ctx.font = "600 11px " + (chartToken("--bt-font", "Inter, system-ui, sans-serif"));
+      ctx.lineWidth = 1;
+      const ticks = 7;
+      for (let i = 0; i <= ticks; i++) {
+        const y = pad.t + (plotH * i) / ticks;
+        const val = ymax - ((ymax - ymin) * i) / ticks;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, y);
+        ctx.lineTo(pad.l + plotW, y);
+        ctx.stroke();
+        ctx.fillText(String(Math.round(val)), 4, y + 3);
+      }
+
+      const labelStep = Math.max(1, Math.ceil(months.length / 10));
+      for (let i = 0; i < months.length; i++) {
+        const x = months.length === 1 ? pad.l + plotW / 2 : pad.l + (plotW * i) / (months.length - 1);
+        ctx.strokeStyle = chartToken("--bt-divider", "rgba(33,33,31,0.1)");
+        ctx.beginPath();
+        ctx.moveTo(x, pad.t + plotH);
+        ctx.lineTo(x, pad.t + plotH + 4);
+        ctx.stroke();
+        if (i % labelStep === 0 || i === months.length - 1) {
+          ctx.fillStyle = chartToken("--bt-text-secondary", "rgba(33,33,31,0.62)");
+          ctx.save();
+          ctx.translate(x, h - 8);
+          if (months.length > 8) {
+            ctx.rotate(-0.55);
+            ctx.fillText(months[i], -18, 0);
+          } else {
+            ctx.fillText(months[i], -16, 0);
+          }
+          ctx.restore();
+        }
+      }
+
+      function xAt(i) {
+        if (months.length === 1) return pad.l + plotW / 2;
+        return pad.l + (plotW * i) / (months.length - 1);
+      }
+      function yAt(v) {
+        return pad.t + ((ymax - v) / (ymax - ymin)) * plotH;
+      }
+
+      for (const s of series) {
+        ctx.strokeStyle = s.color;
+        ctx.fillStyle = s.color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        let started = false;
+        for (let i = 0; i < s.points.length; i++) {
+          const v = s.points[i];
+          if (v == null) {
+            started = false;
+            continue;
+          }
+          const x = xAt(i);
+          const y = yAt(v);
+          if (!started) {
+            ctx.moveTo(x, y);
+            started = true;
+          } else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        for (let i = 0; i < s.points.length; i++) {
+          const v = s.points[i];
+          if (v == null) continue;
+          const x = xAt(i);
+          const y = yAt(v);
+          ctx.beginPath();
+          ctx.arc(x, y, 3.4, 0, Math.PI * 2);
+          ctx.fill();
+
+          // score label on each visible month point
+          const label = String(Math.round(v));
+          ctx.font = "600 11px Manrope, sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "bottom";
+          const tw = ctx.measureText(label).width;
+          const lx = x;
+          const ly = y - 7;
+          ctx.fillStyle = chartToken("--bt-paper", "#ffffff");
+          ctx.fillRect(lx - tw / 2 - 2, ly - 11, tw + 4, 12);
+          ctx.fillStyle = s.color;
+          ctx.fillText(label, lx, ly);
+          ctx.textAlign = "left";
+          ctx.textBaseline = "alphabetic";
+        }
+      }
+
+      ctx.fillStyle = chartToken("--bt-text-secondary", "rgba(33,33,31,0.62)");
+      ctx.font = "600 11px " + (chartToken("--bt-font", "Inter, system-ui, sans-serif"));
+      ctx.fillText(`score  0–${ymax}`, pad.l, 12);
+    }
+
+    function refresh() {
+      const rows = activeFilterRows();
+      occupations = buildOccupations(rows);
+
+      const vistos = selectedValues($("fVisto"));
+      $("filterSummary").textContent = [
+        vistos.length ? vistos.join(",") : "all visas",
+        $("fCategoria").value || "visto_de_convite",
+      ].join(" · ");
+
+      $("topMeta").textContent = `${occupations.length} occupations · ${rows.length} official score rows`;
+
+      if (selected) {
+        const again = occupations.find((o) => o.nome === selected.nome);
+        if (again) {
+          selected = again;
+          chartEstados = new Set([...chartEstados].filter((j) => again.juris.includes(j)));
+          if (!chartEstados.size) chartEstados = new Set(again.juris);
+        } else selected = null;
+      }
+
+      ensureSelection();
+    }
+
+    function applyTheme(theme) {
+      const next = theme === "dark" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("convites-theme", next); } catch (_) {}
+      $("themeLight").classList.toggle("on", next === "light");
+      $("themeDark").classList.toggle("on", next === "dark");
+      if (selected) {
+        const filtered = selected.rows.filter((r) => chartEstados.has(r.jurisdicao));
+        drawChart([...filtered].sort((a, b) => String(a.data_round).localeCompare(String(b.data_round))));
+      }
+    }
+
+    function initTheme() {
+      let theme = "light";
+      try {
+        const saved = localStorage.getItem("convites-theme");
+        if (saved === "dark" || saved === "light") theme = saved;
+      } catch (_) {}
+      applyTheme(theme);
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+    function escapeAttr(s) {
+      return escapeHtml(s).replaceAll("'", "&#39;");
+    }
+
+    fillSelect($("fVisto"), uniq(scoreRows.map((r) => r.visto)), true);
+    fillSelect($("fCategoria"), uniq(raw.map((r) => r.categoria)), false);
+    $("fCategoria").value = "visto_de_convite";
+
+    ["fVisto"].forEach((id) => {
+      const sel = $(id);
+      sel.size = 1;
+      sel.addEventListener("mousedown", (e) => {
+        if (sel.size === 1) {
+          e.preventDefault();
+          sel.size = Math.min(6, sel.options.length);
+        }
+      });
+      sel.addEventListener("blur", () => { sel.size = 1; });
+      sel.addEventListener("change", () => { sel.size = 1; });
+    });
+
+    $("btnGo").addEventListener("click", refresh);
+    $("btnClear").addEventListener("click", () => {
+      [...$("fVisto").options].forEach((o) => (o.selected = false));
+      $("fCategoria").value = "visto_de_convite";
+      $("fBusca").value = "";
+      $("fLista").value = "";
+      $("fSort").value = "nome";
+      colSort = { key: "nome", dir: "asc" };
+      mode = "baixa";
+      document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.mode === "baixa"));
+      selected = null;
+      syncSortControls();
+      refresh();
+    });
+
+    $("fLista").addEventListener("input", () => {
+      ensureSelection();
+    });
+    $("fSort").addEventListener("change", () => {
+      applySortFromSelect();
+      refresh();
+    });
+
+    document.querySelectorAll(".occ-table thead th.sortable").forEach((th) => {
+      th.addEventListener("click", () => setColSort(th.dataset.col));
+    });
+
+    document.querySelectorAll(".tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        mode = tab.dataset.mode;
+        document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t === tab));
+        ensureSelection();
+      });
+    });
+
+    $("themeLight").addEventListener("click", () => applyTheme("light"));
+    $("themeDark").addEventListener("click", () => applyTheme("dark"));
+
+    window.addEventListener("resize", () => {
+      if (selected) {
+        const filtered = selected.rows.filter((r) => chartEstados.has(r.jurisdicao));
+        drawChart([...filtered].sort((a, b) => String(a.data_round).localeCompare(String(b.data_round))));
+      }
+    });
+
+    syncSortControls();
+    initTheme();
+    refresh();
+  </script>
+</body>
+</html>
