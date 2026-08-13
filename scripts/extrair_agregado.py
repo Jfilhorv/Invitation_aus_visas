@@ -12,11 +12,17 @@ from datetime import datetime
 from pathlib import Path
 
 from bs4 import BeautifulSoup
-from pypdf import PdfReader
+try:
+    from pypdf import PdfReader
+except ImportError:  # compatibility with the existing local extraction runtime
+    from PyPDF2 import PdfReader
+from openpyxl import load_workbook
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "dados" / "agregado"
 MANIFESTO = ROOT / "dados" / "fontes" / "manifesto-validacao.csv"
+ANZSCO_STRUCTURE = ROOT / "dados" / "fontes" / "anzsco-2022-structure.xlsx"
+ANZSCO_INDEX = ROOT / "dados" / "fontes" / "anzsco-2022-index.xlsx"
 
 FIELDS = [
     "categoria",
@@ -26,6 +32,12 @@ FIELDS = [
     "data_round",
     "ocupacao",
     "anzsco",
+    "ocupacao_canonica",
+    "classificacao",
+    "classificacao_versao",
+    "nivel_ocupacional",
+    "codigo_status",
+    "identidade_ocupacional",
     "metrica",
     "valor",
     "unidade_extra",
@@ -134,6 +146,77 @@ def clean_value(raw: str) -> str | None:
         return "N/A"
     s = re.sub(r"[*]+$", "", s).strip()
     return s
+
+
+def match_key(value: str) -> str:
+    """Conservative title key: formatting only, never fuzzy similarity."""
+    return re.sub(r"[^a-z0-9]+", " ", norm(value).casefold()).strip()
+
+
+def anzsco_level(code: str) -> str:
+    return {
+        1: "major_group",
+        2: "sub_major_group",
+        3: "minor_group",
+        4: "unit_group",
+        6: "occupation",
+    }.get(len(code or ""), "unclassified")
+
+
+def load_anzsco_reference() -> tuple[dict, dict]:
+    """Load official ABS ANZSCO 2022 titles/aliases; retain only unambiguous matches."""
+    if not ANZSCO_STRUCTURE.exists() or not ANZSCO_INDEX.exists():
+        raise FileNotFoundError("Official ABS ANZSCO 2022 reference workbooks are missing")
+
+    canonical: dict[str, str] = {}
+    wb = load_workbook(ANZSCO_STRUCTURE, read_only=True, data_only=True)
+    for code, title, *_ in wb["Table 6"].iter_rows(min_row=7, values_only=True):
+        code = str(code or "").strip()
+        if re.fullmatch(r"\d{6}", code) and title:
+            canonical[code] = norm(str(title))
+
+    candidates: dict[str, set[str]] = defaultdict(set)
+    wb = load_workbook(ANZSCO_INDEX, read_only=True, data_only=True)
+    for code, title, *_ in wb["Table 1"].iter_rows(min_row=7, values_only=True):
+        code = str(code or "").strip()
+        if re.fullmatch(r"\d{6}", code) and title:
+            candidates[match_key(str(title))].add(code)
+    title_to_code = {k: next(iter(v)) for k, v in candidates.items() if len(v) == 1}
+    return canonical, title_to_code
+
+
+def enrich_occupations(rows: list[dict]) -> dict[str, int]:
+    canonical, title_to_code = load_anzsco_reference()
+    stats = defaultdict(int)
+    for r in rows:
+        published = norm(r.get("ocupacao", ""))
+        source_code = re.sub(r"\D", "", r.get("anzsco", "") or "")
+        code = source_code
+        status = "source" if code else "missing"
+
+        # Aggregates/publication sentinels are intentionally not occupations.
+        if not code and published and published.casefold() != "agregado" and r.get("metrica") != "publicacao":
+            inferred = title_to_code.get(match_key(published), "")
+            if inferred:
+                code = inferred
+                status = "abs_exact_title"
+
+        level = anzsco_level(code)
+        canonical_title = canonical.get(code, "") if len(code) == 6 else ""
+        if not canonical_title:
+            canonical_title = published
+
+        r["anzsco"] = code
+        r["ocupacao_canonica"] = canonical_title
+        r["classificacao"] = "ANZSCO" if code else ""
+        r["classificacao_versao"] = "2022" if code else ""
+        r["nivel_ocupacional"] = level
+        r["codigo_status"] = status
+        r["identidade_ocupacional"] = (
+            f"ANZSCO-2022:{code}" if code else f"UNCLASSIFIED:{match_key(published)}"
+        )
+        stats[status] += 1
+    return dict(stats)
 
 
 def parse_english_date(text: str) -> str:
@@ -1447,8 +1530,14 @@ def write_outputs(rows: list[dict]) -> None:
     with json_path.open("w", encoding="utf-8") as f:
         json.dump(rows, f, ensure_ascii=False, indent=2)
         f.write("\n")
+    data_js = ROOT / "analise" / "data.js"
+    data_js.write_text(
+        "window.CONVITES_DATA = " + json.dumps(rows, ensure_ascii=False, separators=(",", ":")) + ";\n",
+        encoding="utf-8",
+    )
     log(f"CSV escrito: {csv_path} ({len(rows)} linhas)")
     log(f"JSON escrito: {json_path}")
+    log(f"Dashboard escrito: {data_js}")
 
 
 def write_log(n_by_j: dict, n_total: int) -> None:
@@ -1502,6 +1591,12 @@ def main() -> None:
     rows.extend(parse_wa_html(manifesto))
     rows.extend(parse_sa(manifesto))
     rows.extend(parse_gaps_and_tas(manifesto))
+
+    enrichment = enrich_occupations(rows)
+    log(
+        "Normalizacao ANZSCO 2022 (ABS): "
+        + ", ".join(f"{k}={v}" for k, v in sorted(enrichment.items()))
+    )
 
     # light dedupe of exact duplicates
     seen = set()

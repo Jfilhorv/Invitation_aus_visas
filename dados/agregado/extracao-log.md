@@ -1,6 +1,6 @@
 # Log de extracao - vistos de convite
 
-Gerado em 2026-08-12 11:28:02.
+Gerado em 2026-08-12 21:30:54.
 
 Somente fontes oficiais `.gov.au` ja baixadas em `dados/` foram usadas.
 Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
@@ -64,8 +64,10 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 - QLD: 1 linha publicacao=NOT_PUBLISHED
 - NT: 1 linha publicacao=NOT_PUBLISHED
 - TAS: 2 totais + 1 NOT_PUBLISHED
-- CSV escrito: C:\Users\DELL\Projects\vistos-convites-au\dados\agregado\vistos-de-convites.csv (6637 linhas)
-- JSON escrito: C:\Users\DELL\Projects\vistos-convites-au\dados\agregado\vistos-de-convites.json
+- Normalizacao ANZSCO 2022 (ABS): abs_exact_title=3215, missing=379, source=3043
+- CSV escrito: C:\Users\efilh\Invitation_aus_visa\dados\agregado\vistos-de-convites.csv (6637 linhas)
+- JSON escrito: C:\Users\efilh\Invitation_aus_visa\dados\agregado\vistos-de-convites.json
+- Dashboard escrito: C:\Users\efilh\Invitation_aus_visa\analise\data.js
 
 ## Erros / avisos
 

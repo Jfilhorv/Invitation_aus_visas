@@ -7,9 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./bustle-tokens.css" />
+  <link rel="stylesheet" href="./site-tokens.css" />
   <style>
-    /* Page layout only — colours/type/density come from bustle-tokens.css */
+    /* Page layout only — colours/type/density come from site-tokens.css */
     html, body {
       height: 100%;
       overflow: hidden;
@@ -22,7 +22,7 @@
       padding: var(--bt-sp-1) var(--bt-inset-page) var(--bt-inset-page);
       display: grid;
       gap: var(--bt-sp-1);
-      grid-template-rows: auto auto minmax(0, 1fr);
+      grid-template-rows: auto auto auto minmax(0, 1fr);
       overflow: hidden;
     }
 
@@ -365,9 +365,40 @@
       font-size: 12px;
       white-space: nowrap;
     }
-    .num.low { color: var(--bt-warning); }
+    .num.low { color: var(--bt-success); }
     .num.mid { color: var(--bt-text); }
-    .num.hi { color: var(--bt-success); }
+    .num.hi { color: var(--bt-error); }
+
+    .global-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--bt-sp-1);
+    }
+    .global-kpi {
+      min-width: 0;
+      padding: 7px 12px;
+      border: 1px solid var(--bt-divider);
+      border-radius: var(--bt-r-md);
+      background: var(--bt-paper);
+    }
+    .global-kpi .k {
+      color: var(--bt-text-secondary);
+      font-size: 0.625rem;
+      font-weight: var(--bt-fw-bold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .global-kpi .v {
+      margin-top: 2px;
+      font-family: var(--bt-font-mono);
+      font-size: 1rem;
+      font-weight: var(--bt-fw-bold);
+    }
+    .global-kpi .s {
+      margin-top: 1px;
+      color: var(--bt-text-secondary);
+      font-size: 0.625rem;
+    }
 
     .hist { min-height: 0; overflow: hidden; }
     .hist-empty {
@@ -465,6 +496,10 @@
       flex: 0 0 280px;
     }
     canvas { width: 100% !important; height: 100% !important; }
+    @media (max-height: 800px) {
+      .chart-box { height: 210px; flex-basis: 210px; }
+      .global-kpi { padding-top: 5px; padding-bottom: 5px; }
+    }
 
     .legend {
       display: flex;
@@ -476,6 +511,11 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--bt-text-secondary);
+    }
+    .legend::before {
+      content: "Series colours:";
+      font-weight: var(--bt-fw-bold);
+      color: var(--bt-text);
     }
     .legend i {
       display: inline-block;
@@ -545,6 +585,9 @@
         <label>Category
           <select id="fCategoria"></select>
         </label>
+        <label>Metric
+          <select id="fMetrica" multiple size="1"></select>
+        </label>
         <label>Sort
           <select id="fSort">
             <option value="nome" selected>Name A–Z</option>
@@ -562,6 +605,17 @@
         </div>
       </div>
     </details>
+
+    <section class="global-kpis" aria-label="Latest federal invitation round snapshot">
+      <div class="global-kpi" title="Most recent federal SkillSelect round with occupation scores"><div class="k">Latest federal round</div><div class="v" id="gLatestRound">—</div></div>
+      <div class="global-kpi" title="Total subclass 189 EOIs invited in the latest federal round"><div class="k">189 invitations</div><div class="v" id="gInvitations">—</div></div>
+      <div class="global-kpi" title="Family-sponsored 491 invitations in the same federal round"><div class="k">491-family invitations</div><div class="v" id="g491Invitations">—</div></div>
+      <div class="global-kpi" title="Number of occupations with a numeric result in the latest federal round"><div class="k">Occupations invited</div><div class="v" id="gOccupationResults">—</div></div>
+      <div class="global-kpi" title="Lowest occupation threshold published in the latest federal round"><div class="k">Lowest invited score</div><div class="v" id="gLowestScore">—</div></div>
+      <div class="global-kpi" title="Official Home Affairs expectation; this is not a guaranteed date"><div class="k">Next 189 round expected</div><div class="v" id="gNextRound">By 30 Sep 2026</div></div>
+      <div class="global-kpi" title="Latest South Australia published invitation totals; not directly comparable to federal SkillSelect"><div class="k">SA latest · 190 / 491</div><div class="v" id="gSAInvitations">—</div><div class="s" id="gSADate">—</div></div>
+      <div class="global-kpi" title="Latest Western Australia published invitation totals; not directly comparable to federal SkillSelect"><div class="k">WA latest · 190 / 491</div><div class="v" id="gWAInvitations">—</div><div class="s" id="gWADate">—</div></div>
+    </section>
 
     <div class="body">
       <aside class="bt-panel panel panel-left">
@@ -583,8 +637,8 @@
                 <th>Code</th>
                 <th class="sortable" data-col="nome">Name <span class="sort-ind" aria-hidden="true"></span></th>
                 <th class="rankh sortable" data-col="rank" title="Invitation frequency">Rank <span class="sort-ind" aria-hidden="true"></span></th>
-                <th class="numh sortable" data-col="last">Last <span class="sort-ind" aria-hidden="true"></span></th>
-                <th class="numh sortable" data-col="avg">Avg <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh sortable" data-col="last" title="Lower score means an easier invitation threshold">Last <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh sortable" data-col="avg" title="Lower score means an easier invitation threshold">Avg <span class="sort-ind" aria-hidden="true"></span></th>
                 <th class="numh sortable" data-col="freq">Freq <span class="sort-ind" aria-hidden="true"></span></th>
               </tr>
             </thead>
@@ -606,7 +660,7 @@
                 <div class="kpi"><div class="k">Min</div><div class="v" id="kMin">—</div></div>
                 <div class="kpi"><div class="k">Max</div><div class="v" id="kMax">—</div></div>
                 <div class="kpi"><div class="k">Last</div><div class="v" id="kLast">—</div></div>
-                <div class="kpi"><div class="k">Rounds</div><div class="v" id="kRounds">—</div></div>
+                <div class="kpi"><div class="k">Records</div><div class="v" id="kRounds">—</div></div>
               </div>
             </div>
 
@@ -659,12 +713,17 @@
       const n = Number(r.valor);
       return Number.isFinite(n) && n > 0 && n <= SCORE_CAP_PLAUSIBLE;
     });
+    const GLOBAL_SCORE_MONTHS = uniq(scoreRows.map((r) => monthKey(r.data_round)).filter(Boolean));
+    const GLOBAL_MONTH_MIN = GLOBAL_SCORE_MONTHS[0] || "2020-08";
+    const GLOBAL_MONTH_MAX = GLOBAL_SCORE_MONTHS.at(-1) || GLOBAL_MONTH_MIN;
 
     let mode = "baixa";
     let selected = null;
     let occupations = [];
     let chartEstados = new Set();
     let colSort = { key: "nome", dir: "asc" };
+    let chartBarsSnapshot = [];
+    let chartAnimationFrame = null;
 
     const $ = (id) => document.getElementById(id);
 
@@ -726,11 +785,13 @@
 
     function activeFilterRows() {
       const vistos = selectedValues($("fVisto"));
+      const metricas = selectedValues($("fMetrica"));
       const categoria = $("fCategoria").value;
       const busca = ($("fBusca").value || "").trim().toLowerCase();
 
       return scoreRows.filter((r) => {
         if (vistos.length && !vistos.includes(r.visto)) return false;
+        if (metricas.length && !metricas.includes(r.metrica)) return false;
         if (categoria && r.categoria !== categoria) return false;
         if (busca && !(r.ocupacao || "").toLowerCase().includes(busca) && !(r.anzsco || "").includes(busca)) return false;
         return true;
@@ -740,10 +801,20 @@
     function buildOccupations(rows) {
       const map = new Map();
       for (const r of rows) {
-        const key = r.ocupacao;
+        const identity = r.identidade_ocupacional || `UNCLASSIFIED:${r.ocupacao}`;
+        const key = `${identity}|${r.metrica}`;
         let o = map.get(key);
         if (!o) {
-          o = { nome: key, anzsco: r.anzsco || "", scores: [], dates: [], juris: new Set(), vistos: new Set(), rows: [] };
+          o = {
+            key,
+            nome: r.ocupacao_canonica || r.ocupacao,
+            nomesPublicados: new Set(),
+            anzsco: r.anzsco || "",
+            nivelOcupacional: r.nivel_ocupacional || "unclassified",
+            codigoStatus: new Set(),
+            metrica: r.metrica,
+            scores: [], dates: [], juris: new Set(), vistos: new Set(), rows: []
+          };
           map.set(key, o);
         }
         const s = num(r.valor);
@@ -752,6 +823,8 @@
         o.juris.add(r.jurisdicao);
         o.vistos.add(r.visto);
         o.rows.push(r);
+        o.nomesPublicados.add(r.ocupacao);
+        o.codigoStatus.add(r.codigo_status || "missing");
         if (!o.anzsco && r.anzsco) o.anzsco = r.anzsco;
       }
 
@@ -761,8 +834,13 @@
         const sortedRows = [...o.rows].sort((a, b) => String(b.data_round).localeCompare(String(a.data_round)));
         const mean = avg(scores);
         return {
+          key: o.key,
           nome: o.nome,
+          nomesPublicados: [...o.nomesPublicados],
           anzsco: o.anzsco || "—",
+          nivelOcupacional: o.nivelOcupacional,
+          codigoStatus: [...o.codigoStatus],
+          metrica: o.metrica,
           min: scores.length ? Math.min(...scores) : null,
           max: scores.length ? Math.max(...scores) : null,
           last: scores.length ? num(sortedRows[0].valor) : null,
@@ -908,10 +986,10 @@
       body.innerHTML = list
         .slice(0, 500)
         .map((o) => {
-          const active = selected && selected.nome === o.nome ? "active" : "";
-          return `<tr class="${active}" data-nome="${escapeAttr(o.nome)}">
+          const active = selected && selected.key === o.key ? "active" : "";
+          return `<tr class="${active}" data-key="${escapeAttr(o.key)}" title="${escapeAttr(labelMetric(o.metrica))}">
             <td class="code">${escapeHtml(o.anzsco)}</td>
-            <td class="name">${escapeHtml(o.nome)}</td>
+            <td class="name">${escapeHtml(o.nome)}<div class="bt-hint">${escapeHtml(labelMetric(o.metrica))}</div></td>
             <td class="rank">${rankBarsHtml(o.rounds)}</td>
             <td class="num ${scoreClass(o.last)}">${o.last ?? "—"}</td>
             <td class="num ${scoreClass(o.avg)}">${o.avg ?? "—"}</td>
@@ -920,9 +998,9 @@
         })
         .join("");
 
-      body.querySelectorAll("tr[data-nome]").forEach((tr) => {
+      body.querySelectorAll("tr[data-key]").forEach((tr) => {
         tr.addEventListener("click", () => {
-          const occ = occupations.find((o) => o.nome === tr.dataset.nome);
+          const occ = occupations.find((o) => o.key === tr.dataset.key);
           if (occ) selectOccupation(occ);
         });
       });
@@ -938,8 +1016,8 @@
         $("histContent").style.display = "none";
         return;
       }
-      if (selected && list.some((o) => o.nome === selected.nome)) {
-        selected = occupations.find((o) => o.nome === selected.nome) || list.find((o) => o.nome === selected.nome);
+      if (selected && list.some((o) => o.key === selected.key)) {
+        selected = occupations.find((o) => o.key === selected.key) || list.find((o) => o.key === selected.key);
         renderRank();
         renderHistory(selected);
         return;
@@ -993,8 +1071,17 @@
       $("histTitle").textContent = occ.nome;
       $("histSub").textContent = [
         occ.anzsco && occ.anzsco !== "—" ? `ANZSCO ${occ.anzsco}` : null,
-        `${occ.rounds} records`,
+        occ.nivelOcupacional.replaceAll("_", " "),
+        labelMetric(occ.metrica),
+        occ.codigoStatus.includes("abs_exact_title") ? "code matched exactly to ABS 2022" :
+          occ.codigoStatus.includes("source") ? "code published by source" : "code not published",
+        `${occ.rounds} ${occ.rounds === 1 ? "record" : "records"}`,
+        (() => {
+          const count = new Set(occ.rows.map((r) => r.data_round).filter(Boolean)).size;
+          return `${count} ${count === 1 ? "date" : "dates"}`;
+        })(),
         occ.vistos.join(" · "),
+        `Timeline: ${GLOBAL_MONTH_MIN} → ${GLOBAL_MONTH_MAX}`,
         "Y-axis: 0 → max (min 105)",
       ]
         .filter(Boolean)
@@ -1049,7 +1136,8 @@
 
       const seriesMap = new Map();
       for (const r of rows) {
-        const key = `${r.jurisdicao} · ${r.visto}`;
+        const extra = r.unidade_extra ? ` · ${r.unidade_extra}` : "";
+        const key = `${r.jurisdicao} · ${r.visto} · ${labelMetric(r.metrica)}${extra}`;
         if (!seriesMap.has(key)) seriesMap.set(key, new Map());
         const s = num(r.valor);
         const mk = monthKey(r.data_round);
@@ -1076,7 +1164,8 @@
       const ymin = 0;
       const ymax = Math.max(Y_FLOOR_MAX, Math.ceil(dataMax / 5) * 5);
 
-      const pad = { t: 18, r: 14, b: 42, l: 40 };
+      // Reserve enough room for the first/last date labels and the chart footer.
+      const pad = { t: 18, r: 26, b: 54, l: 40 };
       const plotW = w - pad.l - pad.r;
       const plotH = h - pad.t - pad.b;
 
@@ -1095,81 +1184,146 @@
         ctx.fillText(String(Math.round(val)), 4, y + 3);
       }
 
-      const labelStep = Math.max(1, Math.ceil(months.length / 10));
-      for (let i = 0; i < months.length; i++) {
-        const x = months.length === 1 ? pad.l + plotW / 2 : pad.l + (plotW * i) / (months.length - 1);
+      const monthTimes = months.map((m) => Date.parse(`${m}-01T00:00:00Z`));
+      const timeMin = Date.parse(`${GLOBAL_MONTH_MIN}-01T00:00:00Z`);
+      const timeMax = Date.parse(`${GLOBAL_MONTH_MAX}-01T00:00:00Z`);
+      function xForMonth(month) {
+        const time = Date.parse(`${month}-01T00:00:00Z`);
+        if (timeMax === timeMin) return pad.l + plotW / 2;
+        return pad.l + plotW * ((time - timeMin) / (timeMax - timeMin));
+      }
+      function xAt(i) {
+        if (timeMax === timeMin) return pad.l + plotW / 2;
+        return pad.l + plotW * ((monthTimes[i] - timeMin) / (timeMax - timeMin));
+      }
+
+      function shortMonthLabel(month) {
+        const date = new Date(`${month}-01T00:00:00Z`);
+        return new Intl.DateTimeFormat("en-AU", {
+          month: "short", year: "2-digit", timeZone: "UTC"
+        }).format(date);
+      }
+      const axisMonths = [];
+      const axisCursor = new Date(`${GLOBAL_MONTH_MIN}-01T00:00:00Z`);
+      const axisEnd = new Date(`${GLOBAL_MONTH_MAX}-01T00:00:00Z`);
+      while (axisCursor <= axisEnd) {
+        axisMonths.push(axisCursor.toISOString().slice(0, 7));
+        axisCursor.setUTCMonth(axisCursor.getUTCMonth() + 1);
+      }
+      const labelEvery = plotW >= 900 ? 6 : 12;
+      for (let i = 0; i < axisMonths.length; i++) {
+        const x = xForMonth(axisMonths[i]);
         ctx.strokeStyle = chartToken("--bt-divider", "rgba(33,33,31,0.1)");
         ctx.beginPath();
         ctx.moveTo(x, pad.t + plotH);
-        ctx.lineTo(x, pad.t + plotH + 4);
+        const isEnd = i === axisMonths.length - 1;
+        const roomBeforeEnd = isEnd || xForMonth(axisMonths.at(-1)) - x >= 64;
+        const isLabel = i === 0 || isEnd || (i % labelEvery === 0 && roomBeforeEnd);
+        ctx.lineTo(x, pad.t + plotH + (isLabel ? 5 : 2));
         ctx.stroke();
-        if (i % labelStep === 0 || i === months.length - 1) {
-          ctx.fillStyle = chartToken("--bt-text-secondary", "rgba(33,33,31,0.62)");
-          ctx.save();
-          ctx.translate(x, h - 8);
-          if (months.length > 8) {
-            ctx.rotate(-0.55);
-            ctx.fillText(months[i], -18, 0);
-          } else {
-            ctx.fillText(months[i], -16, 0);
-          }
-          ctx.restore();
-        }
+        if (!isLabel) continue;
+        ctx.fillStyle = chartToken("--bt-text-secondary", "rgba(33,33,31,0.62)");
+        ctx.save();
+        ctx.translate(x, pad.t + plotH + 18);
+        ctx.textAlign = i === 0 ? "left" : i === axisMonths.length - 1 ? "right" : "center";
+        ctx.fillText(shortMonthLabel(axisMonths[i]), 0, 0);
+        ctx.restore();
       }
 
-      function xAt(i) {
-        if (months.length === 1) return pad.l + plotW / 2;
-        return pad.l + (plotW * i) / (months.length - 1);
-      }
       function yAt(v) {
         return pad.t + ((ymax - v) / (ymax - ymin)) * plotH;
       }
 
-      for (const s of series) {
-        ctx.strokeStyle = s.color;
-        ctx.fillStyle = s.color;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        let started = false;
-        for (let i = 0; i < s.points.length; i++) {
-          const v = s.points[i];
-          if (v == null) {
-            started = false;
-            continue;
-          }
-          const x = xAt(i);
-          const y = yAt(v);
-          if (!started) {
-            ctx.moveTo(x, y);
-            started = true;
-          } else ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-        for (let i = 0; i < s.points.length; i++) {
-          const v = s.points[i];
-          if (v == null) continue;
-          const x = xAt(i);
-          const y = yAt(v);
-          ctx.beginPath();
-          ctx.arc(x, y, 3.4, 0, Math.PI * 2);
-          ctx.fill();
+      // Sparse invitation rounds are discrete events. Grouped bars avoid
+      // implying that scores existed continuously during months with no round.
+      const monthSpacing = axisMonths.length > 1 ? plotW / (axisMonths.length - 1) : 18;
+      const targetBars = [];
+      for (let i = 0; i < months.length; i++) {
+        const available = series
+          .map((s) => ({ series: s, value: s.points[i] }))
+          .filter((item) => item.value != null);
+        if (!available.length) continue;
 
-          // score label on each visible month point
-          const label = String(Math.round(v));
-          ctx.font = "600 11px Manrope, sans-serif";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "bottom";
-          const tw = ctx.measureText(label).width;
-          const lx = x;
-          const ly = y - 7;
-          ctx.fillStyle = chartToken("--bt-paper", "#ffffff");
-          ctx.fillRect(lx - tw / 2 - 2, ly - 11, tw + 4, 12);
-          ctx.fillStyle = s.color;
-          ctx.fillText(label, lx, ly);
-          ctx.textAlign = "left";
-          ctx.textBaseline = "alphabetic";
+        const groupWidth = Math.min(18, Math.max(7, monthSpacing * 0.82));
+        const gap = available.length > 1 ? 1 : 0;
+        const barWidth = Math.max(2, (groupWidth - gap * (available.length - 1)) / available.length);
+        const totalWidth = barWidth * available.length + gap * (available.length - 1);
+        const centerX = xAt(i);
+
+        available.forEach((item, barIndex) => {
+          const x = centerX - totalWidth / 2 + barIndex * (barWidth + gap);
+          targetBars.push({
+            key: `${item.series.name}|${months[i]}`,
+            x, width: barWidth, value: item.value,
+            color: item.series.color, labelLane: barIndex % 2,
+          });
+        });
+      }
+
+      if (chartAnimationFrame) cancelAnimationFrame(chartAnimationFrame);
+      const previousByKey = new Map(chartBarsSnapshot.map((bar) => [bar.key, bar]));
+      const targetByKey = new Map(targetBars.map((bar) => [bar.key, bar]));
+      const transitions = [];
+      for (const [key, oldBar] of previousByKey) {
+        const next = targetByKey.get(key);
+        transitions.push({
+          key,
+          from: oldBar.value,
+          to: next ? next.value : 0,
+          x: next ? next.x : oldBar.x,
+          width: next ? next.width : oldBar.width,
+          color: next ? next.color : oldBar.color,
+          labelLane: next ? next.labelLane : oldBar.labelLane,
+        });
+      }
+      for (const [key, next] of targetByKey) {
+        if (previousByKey.has(key)) continue;
+        transitions.push({ ...next, from: 0, to: next.value });
+      }
+
+      function redrawPlotGrid() {
+        ctx.clearRect(pad.l, pad.t - 14, plotW + 1, plotH + 15);
+        ctx.strokeStyle = chartToken("--bt-divider", "rgba(33,33,31,0.1)");
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= ticks; i++) {
+          const y = pad.t + (plotH * i) / ticks;
+          ctx.beginPath();
+          ctx.moveTo(pad.l, y);
+          ctx.lineTo(pad.l + plotW, y);
+          ctx.stroke();
         }
       }
+
+      const animationStart = performance.now();
+      const animationDuration = 520;
+      function animateBars(now) {
+        const progress = Math.min(1, (now - animationStart) / animationDuration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        redrawPlotGrid();
+        for (const bar of transitions) {
+          const value = bar.from + (bar.to - bar.from) * eased;
+          if (value <= 0.01) continue;
+          const y = yAt(value);
+          const baseY = yAt(0);
+          ctx.fillStyle = bar.color;
+          ctx.fillRect(bar.x, y, bar.width, Math.max(1, baseY - y));
+          if (progress > 0.82 && bar.to > 0) {
+            ctx.font = `600 ${bar.width < 5 ? 9 : 11}px ` + chartToken("--bt-font", "Inter, system-ui, sans-serif");
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
+            ctx.fillText(String(Math.round(bar.to)), bar.x + bar.width / 2, yAt(bar.to) - 4 - bar.labelLane * 10);
+          }
+        }
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        if (progress < 1) {
+          chartAnimationFrame = requestAnimationFrame(animateBars);
+        } else {
+          chartAnimationFrame = null;
+          chartBarsSnapshot = targetBars;
+        }
+      }
+      chartAnimationFrame = requestAnimationFrame(animateBars);
 
       ctx.fillStyle = chartToken("--bt-text-secondary", "rgba(33,33,31,0.62)");
       ctx.font = "600 11px " + (chartToken("--bt-font", "Inter, system-ui, sans-serif"));
@@ -1181,15 +1335,69 @@
       occupations = buildOccupations(rows);
 
       const vistos = selectedValues($("fVisto"));
+      const metricas = selectedValues($("fMetrica"));
       $("filterSummary").textContent = [
         vistos.length ? vistos.join(",") : "all visas",
+        metricas.length === 1 ? labelMetric(metricas[0]) : `${metricas.length || "all"} metrics`,
         labelCategory($("fCategoria").value || "visto_de_convite"),
       ].join(" · ");
 
-      $("topMeta").textContent = `${occupations.length} occupations · ${rows.length} official score rows`;
+      $("topMeta").textContent = `${occupations.length} occupation series · ${rows.length} official score rows`;
+      const federalMinimums = scoreRows.filter((r) =>
+        r.jurisdicao === "FEDERAL" && r.visto === "189" && r.metrica === "pontos_minimos"
+      );
+      const latestFederalDate = federalMinimums
+        .map((r) => r.data_round)
+        .filter(Boolean)
+        .sort()
+        .at(-1) || "";
+      const latestFederalRows = federalMinimums.filter((r) => r.data_round === latestFederalDate);
+      const latestScores = latestFederalRows.map((r) => num(r.valor)).filter((n) => n != null);
+      const latestInvitationTotal = raw.find((r) =>
+        r.jurisdicao === "FEDERAL" && r.visto === "189" &&
+        r.data_round === latestFederalDate && r.metrica === "eois_convidados"
+      );
+      const latest491Total = raw.find((r) =>
+        r.jurisdicao === "FEDERAL" && r.visto === "491-family" &&
+        r.data_round === latestFederalDate && r.metrica === "eois_convidados"
+      );
+      const formatRoundDate = (value) => value && /^\d{4}-\d{2}-\d{2}$/.test(value)
+        ? new Intl.DateTimeFormat("en-AU", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
+            .format(new Date(`${value}T00:00:00Z`))
+        : value || "—";
+      const latestStateTotals = (jurisdiction) => {
+        const published = raw.filter((r) =>
+          r.jurisdicao === jurisdiction && r.metrica === "convites_emitidos" && num(r.valor) != null
+        );
+        const date = published.map((r) => r.data_round).filter(Boolean).sort().at(-1) || "";
+        const atDate = published.filter((r) => r.data_round === date);
+        const totalFor = (visa) => atDate
+          .filter((r) => r.visto === visa)
+          .reduce((sum, r) => sum + num(r.valor), 0);
+        return { date, visa190: totalFor("190"), visa491: totalFor("491") };
+      };
+      const saLatest = latestStateTotals("SA");
+      const waLatest = latestStateTotals("WA");
+      $("gLatestRound").textContent = latestFederalDate
+        ? formatRoundDate(latestFederalDate)
+        : "—";
+      $("gInvitations").textContent = latestInvitationTotal
+        ? Number(latestInvitationTotal.valor).toLocaleString("en-AU")
+        : "—";
+      $("gLowestScore").textContent = latestScores.length ? Math.min(...latestScores) : "—";
+      $("g491Invitations").textContent = latest491Total
+        ? Number(latest491Total.valor).toLocaleString("en-AU")
+        : "Not held";
+      $("gOccupationResults").textContent = new Set(
+        latestFederalRows.map((r) => r.identidade_ocupacional)
+      ).size.toLocaleString("en-AU");
+      $("gSAInvitations").textContent = `${saLatest.visa190.toLocaleString("en-AU")} / ${saLatest.visa491.toLocaleString("en-AU")}`;
+      $("gSADate").textContent = formatRoundDate(saLatest.date);
+      $("gWAInvitations").textContent = `${waLatest.visa190.toLocaleString("en-AU")} / ${waLatest.visa491.toLocaleString("en-AU")}`;
+      $("gWADate").textContent = formatRoundDate(waLatest.date);
 
       if (selected) {
-        const again = occupations.find((o) => o.nome === selected.nome);
+        const again = occupations.find((o) => o.key === selected.key);
         if (again) {
           selected = again;
           chartEstados = new Set([...chartEstados].filter((j) => again.juris.includes(j)));
@@ -1233,10 +1441,11 @@
     }
 
     fillSelect($("fVisto"), uniq(scoreRows.map((r) => r.visto)), true);
+    fillSelect($("fMetrica"), uniq(scoreRows.map((r) => r.metrica)), true, labelMetric);
     fillSelect($("fCategoria"), uniq(raw.map((r) => r.categoria)), false, labelCategory);
     $("fCategoria").value = "visto_de_convite";
 
-    ["fVisto"].forEach((id) => {
+    ["fVisto", "fMetrica"].forEach((id) => {
       const sel = $(id);
       sel.size = 1;
       sel.addEventListener("mousedown", (e) => {
@@ -1252,6 +1461,7 @@
     $("btnGo").addEventListener("click", refresh);
     $("btnClear").addEventListener("click", () => {
       [...$("fVisto").options].forEach((o) => (o.selected = false));
+      [...$("fMetrica").options].forEach((o) => (o.selected = true));
       $("fCategoria").value = "visto_de_convite";
       $("fBusca").value = "";
       $("fLista").value = "";

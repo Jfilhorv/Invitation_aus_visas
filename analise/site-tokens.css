@@ -1,15 +1,15 @@
 /* ============================================================================
-   Bustle design tokens
+   Site design tokens
    ----------------------------------------------------------------------------
    Extracted from src/theme.tsx and the shipping view styles. Link this into any
    HTML/CSS mockup and the geometry, colour and type fall out correctly by
    default.
 
-     <link rel="stylesheet" href="bustle-tokens.css">
+     <link rel="stylesheet" href="site-tokens.css">
      <body class="bt-body">            <!-- light, follows OS preference -->
      <body class="bt-body" data-theme="dark">   <!-- force dark -->
 
-   Rules are documented in bustle-ui-rules.md. When the two disagree, the code
+   Rules are documented in site-ui-rules.md. When the two disagree, the code
    in src/theme.tsx wins.
    ========================================================================== */
 

@@ -17,6 +17,8 @@ Filters: state, visa, category, occupation, metric. Stacked table: date · state
 
 Category: `visto_de_convite`. Each row has `fonte_url`, `sha256_fonte`, and `validado`.
 
+Occupation identity is normalized conservatively against the official ABS ANZSCO 2022 structure and index. The dashboard keeps occupation levels, metrics and onshore/offshore series separate. See `dados/agregado/metodologia.md`.
+
 ## Validation
 
 `dados/fontes/manifesto-validacao.csv`
