@@ -767,7 +767,7 @@
     <section class="global-kpis" aria-label="Latest federal invitation round snapshot">
       <div class="global-kpi round-linked" title="Most recent matching round with occupation scores"><div class="k" id="gRoundLabel">Latest federal round</div><div class="v" id="gLatestRound">—</div></div>
       <div class="global-kpi round-linked" title="Number of occupations with a numeric score published in the latest federal round"><div class="k">Occupations in latest round</div><div class="v" id="gOccupationResults">—</div><div class="s" id="gOccupationDelta">published score results</div></div>
-      <div class="global-kpi round-linked" title="Published invitation total for the latest matching round"><div class="k">Invitations in latest round</div><div class="v" id="gInvitations">—</div><div class="s" id="gInvitationScope">subclass 189</div></div>
+      <div class="global-kpi round-linked" title="Published invitation total for the latest matching round"><div class="k">Invitations in latest round</div><div class="v" id="gInvitations">—</div><div class="s" id="gInvitationScope">subclass 189</div><div class="s" id="gInvitationDelta"></div></div>
       <div class="global-kpi" title="Official Home Affairs expectation; this is not a guaranteed date"><div class="k">Next 189 round expected</div><div class="v" id="gNextRound">By 30 Sep 2026</div></div>
     </section>
 
@@ -887,6 +887,9 @@
     let currentHistoryRows = [];
     const PROGRAM_METRICS = new Set(["nomeacoes_recebidas", "alocacao_nomeacoes"]);
     const programRows = raw.filter((r) => PROGRAM_METRICS.has(r.metrica) && Number.isFinite(Number(r.valor)));
+    const publishedInvitationScopes = new Set(raw.filter((r) =>
+      ["eois_convidados", "convites_emitidos"].includes(r.metrica) && r.jurisdicao && r.visto
+    ).map((r) => `${r.jurisdicao}|${r.visto}`));
     const filterStates = uniq([...scoreRows, ...programRows].map((r) => r.jurisdicao));
     let selectedStates = new Set(filterStates);
     const totalListedOccupations = new Set(scoreRows.map((r) => r.identidade_ocupacional).filter(Boolean)).size;
@@ -935,6 +938,20 @@
       return [...sel.selectedOptions].map((o) => o.value).filter(Boolean);
     }
 
+    function scoreMatchesVisaContext(row, visas) {
+      if (!visas.length || visas.includes(row.visto)) return true;
+      // Some state sources publish the invitation total by subclass, but their
+      // occupation score table does not assign a subclass to each row.
+      return row.visto === "n/a" && visas.some((visa) => publishedInvitationScopes.has(`${row.jurisdicao}|${visa}`));
+    }
+
+    function displayedVisa(row) {
+      if (row.jurisdicao === "WA" && row.visto === "n/a") {
+        return '<span title="Official WA occupation-level source does not separate subclass 190 from 491">190 / 491*</span>';
+      }
+      return escapeHtml(row.visto || "—");
+    }
+
     function num(v) {
       const n = Number(v);
       return Number.isFinite(n) ? n : null;
@@ -967,7 +984,7 @@
       return scoreRows.filter((r) => {
         if (!selectedStates.has(r.jurisdicao)) return false;
         if (chartDateFilter && monthKey(r.data_round) !== chartDateFilter) return false;
-        if (vistos.length && !vistos.includes(r.visto)) return false;
+        if (!scoreMatchesVisaContext(r, vistos)) return false;
         if (years.length && !years.includes(calendarYear(r.data_round))) return false;
         if (metricas.length && !metricas.includes(r.metrica)) return false;
         if (categoria && r.categoria !== categoria) return false;
@@ -1297,7 +1314,7 @@
       const contextualRows = chartDateFilter ? scoreRows.filter((r) =>
         r.identidade_ocupacional === occ.identity && r.metrica === occ.metrica &&
         selectedStates.has(r.jurisdicao) && chartEstados.has(r.jurisdicao) &&
-        (!selectedValues($("fVisto")).length || selectedValues($("fVisto")).includes(r.visto))
+        scoreMatchesVisaContext(r, selectedValues($("fVisto")))
       ) : filteredRows;
       const chartRowsAsc = [...contextualRows].sort((a, b) => String(a.data_round).localeCompare(String(b.data_round)));
       const tableRowsAsc = chartDateFilter ? chartRowsAsc : rowsAsc;
@@ -1346,7 +1363,7 @@
       $("lowerViewTabs").querySelectorAll("[data-lower-view]").forEach((button) => button.classList.toggle("active", button.dataset.lowerView === lowerView));
       if (lowerView === "history") {
         const html = currentHistoryRows.map((r) => `<tr class="${chartDateFilter && monthKey(r.data_round) !== chartDateFilter ? "date-dim" : chartDateFilter ? "date-active" : ""}" data-round-month="${escapeAttr(monthKey(r.data_round))}" title="Filter by this date">
-          <td>${escapeHtml(r.data_round || "—")}</td><td><span class="badge">${escapeHtml(r.jurisdicao || "—")}</span></td><td>${escapeHtml(r.visto || "—")}</td>
+          <td>${escapeHtml(r.data_round || "—")}</td><td><span class="badge">${escapeHtml(r.jurisdicao || "—")}</span></td><td>${displayedVisa(r)}</td>
           <td class="score">${escapeHtml(String(r.valor ?? "—"))}</td><td>${escapeHtml(labelMetric(r.metrica) || "—")}</td>
           <td>${r.fonte_url ? `<a class="fonte" href="${r.fonte_url}" target="_blank" rel="noopener">official</a>` : "—"}</td></tr>`).join("");
         setDetailTable([{label:"Date"},{label:"State"},{label:"Visa"},{label:"Score",numeric:true},{label:"Metric"},{label:"Source"}], html, occ ? `${currentHistoryRows.length} published score records` : "");
@@ -1531,14 +1548,33 @@
       const timeMin = Date.parse(`${displayMonthMin}-01T00:00:00Z`);
       const timeMax = Date.parse(`${displayMonthMax}-01T00:00:00Z`);
       const edgeInset = 11;
+      const axisMonths = [];
+      const axisCursor = new Date(`${displayMonthMin}-01T00:00:00Z`);
+      const axisEnd = new Date(`${displayMonthMax}-01T00:00:00Z`);
+      while (axisCursor <= axisEnd) {
+        axisMonths.push(axisCursor.toISOString().slice(0, 7));
+        axisCursor.setUTCMonth(axisCursor.getUTCMonth() + 1);
+      }
+      const dataMonths = new Set(months);
+      const yearsWithData = new Set(months.map((month) => month.slice(0, 4)));
+      const monthWeights = axisMonths.map((month) => {
+        if (dataMonths.has(month)) return 1.42;
+        return yearsWithData.has(month.slice(0, 4)) ? 0.48 : 0.16;
+      });
+      const monthPositions = new Map();
+      let accumulatedWeight = 0;
+      axisMonths.forEach((month, index) => {
+        monthPositions.set(month, accumulatedWeight + monthWeights[index] / 2);
+        accumulatedWeight += monthWeights[index];
+      });
       function xForMonth(month) {
-        const time = Date.parse(`${month}-01T00:00:00Z`);
-        if (timeMax === timeMin) return pad.l + plotW / 2;
-        return pad.l + edgeInset + (plotW - edgeInset * 2) * ((time - timeMin) / (timeMax - timeMin));
+        if (timeMax === timeMin || accumulatedWeight === 0) return pad.l + plotW / 2;
+        const position = monthPositions.get(month);
+        if (position == null) return pad.l + plotW / 2;
+        return pad.l + edgeInset + (plotW - edgeInset * 2) * (position / accumulatedWeight);
       }
       function xAt(i) {
-        if (timeMax === timeMin) return pad.l + plotW / 2;
-        return pad.l + edgeInset + (plotW - edgeInset * 2) * ((monthTimes[i] - timeMin) / (timeMax - timeMin));
+        return xForMonth(months[i]);
       }
       let tooltip = box.querySelector(".chart-tooltip");
       if (!tooltip) {
@@ -1555,10 +1591,9 @@
         for (let i = 1; i < months.length; i++) {
           if (Math.abs(xAt(i) - mouseX) < Math.abs(xAt(nearest) - mouseX)) nearest = i;
         }
-        const startDate = new Date(`${displayMonthMin}-01T00:00:00Z`);
-        const endDate = new Date(`${displayMonthMax}-01T00:00:00Z`);
-        const timelineMonths = Math.max(1, (endDate.getUTCFullYear() - startDate.getUTCFullYear()) * 12 + endDate.getUTCMonth() - startDate.getUTCMonth());
-        const hoverRadius = Math.max(8, Math.min(18, (plotW / timelineMonths) * 0.52));
+        const previousX = nearest > 0 ? xAt(nearest - 1) : xAt(nearest) - 24;
+        const nextX = nearest < months.length - 1 ? xAt(nearest + 1) : xAt(nearest) + 24;
+        const hoverRadius = Math.max(8, Math.min(22, Math.min(xAt(nearest) - previousX, nextX - xAt(nearest)) * 0.46));
         if (Math.abs(xAt(nearest) - mouseX) > hoverRadius) {
           tooltip.style.display = "none";
           return;
@@ -1616,13 +1651,6 @@
           day:"numeric", month:"short", year:"2-digit", timeZone:"UTC"
         }).format(new Date(`${value}T00:00:00Z`));
       }
-      const axisMonths = [];
-      const axisCursor = new Date(`${displayMonthMin}-01T00:00:00Z`);
-      const axisEnd = new Date(`${displayMonthMax}-01T00:00:00Z`);
-      while (axisCursor <= axisEnd) {
-        axisMonths.push(axisCursor.toISOString().slice(0, 7));
-        axisCursor.setUTCMonth(axisCursor.getUTCMonth() + 1);
-      }
       const labelEvery = plotW >= 900 ? 3 : 6;
       const dataMonthIndexes = new Set(axisMonths.map((month, index) => months.includes(month) ? index : -1).filter((index) => index >= 0));
       for (let i = 0; i < axisMonths.length; i++) {
@@ -1649,6 +1677,35 @@
         ctx.fillText(exactDate ? fullRoundLabel(exactDate) : shortMonthLabel(axisMonths[i]), 0, 0);
         ctx.restore();
       }
+
+      const yearGroups = new Map();
+      axisMonths.forEach((month) => {
+        const year = month.slice(0, 4);
+        if (!yearGroups.has(year)) yearGroups.set(year, []);
+        yearGroups.get(year).push(month);
+      });
+      const yearY = pad.t + plotH + 61;
+      ctx.strokeStyle = chartToken("--bt-divider", "rgba(33,33,31,0.16)");
+      ctx.fillStyle = chartToken("--bt-text", "rgba(20,20,19,0.82)");
+      ctx.font = `500 8px ` + chartToken("--bt-font", "Inter, system-ui, sans-serif");
+      ctx.textAlign = "center";
+      for (const [year, yearMonths] of yearGroups) {
+        const startX = xForMonth(yearMonths[0]);
+        const endX = xForMonth(yearMonths.at(-1));
+        ctx.beginPath();
+        ctx.moveTo(startX, yearY - 4); ctx.lineTo(startX, yearY);
+        ctx.lineTo(endX, yearY); ctx.lineTo(endX, yearY - 4);
+        ctx.stroke();
+        if (!yearsWithData.has(year)) {
+          const breakX = (startX + endX) / 2;
+          ctx.beginPath();
+          ctx.moveTo(breakX - 5, yearY + 2); ctx.lineTo(breakX - 1, yearY - 3);
+          ctx.moveTo(breakX + 1, yearY + 2); ctx.lineTo(breakX + 5, yearY - 3);
+          ctx.stroke();
+        }
+        ctx.fillText(year, (startX + endX) / 2, yearY + 10);
+      }
+      ctx.textAlign = "start";
 
       function yAt(v) {
         return pad.t + ((ymax - v) / (ymax - ymin)) * plotH;
@@ -1699,8 +1756,8 @@
       const monthSpacing = axisMonths.length > 1 ? plotW / (axisMonths.length - 1) : 18;
       // One responsive width for the entire chart. A month with one series must
       // not look more important merely because its bar used to expand.
-      const barWidth = Math.max(3, Math.min(5, monthSpacing * 0.28));
-      const gap = 1;
+      const barWidth = Math.max(4, Math.min(8, monthSpacing * 0.36));
+      const gap = 3;
       const targetBars = [];
       for (let i = 0; i < months.length; i++) {
         const available = series
@@ -1776,10 +1833,10 @@
             ctx.fillStyle = chartToken("--bt-text", "#141413");
             ctx.font = `400 ${bar.width < 5 || label.length > 5 ? 8 : 9}px ` + chartToken("--bt-font", "Inter, system-ui, sans-serif");
             ctx.save();
-            ctx.translate(bar.x + bar.width / 2 + 1, yAt(bar.to) - 5 - bar.labelLane * 8);
+            ctx.translate(bar.x + bar.width / 2, yAt(bar.to) - 5 - bar.labelLane * 8);
             ctx.rotate(-Math.PI / 2);
             ctx.textAlign = "left";
-            ctx.textBaseline = "bottom";
+            ctx.textBaseline = "middle";
             ctx.fillText(label, 0, 0);
             ctx.restore();
           }
@@ -1814,7 +1871,7 @@
       [...$("fVisto").options].forEach((option) => {
         option.disabled = Boolean(option.value) && !availableVisas.has(option.value) && !option.selected;
       });
-      const visaContextRows = dateStateRows.filter((r) => !vistos.length || vistos.includes(r.visto));
+      const visaContextRows = dateStateRows.filter((r) => scoreMatchesVisaContext(r, vistos));
       const availableYears = new Set(visaContextRows.map((r) => calendarYear(r.data_round)).filter(Boolean));
       [...$("fYear").options].forEach((option) => {
         option.disabled = Boolean(option.value) && !availableYears.has(option.value) && !option.selected;
@@ -1851,14 +1908,20 @@
         r.jurisdicao === "FEDERAL" && r.visto === "189" && r.metrica === "pontos_minimos"
       );
       const filtersActive = selectedStates.size !== filterStates.length || vistos.length || years.length || metricas.length || chartDateFilter || ($("fBusca").value || "").trim();
-      const federalMinimums = filtersActive ? rows : defaultFederalRows;
+      const matchingInvitationRows = raw.filter((r) =>
+        selectedStates.has(r.jurisdicao) && ["eois_convidados", "convites_emitidos"].includes(r.metrica) &&
+        /^\d{4}-\d{2}(?:-\d{2})?$/.test(r.data_round || "") &&
+        (!vistos.length || vistos.includes(r.visto)) &&
+        (!years.length || years.includes(calendarYear(r.data_round)))
+      );
+      const federalMinimums = filtersActive ? (rows.length ? rows : matchingInvitationRows) : defaultFederalRows;
       const latestFederalDate = federalMinimums
         .map((r) => r.data_round)
         .filter(Boolean)
         .sort()
         .at(-1) || "";
       const federalRoundDates = [...new Set(federalMinimums.map((r) => r.data_round)
-        .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)))].sort();
+        .filter((d) => /^\d{4}-\d{2}(?:-\d{2})?$/.test(d)))].sort();
       const latestFederalRows = federalMinimums.filter((r) => r.data_round === latestFederalDate);
       const latestJurisdictions = new Set(latestFederalRows.map((r) => r.jurisdicao));
       const aggregateRows = !($("fBusca").value || "").trim() ? raw.filter((r) =>
@@ -1866,7 +1929,15 @@
         ["eois_convidados", "convites_emitidos"].includes(r.metrica) && num(r.valor) != null &&
         (!vistos.length || vistos.includes(r.visto))
       ) : [];
-      const latestInvitationValue = aggregateRows.length ? aggregateRows.reduce((sum, r) => sum + num(r.valor), 0) : null;
+      const sumPublishedInvitations = (sourceRows) => {
+        if (!sourceRows.length) return null;
+        const totalRows = sourceRows.filter((r) => r.ocupacao === "agregado");
+        const hasDetailRows = sourceRows.some((r) => r.ocupacao !== "agregado");
+        const rowsToSum = hasDetailRows && totalRows.length ? totalRows : sourceRows;
+        return rowsToSum.reduce((sum, r) => sum + num(r.valor), 0);
+      };
+      const latestInvitationValue = sumPublishedInvitations(aggregateRows);
+      const latestInvitationVisas = new Set(aggregateRows.filter((r) => num(r.valor) > 0).map((r) => r.visto).filter(Boolean));
       const formatRoundDate = (value) => value && /^\d{4}-\d{2}-\d{2}$/.test(value)
         ? new Intl.DateTimeFormat("en-AU", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
             .format(new Date(`${value}T00:00:00Z`))
@@ -1876,7 +1947,9 @@
         : "—";
       $("gInvitations").textContent = latestInvitationValue != null
         ? latestInvitationValue.toLocaleString("en-AU") : "Not published";
-      $("gInvitationScope").textContent = filtersActive ? "matching published total" : "subclass 189";
+      $("gInvitationScope").textContent = latestInvitationVisas.size
+        ? `subclass ${[...latestInvitationVisas].join(" / ")}`
+        : filtersActive ? "matching published total" : "subclass 189";
       const federalNextRoundApplies = !filtersActive || (
         latestJurisdictions.size === 1 && latestJurisdictions.has("FEDERAL") &&
         (!vistos.length || vistos.includes("189"))
@@ -1887,6 +1960,26 @@
       const contextOccupationCount = new Set(federalMinimums
         .map((r) => r.ocupacao_canonica || r.ocupacao).filter(Boolean)).size;
       const previousFederalDate = federalRoundDates.at(-2);
+      const previousInvitationDate = [...new Set(raw.filter((r) =>
+        latestJurisdictions.has(r.jurisdicao) && r.data_round < latestFederalDate &&
+        /^\d{4}-\d{2}(?:-\d{2})?$/.test(r.data_round || "") &&
+        ["eois_convidados", "convites_emitidos"].includes(r.metrica) && num(r.valor) != null &&
+        (!latestInvitationVisas.size || latestInvitationVisas.has(r.visto)) &&
+        (!vistos.length || vistos.includes(r.visto))
+      ).map((r) => r.data_round))].sort().at(-1);
+      const previousAggregateRows = previousInvitationDate && !($('fBusca').value || '').trim() ? raw.filter((r) =>
+        latestJurisdictions.has(r.jurisdicao) && r.data_round === previousInvitationDate &&
+        ["eois_convidados", "convites_emitidos"].includes(r.metrica) && num(r.valor) != null &&
+        (!latestInvitationVisas.size || latestInvitationVisas.has(r.visto)) &&
+        (!vistos.length || vistos.includes(r.visto))
+      ) : [];
+      const previousInvitationValue = sumPublishedInvitations(previousAggregateRows);
+      const invitationDelta = latestInvitationValue != null && previousInvitationValue != null
+        ? latestInvitationValue - previousInvitationValue : null;
+      $("gInvitationDelta").textContent = invitationDelta == null
+        ? ""
+        : `${invitationDelta >= 0 ? "+" : ""}${invitationDelta.toLocaleString("en-AU")} vs previous round (${previousInvitationValue.toLocaleString("en-AU")})`;
+      $("gInvitationDelta").className = `s ${invitationDelta > 0 ? "delta-positive" : invitationDelta < 0 ? "delta-negative" : ""}`;
       const previousOccupationCount = new Set(federalMinimums.filter((r) =>
         r.data_round === previousFederalDate && num(r.valor) != null
       ).map((r) => r.ocupacao_canonica || r.ocupacao).filter(Boolean)).size;
