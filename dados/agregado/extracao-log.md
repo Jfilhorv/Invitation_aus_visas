@@ -1,6 +1,6 @@
 # Log de extracao - vistos de convite
 
-Gerado em 2026-08-12 21:30:54.
+Gerado em 2026-08-13 17:21:40.
 
 Somente fontes oficiais `.gov.au` ja baixadas em `dados/` foram usadas.
 Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
@@ -10,15 +10,15 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 | Jurisdicao | Linhas |
 |---|---|
 | FEDERAL | 3509 |
-| ACT | 2706 |
-| WA | 143 |
-| SA | 272 |
-| NSW | 1 |
-| VIC | 1 |
-| QLD | 1 |
-| TAS | 3 |
-| NT | 1 |
-| **Total** | **6637** |
+| ACT | 2712 |
+| WA | 492 |
+| SA | 276 |
+| NSW | 5 |
+| VIC | 5 |
+| QLD | 5 |
+| TAS | 5 |
+| NT | 5 |
+| **Total** | **7014** |
 
 ## Notas de parse
 
@@ -43,14 +43,23 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 - FEDERAL previous '21 October 2020': 12 linhas (data_round=2020-10-21)
 - FEDERAL previous '11 September 2020': 12 linhas (data_round=2020-09-11)
 - FEDERAL previous '11 August 2020': 12 linhas (data_round=2020-08-11)
+- FEDERAL state totals: 32 linhas
 - ACT round 2026-06-11: 420 linhas matrix_score
 - ACT round 2026-05-06: 420 linhas matrix_score
 - ACT round 2026-03-12: 420 linhas matrix_score
 - ACT round 2026-01-29: 420 linhas matrix_score
 - ACT round 2025-12-10: 418 linhas matrix_score
 - ACT round 2025-09-15: 608 linhas matrix_score
-- WA PDF last-invited: 18 linhas
-- WA PDF: stream atribuido pelo cabecalho de secao do PDF (WASMOL1/2/graduate). O HTML do round 20 May 2026 publica WASMOL1=0 e convites em WASMOL2/graduate; pontos/ANZSCO/datas seguem o PDF oficial.
+- ACT round 2026-06-11: 77 convites subclass 190
+- ACT round 2026-06-11: 5 convites subclass 491
+- WA PDF SNMP Invite Round - Last Invited By Occupation May 2025.pdf: 45 linhas ultimo_eoi_pontos
+- WA PDF SNMP - Priority Invite Round - October 2025.pdf: 19 linhas ultimo_eoi_pontos
+- WA PDF SNMP Invite Round - December 2025.pdf: 139 linhas ultimo_eoi_pontos
+- WA PDF SNMP Invite Round - January 2026.pdf: 27 linhas ultimo_eoi_pontos
+- WA PDF v.1OTHER priority occupations - SNMP Invite round - March 2026.pdf: 115 linhas ultimo_eoi_pontos
+- WA PDF Last invited expression of interest - Priority trade occupations - May 2026.pdf: 18 linhas ultimo_eoi_pontos
+- WA PDFs last-invited: 363 linhas
+- WA PDFs: stream, residencia e data de submissao preservados; totais mensais permanecem em metrica separada.
 - WA HTML: 125 linhas
 - SA invitations-issued-late-may-2026.html: 36 linhas
 - SA invitations-issued-may-2026.html: 36 linhas
@@ -63,9 +72,9 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 - VIC: 1 linha publicacao=NOT_PUBLISHED
 - QLD: 1 linha publicacao=NOT_PUBLISHED
 - NT: 1 linha publicacao=NOT_PUBLISHED
-- TAS: 2 totais + 1 NOT_PUBLISHED
-- Normalizacao ANZSCO 2022 (ABS): abs_exact_title=3215, missing=379, source=3043
-- CSV escrito: C:\Users\efilh\Invitation_aus_visa\dados\agregado\vistos-de-convites.csv (6637 linhas)
+- TAS: 1 NOT_PUBLISHED; totais 2025-26 nao duplicados como convites
+- Normalizacao ANZSCO 2022 (ABS): abs_exact_title=3215, missing=411, source=3388
+- CSV escrito: C:\Users\efilh\Invitation_aus_visa\dados\agregado\vistos-de-convites.csv (7014 linhas)
 - JSON escrito: C:\Users\efilh\Invitation_aus_visa\dados\agregado\vistos-de-convites.json
 - Dashboard escrito: C:\Users\efilh\Invitation_aus_visa\analise\data.js
 
@@ -77,8 +86,8 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 
 - Federal: JSON oculto `#ctl00_PlaceHolderMain_PageSchemaHiddenField_Input` em invitation-rounds e previous-rounds.
 - ACT: PDF 2025-26 Invitation round rankings (scores de matrix por unit group ANZSCO).
-- WA: PDF last-invited May 2026 + tabelas HTML SNMP (totais do round corrente e mensais 2025-26 / 2024-25 / 2023-24).
+- WA: PDFs oficiais de last-invited por ocupacao entre maio de 2025 e maio de 2026; subclass 190/491 permanece `n/a` quando o PDF nao a identifica. Totais SNMP continuam em metricas separadas.
 - SA: HTML invitations-issued por mes (contagens por sub-major group 190/491). Colunas year-to-date nao foram repetidas.
 - NSW/VIC/QLD/NT: `metrica=publicacao`, `valor=NOT_PUBLISHED` (pagina oficial existe, sem resultados por ocupacao).
-- TAS: NOT_PUBLISHED por ocupacao + totais oficiais 190/491 do programa 2025-26.
+- TAS: NOT_PUBLISHED por ocupacao; nominações entregues nao sao classificadas como convites.
 - Celulas vazias / '-' foram omitidas; `N/A` e `Not invited` gravados como `N/A`.

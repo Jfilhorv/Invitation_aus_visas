@@ -21,6 +21,9 @@ As métricas são mantidas separadas no dashboard:
 - `pontos_minimos`: menor pontuação convidada em rodada SkillSelect;
 - `matrix_score`: pontuação Canberra Matrix;
 - `ultimo_eoi_pontos`: pontuação do último EOI convidado;
+- `convites_emitidos`: convites efetivamente publicados para uma rodada ou período; totais por categoria só são somados quando as categorias são mutuamente exclusivas;
+- `nomeacoes_recebidas`: nomeações efetivamente recebidas pelo Department of Home Affairs, por estado, visto e período de corte publicado;
+- `alocacao_nomeacoes`: limite anual de nomeações disponibilizado a cada estado, por visto e ano-programa; não representa convites, pessoas ou vistos concedidos;
 - contagens e totais agregados não entram nos gráficos de pontuação.
 
 Médias, mínimos, máximos e frequências não combinam métricas diferentes.
@@ -37,10 +40,16 @@ ANZSCO 2022 é usada como referência de normalização porque continua aparecen
 
 Cada linha mantém URL oficial, arquivo arquivado e SHA-256. O manifesto inclui as planilhas oficiais do ABS usadas na normalização. `validado=true` significa que o registro foi extraído de um arquivo oficial arquivado e reconciliado com o manifesto; não significa elegibilidade migratória atual.
 
+Somente fontes hospedadas em domínios oficiais do governo australiano (`.gov.au`) podem alimentar o conjunto. Blogs, agentes, agregadores, redes sociais, cópias em arquivos externos e estimativas são rejeitados, mesmo quando parecem reproduzir uma tabela oficial.
+
+Os totais federais consolidados de 2025–26 são empilhados em duas métricas independentes. A tabela de nomeações recebidas usa o corte oficial de 30 de junho de 2026; a tabela de alocações usa o ano-programa `2025-26`. Valores iguais entre elas não são somados e não permitem inferir quantidade de convites ou concessões de visto.
+
+Na rodada ACT de 11 de junho de 2026, os totais de convites são a soma das categorias oficiais mutuamente exclusivas (Doctorate Streamlined, Small Business Owners e Critical Skill Occupations), separados por subclass 190/491. Em Tasmania, a declaração de que a alocação foi integralmente nomeada não é classificada como `convites_emitidos`.
+
 Fontes de referência:
 
 - https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/invitation-rounds
 - https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/previous-rounds
+- https://immi.homeaffairs.gov.au/what-we-do/state-and-territory-nomination-allocations
 - https://www.abs.gov.au/statistics/classifications/anzsco-australian-and-new-zealand-standard-classification-occupations/2022
 - https://www.abs.gov.au/statistics/classifications/osca-occupation-standard-classification-australia/latest-release
-
