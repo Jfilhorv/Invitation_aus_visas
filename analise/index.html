@@ -205,7 +205,8 @@
       align-items: end;
       gap: var(--bt-sp-075);
     }
-    .brand-lockup { display:flex; align-items:center; gap:8px; min-width:0; }
+    .brand-lockup { display:flex; align-items:center; gap:8px; min-width:0; color:inherit; text-decoration:none; cursor:pointer; }
+    .brand-lockup:hover .bt-page-title { color:var(--bt-primary); }
     .brand-mark {
       width:28px;
       height:28px;
@@ -722,7 +723,7 @@
 <body class="bt-body">
   <div class="shell">
     <div class="top">
-      <div class="brand-lockup"><div class="brand-mark" aria-label="IOh"><span>I<span class="o">O</span><span class="h">h</span></span></div><h1 class="bt-page-title">Invitations · occupation history</h1></div>
+      <a class="brand-lockup" href="./" title="Return to the initial dashboard view" aria-label="Return to the initial dashboard view"><div class="brand-mark" aria-hidden="true"><span>I<span class="o">O</span><span class="h">h</span></span></div><h1 class="bt-page-title">Invitations · occupation history</h1></a>
       <div class="top-right">
         <div class="top-meta" id="topMeta">…</div>
         <div class="theme-toggle" role="group" aria-label="Theme">
