@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="analise/favicon.svg" width="160" height="160" alt="IOh logo">
+  <a href="https://jfilhorv.github.io/Invitation_aus_visas/analise/">
+    <img src="analise/favicon.svg" width="160" height="160" alt="Open Invitations · occupation history dashboard">
+  </a>
 </p>
 
 <h1 align="center">Invitations · occupation history</h1>
