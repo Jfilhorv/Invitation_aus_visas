@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<h1 align="center">Invitations · occupation history</h1>
+<h1 align="center"><a href="https://jfilhorv.github.io/Invitation_aus_visas/analise/">Invitations · occupation history</a></h1>
 
 <p align="center">
   A visual history of Australian skilled-migration invitation rounds, occupation scores and state nomination data.<br>
