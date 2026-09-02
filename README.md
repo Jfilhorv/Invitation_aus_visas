@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://jfilhorv.github.io/Invitation_aus_visas/analise/">
-    <img src="analise/favicon.svg" width="160" height="160" alt="Open Invitations · occupation history dashboard">
+    <img src="analise/logo-ias.png" width="240" alt="Invitation Activity Score — Australian skilled migration dashboard">
   </a>
 </p>
 
@@ -17,9 +17,16 @@
 
 <p align="center">
   <a href="https://jfilhorv.github.io/Invitation_aus_visas/analise/">
-    <img alt="Dashboard online" src="https://img.shields.io/badge/DASHBOARD-OPEN-2878e8?style=for-the-badge">
+    <img alt="Dashboard online" src="https://img.shields.io/badge/DASHBOARD-OPEN-00A691?style=for-the-badge">
   </a>
-  <img alt="Official sources only" src="https://img.shields.io/badge/SOURCES-OFFICIAL%20.GOV.AU-587414?style=for-the-badge">
+  <a href="https://github.com/Jfilhorv/Invitation_aus_visas">
+    <img alt="GitHub repository" src="https://img.shields.io/badge/GITHUB-REPOSITORY-E23084?style=for-the-badge&logo=github&logoColor=white">
+  </a>
+  <img alt="Official sources only" src="https://img.shields.io/badge/SOURCES-OFFICIAL%20.GOV.AU-00A691?style=for-the-badge">
+</p>
+
+<p align="center">
+  <strong>7,014 normalized records · 445 occupational identities · 9 jurisdictions · 24 official source URLs · January 2021–June 2026 score history</strong>
 </p>
 
 > [!IMPORTANT]
@@ -29,12 +36,14 @@
 
 | | |
 |---|---|
-| **[Open the dashboard](https://jfilhorv.github.io/Invitation_aus_visas/analise/)** | Filter by state, visa, year, metric and occupation |
+| **[Open the dashboard](https://jfilhorv.github.io/Invitation_aus_visas/analise/)** | Filter by state, visa, year, ANZSCO hierarchy, skill level, metric and occupation |
+| **[Open the GitHub repository](https://github.com/Jfilhorv/Invitation_aus_visas)** | Browse the code, normalized data, archived evidence and update scripts |
 | **[Understand the metrics](#reading-the-headline-figures)** | Learn what each KPI measures — and what it does not measure |
 | **[See the analysis views](#analysis-views)** | Scores, invitations, occupations, states and documentation |
 | **[Review the evidence standard](#sources-and-evidence-standard)** | See which official publications are represented |
 | **[Open the original government sources](#original-government-sources)** | Go directly to every `.gov.au` page and file used |
 | **[Understand the methodology](#data-model-and-normalization)** | Learn how incompatible government publications are combined safely |
+| **[Update the dataset](dados/agregado/ATUALIZACAO-DADOS.md)** | Know when to check official sources and how to add a publication safely |
 | **[Download data and sources](#downloads)** | CSV, JSON, audit files, ABS references and archived publications |
 | **[Read the known limits](#known-limits)** | Understand gaps, uncertainty and differences between programs |
 
@@ -66,20 +75,23 @@ The comparison is dynamic. Selecting WA and subclass 190, for example, changes t
 
 ### Occupation explorer
 
-The occupation list is designed for three complementary questions:
+The occupation list combines published score evidence with the **Invitation Activity Score (IAS)**. It can be sorted by IAS, name, lowest score, number of records or historical average.
 
-| View | Question it helps answer |
+| Control | What it does |
 |---|---|
-| **Low score** | Which published occupations have historically required fewer points? |
-| **Frequent** | Which occupations appear most consistently in the collected rounds? |
-| **Rare** | Which occupations have limited or isolated published evidence? |
+| **ANZSCO** | Filters the official hierarchy from Major group to six-digit occupation |
+| **`+` hierarchy expansion** | Reveals Minor groups, Unit groups and individual occupations; the compact view retains Major and Sub-major groups |
+| **Skill** | Filters official Australian ANZSCO skill levels 1–5 |
+| **Search** | Finds an occupation by title or ANZSCO code |
+| **IAS** | Ranks historical invitation activity using the evidence represented in this repository |
 
-Rank is comparative within the current filtered context. Frequency represents published observations, not labour demand or probability of invitation.
+IAS is comparative within the current filtered context. It is a historical activity indicator—not labour demand, eligibility, invitation probability or a forecast.
 
 ### Occupation history
 
 Selecting an occupation opens its historical record with:
 
+- IAS and its evidence components;
 - lowest and latest published score;
 - latest invitation date represented;
 - number of distinct rounds;
@@ -87,15 +99,16 @@ Selecting an occupation opens its historical record with:
 - exact official source for every table row;
 - separate series where the source distinguishes visa, stream, residence or applicant location.
 
-### Scores, invitations and occupations
+### Occupation groups, scores, invitations and coverage
 
-The chart switch deliberately separates three different measures:
+The chart switch deliberately separates four views:
 
+- **Occupation groups** — official ANZSCO Sub-major groups, shown initially when the dashboard opens;
 - **Scores** — published points associated with occupation or program criteria;
-- **Invitations** — aggregate invitations or EOIs invited in a published round;
-- **Occupations** — number of distinct occupations with a published numeric result.
+- **Invitation events** — aggregate invitations or EOIs invited in a published round;
+- **Published coverage** — number of distinct occupations with a published numeric result.
 
-They share a date-oriented visual container, but they are not interchangeable and are never added together.
+The group view can switch between **INV** (attributed invitations), **OCC** (occupations with published results) and **IAS**. INV is intentionally smaller when governments publish only aggregate totals that cannot be assigned safely to an occupation group. The views are not interchangeable and are never added together.
 
 ### States and documentation
 
@@ -112,8 +125,23 @@ The lower views provide program-level context and the documentary trail behind t
 | **Lowest score** | Lowest numeric score in the selected occupation history | A lower score is historically more accessible, not a guarantee |
 | **Latest score** | Most recent published score for the selected occupation | Different streams or applicant locations can have different scores |
 | **Rounds** | Number of distinct published dates represented | Publication frequency varies considerably between governments |
+| **IAS** | A 0–100 historical activity signal | It is not an invitation probability, eligibility score or government measure |
 
 The federal figure of **10,000 invitations** refers to the entire subclass **189** round of 4 June 2026. Home Affairs does not publish how those 10,000 invitations were distributed among individual occupations.
+
+### Invitation Activity Score (IAS)
+
+IAS makes several dimensions of the collected history easier to compare. Its displayed rule is:
+
+| Component | Weight |
+|---|---:|
+| Recency of published activity | 30% |
+| Frequency of published observations | 25% |
+| Consistency across the observed history | 20% |
+| Coverage within the selected context | 15% |
+| Comparable published score | 10% |
+
+Pink represents lower historical activity and teal higher activity. Grey indicates insufficient evidence. The score is recalculated from the active context and should be read together with its hover explanation and evidence level.
 
 ## Visa and jurisdiction context
 
@@ -145,6 +173,10 @@ Filtering WA by 190 or 491 therefore keeps relevant WA occupation criteria visib
 
 The chart always retains the complete historical boundary, currently **January 2021 to June 2026** for score data.
 
+The default **Occupation groups** view uses official ANZSCO Sub-major groups. Its Date Range control is available only in this view because it recalculates the group comparison, occupation list and supporting table over the selected historical window. `All` represents the complete available range. Other chart tabs retain stable control positions but do not display Date Range where it has no meaningful role.
+
+Clicking a group filters the occupation list. Other groups remain visible in light grey so the user can change the selection or click the active group again to clear it. Bar and smooth-line modes use the same underlying values.
+
 Because many months have no published round, the horizontal layout uses a restrained adaptive timeline:
 
 - every year remains visible and chronologically ordered;
@@ -155,7 +187,7 @@ Because many months have no published round, the horizontal layout uses a restra
 
 This improves readability but means horizontal distance is not a perfectly uniform measure of elapsed time. Dates and year labels remain the authoritative temporal reference.
 
-Scores, invitations and occupation totals are separate views because they measure different things. Bar and line modes change only the presentation, not the underlying values.
+Scores, invitations, occupation coverage and IAS remain separate measures. Bar and line modes change only the presentation, not the underlying values.
 
 ## Sources and evidence standard
 
@@ -184,6 +216,18 @@ Occupation identities are matched conservatively against the official **ABS ANZS
 - missing codes are not invented;
 - onshore, offshore, residence and program streams remain separate series;
 - aggregate totals are not duplicated across their component rows.
+
+The global ANZSCO filter preserves the official hierarchy:
+
+```text
+Major group (1 digit)
+└── Sub-major group (2 digits)
+    └── Minor group (3 digits)
+        └── Unit group (4 digits)
+            └── Occupation (6 digits)
+```
+
+The dashboard lookup contains **1,590 official nodes**: 8 Major groups, 43 Sub-major groups, 99 Minor groups, 364 Unit groups and 1,076 occupations. Predominant skill level is a separate official attribute, not a sixth hierarchy level. Where ABS distinguishes Australian and New Zealand skill levels, the dashboard uses the Australian value.
 
 The principal analytical fields include jurisdiction, visa, round date, occupation, ANZSCO code, occupational level, metric, numeric value, source URL, source fingerprint and validation status.
 
@@ -239,6 +283,7 @@ These are the original government links from which the source material was colle
 | **[Download the complete normalized dataset](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/agregado/vistos-de-convites.csv)** | CSV | All collected and normalized invitation, score, occupation and nomination records |
 | **[Download the complete normalized dataset](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/agregado/vistos-de-convites.json)** | JSON | Same analytical records with their full field structure |
 | **[Download the dashboard data bundle](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/analise/data.js)** | JavaScript | Browser-ready copy of the normalized dataset used by the dashboard |
+| **[Download the ANZSCO hierarchy bundle](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/analise/anzsco-hierarchy.js)** | JavaScript | Browser-ready hierarchy and Australian skill-level lookup derived from the official ABS workbook |
 
 ### Methodology and audit files
 
@@ -247,6 +292,7 @@ These are the original government links from which the source material was colle
 | **[Download methodology](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/agregado/metodologia.md)** | Normalization, interpretation, deduplication and aggregation rules |
 | **[Download state-source audit](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/agregado/auditoria-fontes-estaduais.md)** | Review of coverage and limitations by jurisdiction |
 | **[Download extraction log](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/agregado/extracao-log.md)** | Record of extraction and transformation activity |
+| **[Read the data-update guide](dados/agregado/ATUALIZACAO-DADOS.md)** | Update cadence, ingestion sequence, validation checklist and ANZSCO rebuild instructions |
 | **[Download official-source inventory](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/fontes/inventario-oficial.md)** | Catalogue of the government publications represented |
 | **[Download source validation manifest](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/fontes/manifesto-validacao.csv)** | URLs, validation state and SHA-256 source fingerprints |
 | **[Download WA and ACT source notes](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/fontes/downloads-wa-act.md)** | Documentary notes for the collected WA and ACT publications |
@@ -328,6 +374,19 @@ The repository retains the official HTML and PDF material used to make the analy
 **[Download the entire project and source archive as ZIP](https://github.com/Jfilhorv/Invitation_aus_visas/archive/refs/heads/master.zip)**
 
 The archived government files are retained for traceability. For the latest policy or eligibility rules, always follow the original `.gov.au` source linked in the dashboard.
+
+## Project links
+
+| Resource | Link |
+|---|---|
+| Live GitHub Pages dashboard | [jfilhorv.github.io/Invitation_aus_visas/analise](https://jfilhorv.github.io/Invitation_aus_visas/analise/) |
+| Source repository | [github.com/Jfilhorv/Invitation_aus_visas](https://github.com/Jfilhorv/Invitation_aus_visas) |
+| Data and archived evidence | [Browse the repository](https://github.com/Jfilhorv/Invitation_aus_visas/tree/master/dados) |
+| Data-update and validation guide | [Read ATUALIZACAO-DADOS.md](dados/agregado/ATUALIZACAO-DADOS.md) |
+
+## Publication and responsibility
+
+The dashboard is published as a static GitHub Pages site from this repository. It is an independent evidence project and is not affiliated with, endorsed by or operated by the Australian Government. Government source material remains subject to its original terms and attribution requirements; code and repository licensing should be checked in the repository before reuse.
 
 ## Audit trail
 

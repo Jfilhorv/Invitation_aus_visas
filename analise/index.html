@@ -4,13 +4,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Invitations · occupation history</title>
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="./logo-ias.png?v=2" type="image/png" />
+  <link rel="shortcut icon" href="./logo-ias.png?v=2" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./site-tokens.css" />
   <style>
     /* Page layout only — colours/type/density come from site-tokens.css */
+    :root {
+      --bt-primary: #00a691;
+      --bt-primary-light: #35c7b1;
+      --bt-primary-dark: #007f70;
+      --bt-cat-green: #00a691;
+      --bt-cat-olive: #3a9b8e;
+    }
+    :root[data-theme="dark"] {
+      --bt-primary: #2bd2bb;
+      --bt-primary-light: #65e2d0;
+      --bt-primary-dark: #00a691;
+      --bt-cat-green: #2bd2bb;
+      --bt-cat-olive: #55bcae;
+    }
     html, body {
       height: 100%;
       overflow: hidden;
@@ -43,6 +58,23 @@
     }
 
     .top-meta { color: var(--bt-text-secondary); }
+
+    .brand-copy { display: grid; gap: 0; min-width: 0; }
+    .brand-copy .bt-page-title {
+      font-size: 1.15rem;
+      font-weight: var(--bt-fw-heavy);
+      letter-spacing: -0.035em;
+      line-height: 1.08;
+      color: color-mix(in srgb, #e23084 92%, var(--bt-text));
+    }
+    .brand-subtitle {
+      margin-top: 2px;
+      color: var(--bt-text-secondary);
+      font-size: 0.625rem;
+      font-weight: var(--bt-fw-semibold);
+      letter-spacing: 0.065em;
+      text-transform: uppercase;
+    }
 
     .theme-toggle {
       display: inline-flex;
@@ -114,6 +146,67 @@
       width: 1%;
       white-space: nowrap;
     }
+    /* IAS list UX: compact score marker and contextual explanation. */
+    .ias-list-dot {
+      --ias-colour: var(--bt-text-secondary);
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      width: 27px;
+      height: 27px;
+      border: 2px solid var(--ias-colour);
+      border-radius: 50%;
+      color: var(--ias-colour);
+      background: color-mix(in srgb, var(--ias-colour) 9%, var(--bt-paper));
+      font-size: 9px;
+      font-weight: var(--bt-fw-bold);
+      line-height: 1;
+      cursor: help;
+    }
+    .ias-list-dot::after {
+      content: attr(data-tip);
+      position: absolute;
+      z-index: 30;
+      top: calc(100% + 7px);
+      left: 50%;
+      width: 245px;
+      padding: 8px 10px;
+      border: 1px solid var(--bt-divider);
+      border-radius: var(--bt-r-surface);
+      background: var(--bt-paper);
+      box-shadow: var(--bt-shadow-3);
+      color: var(--bt-text);
+      font-size: 10px;
+      font-weight: var(--bt-fw-regular);
+      line-height: 1.45;
+      text-align: left;
+      white-space: pre-line;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translate(-50%, -3px);
+      transition: opacity .12s ease, transform .12s ease, visibility .12s;
+    }
+    .ias-list-dot:hover::after,
+    .ias-list-dot:focus-visible::after {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, 0);
+    }
+    .ias-header-info { margin-left: 3px; vertical-align: middle; }
+    .ias-header-info .info-popover {
+      top: calc(100% + 7px);
+      left: 50%;
+      width: 275px;
+      white-space: normal;
+      text-align: left;
+      transform: translate(-50%, -3px);
+      text-transform: none;
+      letter-spacing: normal;
+    }
+    .ias-header-info:hover .info-popover,
+    .ias-header-info:focus-within .info-popover,
+    .ias-header-info.open .info-popover { transform: translate(-50%, 0); }
     .occ-table thead th.sortable {
       cursor: pointer;
       user-select: none;
@@ -205,23 +298,23 @@
       align-items: end;
       gap: var(--bt-sp-075);
     }
-    .brand-lockup { display:flex; align-items:center; gap:8px; min-width:0; color:inherit; text-decoration:none; cursor:pointer; }
-    .brand-lockup:hover .bt-page-title { color:var(--bt-primary); }
+    .brand-lockup { display:flex; align-items:center; gap:12px; min-width:0; color:inherit; text-decoration:none; cursor:pointer; }
+    .brand-lockup:hover .bt-page-title { color:#e23084; }
     .brand-mark {
-      width:28px;
-      height:28px;
-      flex:0 0 28px;
+      width:78px;
+      height:44px;
+      flex:0 0 78px;
       display:grid;
       place-items:center;
-      border-radius:8px;
-      color:var(--bt-paper);
-      background:linear-gradient(145deg, #587414, #2878e8);
-      box-shadow:var(--bt-shadow-2);
-      font:var(--bt-fw-bold) 12px/1 var(--bt-font);
-      letter-spacing:-.035em;
+      overflow:hidden;
     }
-    .brand-mark .o { opacity:.82; }
-    .brand-mark .h { font-size:.82em; vertical-align:baseline; margin-left:0; }
+    .brand-mark img {
+      width:78px;
+      height:52px;
+      max-width:none;
+      display:block;
+      object-fit:contain;
+    }
 
     /* Always-visible, single-row filters. */
     .filters-compact {
@@ -230,26 +323,40 @@
       padding: 5px 8px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       overflow-x: auto;
-      border: 1px solid var(--bt-divider);
-      border-radius: var(--bt-r-surface);
-      background: var(--bt-filter-header-tint);
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      scrollbar-width: none;
     }
+    .filters-compact::-webkit-scrollbar { display: none; }
     .filters-compact select, .filters-compact input {
       flex: 0 0 auto;
       height: 30px;
       padding: 4px 9px;
-      border: 1px solid var(--bt-divider);
-      border-radius: var(--bt-r-input);
-      background: var(--bt-input-fill);
-      color: var(--bt-text);
+      border: 1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
+      border-radius: 12px;
+      background: #fff;
+      color: #242522;
+      box-shadow: 0 5px 14px color-mix(in srgb, var(--bt-text) 9%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 7%, transparent);
       font: var(--bt-fw-regular) var(--bt-fs-input)/1.2 var(--bt-font);
+    }
+    .filters-compact select:hover, .filters-compact input:hover {
+      border-color: color-mix(in srgb, #00a691 68%, var(--bt-divider));
+      box-shadow: 0 7px 17px color-mix(in srgb, #00a691 11%, transparent), 0 1px 3px color-mix(in srgb, var(--bt-text) 8%, transparent);
     }
     .filters-compact select:focus, .filters-compact input:focus {
       outline: none;
-      border-color: var(--bt-primary);
-      box-shadow: var(--bt-focus-ring);
+      border-color: #00a691;
+      box-shadow: 0 0 0 3px color-mix(in srgb, #00a691 18%, transparent), 0 8px 20px color-mix(in srgb, #00a691 13%, transparent);
+    }
+    .filters-compact select option { background:#fff; color:#242522; }
+    .filters-compact select option:hover,
+    .filters-compact select option:focus,
+    .filters-compact select option:checked {
+      background:#f6d7e6 linear-gradient(0deg, #f6d7e6 0%, #f6d7e6 100%);
+      color:#6f1743;
     }
     .state-filter { display:flex; gap:3px; align-items:center; flex:0 0 auto; }
     .filter-chip {
@@ -273,8 +380,25 @@
     #btnClear { flex:0 0 auto; }
     .active-filter-chip { height:25px; padding:0 7px; border:1px solid color-mix(in srgb, var(--bt-primary) 30%, var(--bt-divider)); border-radius:999px; background:color-mix(in srgb, var(--bt-primary) 8%, var(--bt-paper)); color:var(--bt-text); font:500 .625rem/1 var(--bt-font); cursor:pointer; }
     .active-filter-chip .x { margin-left:4px; color:var(--bt-primary); font-size:.78rem; }
-    #fBusca { width:min(260px,24vw); background:var(--bt-paper); }
     #fVisto { width:92px; }
+    #fAnzsco { width:190px; }
+    #fSkill { width:82px; }
+    .hierarchy-expand {
+      flex:0 0 24px;
+      width:24px;
+      height:24px;
+      padding:0;
+      display:grid;
+      place-items:center;
+      border:1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
+      border-radius:50%;
+      background:#fff;
+      color:#00a691;
+      box-shadow:0 3px 9px color-mix(in srgb, var(--bt-text) 8%, transparent);
+      font:700 15px/1 var(--bt-font);
+      cursor:pointer;
+    }
+    .hierarchy-expand:hover, .hierarchy-expand:focus-visible { border-color:#00a691; outline:none; background:color-mix(in srgb, #00a691 8%, #fff); }
     #fMetrica { width:142px; }
     #fSort { width:132px; }
 
@@ -295,6 +419,11 @@
     .panel {
       min-height: 0;
       height: 100%;
+    }
+    .panel-left {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     .panel-h {
@@ -342,39 +471,92 @@
     }
 
     .search-wrap {
-      padding: var(--bt-sp-1) var(--bt-sp-15);
+      padding: var(--bt-sp-125) var(--bt-sp-15) var(--bt-sp-15);
       border-bottom: 1px solid var(--bt-divider);
-      background: var(--bt-surface-tint);
+      background: transparent;
+    }
+    .search-field {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      width: 15px;
+      height: 15px;
+      color: var(--bt-text-secondary);
+      pointer-events: none;
     }
     .search-wrap input {
       width: 100%;
-      height: 34px;
-      padding: 7px 12px;
-      border: 1px solid var(--bt-divider);
-      border-radius: var(--bt-r-input);
-      background: var(--bt-paper);
+      height: 38px;
+      padding: 8px 36px 8px 34px;
+      border: 1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--bt-paper) 92%, transparent);
+      box-shadow: 0 7px 18px color-mix(in srgb, var(--bt-text) 11%, transparent), 0 1px 3px color-mix(in srgb, var(--bt-text) 8%, transparent);
       font: var(--bt-fw-regular) var(--bt-fs-input) / 1.45 var(--bt-font);
       color: var(--bt-text);
+      appearance: none;
     }
+    .search-wrap input::-webkit-search-cancel-button { display: none; }
     .search-wrap input:focus {
       outline: none;
       border-color: var(--bt-primary);
-      box-shadow: var(--bt-focus-ring);
+      box-shadow: var(--bt-focus-ring), 0 10px 24px color-mix(in srgb, var(--bt-primary) 15%, transparent);
+      background: color-mix(in srgb, var(--bt-paper) 94%, var(--bt-primary));
     }
+    .search-clear {
+      position: absolute;
+      right: 6px;
+      width: 27px;
+      height: 27px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--bt-text-secondary);
+      font: 500 1rem/1 var(--bt-font);
+      cursor: pointer;
+    }
+    .search-clear:hover, .search-clear:focus-visible {
+      color: var(--bt-text);
+      background: color-mix(in srgb, var(--bt-text) 8%, transparent);
+    }
+    .search-clear[hidden] { display: none; }
 
     .rank-scroll,
     .hist-table-wrap {
-      overflow: auto;
       flex: 1 1 auto;
       min-height: 0;
       overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      scrollbar-width: auto;
+      scrollbar-color: color-mix(in srgb, #00a691 60%, transparent) color-mix(in srgb, var(--bt-divider) 48%, transparent);
+      box-shadow: inset -8px 0 color-mix(in srgb, var(--bt-divider) 32%, transparent);
     }
+    .rank-scroll::-webkit-scrollbar,
+    .hist-table-wrap::-webkit-scrollbar { width:8px; }
+    .rank-scroll::-webkit-scrollbar-track,
+    .hist-table-wrap::-webkit-scrollbar-track { background:color-mix(in srgb, var(--bt-divider) 48%, transparent); border-left:1px solid color-mix(in srgb, var(--bt-divider) 55%, transparent); }
+    .rank-scroll::-webkit-scrollbar-thumb,
+    .hist-table-wrap::-webkit-scrollbar-thumb { min-height:34px; background:color-mix(in srgb, #00a691 60%, transparent); border:2px solid transparent; background-clip:padding-box; border-radius:999px; }
+    .rank-scroll::-webkit-scrollbar-thumb:hover,
+    .hist-table-wrap::-webkit-scrollbar-thumb:hover { background:color-mix(in srgb, #00a691 78%, transparent); border:2px solid transparent; background-clip:padding-box; }
 
     .occ-table,
     table.hist-table {
       width: 100%;
       border-collapse: collapse;
       font-size: var(--bt-fs-table-body);
+    }
+    .occ-table { font-size:12px; }
+    .occ-table td.name .bt-hint {
+      font-size:10.5px;
+      line-height:1.3;
     }
     .occ-table thead th,
     table.hist-table th {
@@ -392,7 +574,8 @@
       border-bottom: 1px solid var(--bt-divider);
       white-space: nowrap;
     }
-    .occ-table thead th.numh { text-align: right; }
+    .occ-table thead th.numh,
+    .occ-table tbody td.num { text-align: center; }
     .occ-table tbody td,
     table.hist-table td {
       padding: 3.6px 8px;
@@ -407,7 +590,7 @@
     }
     .occ-table tbody tr:hover td,
     table.hist-table tr:hover td {
-      background: var(--bt-hover-tint);
+      background: color-mix(in srgb, #00a691 14%, var(--bt-paper));
     }
     table.hist-table tbody tr[data-round-month] { cursor:pointer; }
     table.hist-table tbody tr.date-dim td { opacity:.4; }
@@ -417,7 +600,7 @@
       background: var(--bt-selected-tint);
     }
     .occ-table tbody tr.active:hover td {
-      background: var(--bt-selected-hover-tint);
+      background: color-mix(in srgb, #00a691 20%, var(--bt-paper));
     }
 
     .code {
@@ -442,24 +625,40 @@
       font-size: 12px;
       white-space: nowrap;
     }
-    .num.low { color: var(--bt-success); }
+    .num.low { color: var(--bt-text); }
     .num.mid { color: var(--bt-text); }
-    .num.hi { color: var(--bt-error); }
+    .num.hi { color: var(--bt-text); }
 
     .global-kpis {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: var(--bt-sp-1);
+      gap: var(--bt-sp-125);
     }
     .global-kpi {
+      position: relative;
       min-width: 0;
-      padding: 4px 10px;
-      border: 1px solid var(--bt-divider);
-      border-radius: var(--bt-r-md);
-      background: transparent;
+      padding: 9px 12px 8px;
+      border: 1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 5px 14px color-mix(in srgb, var(--bt-text) 9%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 7%, transparent);
+      overflow: visible;
+    }
+    .global-kpi::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 3px;
+      width: 3px;
+      border-radius: 999px;
+      background: #00b89c;
     }
     .global-kpi .k {
-      color: var(--bt-text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #6f747c;
       font-size: 0.625rem;
       font-weight: var(--bt-fw-bold);
       letter-spacing: 0.06em;
@@ -470,22 +669,86 @@
       font-family: var(--bt-font-mono);
       font-size: 1.56rem;
       font-weight: var(--bt-fw-bold);
-      color: #2878e8;
+      color: #00a691;
       line-height: 1.02;
     }
     .global-kpi .s {
       margin-top: 1px;
-      color: var(--bt-text-secondary);
+      color: #6f747c;
       font-size: 0.625rem;
     }
-    .global-kpi { border-left: 3px solid var(--bt-primary); }
-    .global-kpi.round-linked { background: transparent; border-color: color-mix(in srgb, var(--bt-primary) 42%, var(--bt-divider)); }
-    .global-kpi.round-linked .v { color: #2878e8; }
-    .global-kpi .v .positive { color:#16845b; }
-    .global-kpi .v .denominator { color:var(--bt-text-secondary); font-size:.78em; }
-    .delta-positive { color:#16845b !important; }
-    .delta-negative { color:#d1495b !important; }
-    .global-kpi:nth-child(4) { border-left-color:#7c3aed; background:transparent; } .global-kpi:nth-child(4) .v { color:#7c3aed; }
+    .global-kpi.round-linked { background:#fff; }
+    .global-kpi.round-linked .v { color:#00a691; }
+    .global-kpi:nth-child(odd) .v { color:#e23084; }
+    .global-kpi .v .positive { color:inherit; }
+    .global-kpi .v .denominator { color:#6f747c; font-size:.78em; }
+    .global-kpi .info-trigger { color:#6f747c; }
+    .delta-positive, .delta-negative { color:var(--bt-text-secondary) !important; }
+    .global-kpi:nth-child(4)::before { background:#00b89c; }
+    .global-kpi:nth-child(4) .v { color:#00a691; }
+
+    .info-wrap { position: relative; display: inline-flex; }
+    .info-trigger {
+      width: 17px;
+      height: 17px;
+      padding: 0;
+      border: 1px solid color-mix(in srgb, var(--bt-text-secondary) 45%, transparent);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--bt-text-secondary);
+      font: 700 10px/1 var(--bt-font);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: help;
+    }
+    .info-trigger:hover, .info-trigger:focus-visible, .info-trigger[aria-expanded="true"] {
+      color: var(--bt-text);
+      border-color: var(--bt-primary);
+      background: color-mix(in srgb, var(--bt-primary) 9%, var(--bt-paper));
+    }
+    .info-popover {
+      position: absolute;
+      z-index: 40;
+      top: calc(100% + 7px);
+      left: 0;
+      width: min(300px, calc(100vw - 32px));
+      padding: 10px 12px;
+      border: 1px solid var(--bt-divider);
+      border-radius: 10px;
+      background: var(--bt-paper);
+      box-shadow: var(--bt-shadow-8);
+      color: var(--bt-text);
+      font-size: 0.72rem;
+      font-weight: var(--bt-fw-regular);
+      line-height: 1.45;
+      letter-spacing: 0;
+      text-transform: none;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-3px);
+      pointer-events: none;
+      transition: opacity .12s ease, transform .12s ease, visibility .12s;
+    }
+    .global-kpi:nth-child(n+3) .info-popover { left: auto; right: 0; }
+    .info-wrap:hover .info-popover,
+    .info-wrap:focus-within .info-popover,
+    .info-wrap.open .info-popover {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .allocation-usage { min-width: 112px; }
+    .allocation-track {
+      height: 5px;
+      margin-top: 4px;
+      border-radius: 99px;
+      background: color-mix(in srgb, var(--bt-text) 10%, transparent);
+      overflow: hidden;
+    }
+    .allocation-fill { height: 100%; background: var(--bt-primary); border-radius: inherit; }
 
     .hist { min-height: 0; overflow: hidden; }
     .hist-empty {
@@ -498,12 +761,21 @@
     .hist-fixed { flex: 0 0 auto; }
 
     .hist-head {
+      height: 81px;
+      box-sizing: border-box;
+      overflow: hidden;
       padding: var(--bt-sp-125) var(--bt-inset-page) var(--bt-sp-1);
       display: flex;
       justify-content: space-between;
       gap: var(--bt-sp-15);
       align-items: start;
       flex-wrap: wrap;
+    }
+    #histSub {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
     }
     .hist-head h2 {
       margin: 0;
@@ -514,28 +786,30 @@
     }
 
     .hist-kpis {
-      display: flex;
-      gap: 2px;
-      flex-wrap: nowrap;
-      margin-left:auto;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      width: 430px;
+      gap: 4px;
+      margin-left:0;
       background: transparent;
-      border: 1px solid var(--bt-divider);
-      border-radius: var(--bt-r-input);
-      padding: 2px;
+      border: 0;
+      border-radius: 12px;
+      padding: 0;
     }
     .kpi {
       min-width: 58px;
-      padding: 2px 6px;
-      border-radius: var(--bt-r-item);
-      border-left: 2px solid color-mix(in srgb, var(--bt-primary) 40%, var(--bt-divider));
-      background: transparent;
+      padding: 3px 7px;
+      border: 1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 4px 11px color-mix(in srgb, var(--bt-text) 8%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 6%, transparent);
     }
     .kpi .k {
       display:block;
       font-size: .48rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: var(--bt-text-secondary);
+      color: #6f747c;
       font-weight: var(--bt-fw-bold);
     }
     .kpi .v {
@@ -544,16 +818,13 @@
       font-weight: var(--bt-fw-heavy);
       font-variant-numeric: tabular-nums;
       font-family: var(--bt-font-mono);
-      color: var(--bt-text);
+      color: #242522;
       line-height: 1.02;
     }
-    .kpi-easy { border-left-color:color-mix(in srgb, #16845b 40%, var(--bt-divider)); background:transparent; }
-    .kpi-latest { border-left-color:color-mix(in srgb, #2878e8 40%, var(--bt-divider)); background:transparent; }
-    .kpi-date { border-left-color:color-mix(in srgb, #7c3aed 40%, var(--bt-divider)); background:transparent; }
-    .kpi-rounds { border-left-color:color-mix(in srgb, #c47708 40%, var(--bt-divider)); background:transparent; }
+    .kpi-easy, .kpi-latest, .kpi-date, .kpi-rounds { background:#fff; }
 
     .chart-switch {
-      margin-left:0;
+      margin-left:auto;
       display:flex;
       gap:2px;
       padding:3px;
@@ -577,6 +848,48 @@
     .chart-style-toggle { width:28px; padding:3px 5px; display:grid; place-items:center; opacity:.62; }
     .chart-style-toggle.on { opacity:1; color:var(--bt-primary); border-color:var(--bt-primary); background:color-mix(in srgb, var(--bt-primary) 12%, var(--bt-paper)); }
     .chart-style-toggle svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:1.8; }
+    .group-measure-switch { display:flex; flex:0 0 118px; width:118px; gap:2px; padding:3px; border-radius:var(--bt-r-segment-track); background:var(--bt-segment-track); }
+    .group-measure-switch .estado-chip { min-width:36px; padding-inline:7px; }
+    .group-measure-switch [data-measure-info] { position:relative; }
+    .group-measure-switch [data-measure-info]::after {
+      content:attr(data-measure-info);
+      position:absolute;
+      z-index:40;
+      left:50%;
+      bottom:calc(100% + 9px);
+      width:220px;
+      padding:8px 10px;
+      border:1px solid color-mix(in srgb, #e23084 38%, var(--bt-divider));
+      border-radius:10px;
+      background:#fff;
+      box-shadow:0 7px 20px color-mix(in srgb, var(--bt-text) 14%, transparent);
+      color:#242522;
+      font:500 10px/1.45 var(--bt-font);
+      text-align:left;
+      white-space:normal;
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transform:translate(-50%, 4px);
+      transition:opacity .12s ease, transform .12s ease, visibility .12s;
+    }
+    .group-measure-switch [data-measure-info]:hover::after,
+    .group-measure-switch [data-measure-info]:focus-visible::after {
+      opacity:1;
+      visibility:visible;
+      transform:translate(-50%, 0);
+    }
+    .chart-time-control { display:flex; flex:0 0 288px; width:288px; align-items:center; gap:7px; padding:4px 8px; border:1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider)); border-radius:12px; background:#fff; box-shadow:0 4px 11px color-mix(in srgb, var(--bt-text) 8%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 6%, transparent); color:#6f747c; font-size:10px; font-weight:var(--bt-fw-semibold); }
+    .chart-time-title { text-transform:uppercase; letter-spacing:.05em; white-space:nowrap; }
+    .chart-time-axis { display:grid; grid-template-rows:auto 14px; width:148px; }
+    .chart-time-limits { display:flex; justify-content:space-between; align-items:center; color:var(--bt-text-secondary); font:600 8px/1 var(--bt-font-mono); }
+    .chart-time-control input { width:148px; height:14px; margin:0; appearance:none; background:transparent; cursor:grab; }
+    .chart-time-control input::-webkit-slider-runnable-track { height:5px; border:1px solid color-mix(in srgb, #e23084 58%, var(--bt-divider)); border-radius:999px; background:color-mix(in srgb, #e23084 10%, #fff); }
+    .chart-time-control input::-webkit-slider-thumb { width:14px; height:14px; margin-top:-5px; appearance:none; border:2px solid #fff; border-radius:50%; background:#00a691; box-shadow:0 1px 4px color-mix(in srgb, #00a691 45%, transparent); }
+    .chart-time-control input::-moz-range-track { height:4px; border:1px solid color-mix(in srgb, #e23084 58%, var(--bt-divider)); border-radius:999px; background:color-mix(in srgb, #e23084 10%, #fff); }
+    .chart-time-control input::-moz-range-thumb { width:12px; height:12px; border:2px solid #fff; border-radius:50%; background:#00a691; box-shadow:0 1px 4px color-mix(in srgb, #00a691 45%, transparent); }
+    .chart-time-control input:active { cursor:grabbing; }
+    .chart-time-value { min-width:46px; padding:2px 5px; border:1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider)); border-radius:999px; background:#fff; color:#242522; text-align:center; font-family:var(--bt-font-mono); font-size:9px; }
     .estado-bar {
       display: flex;
       align-items: center;
@@ -617,6 +930,15 @@
       height: 280px;
       flex: 0 0 280px;
     }
+    .chart-box.groups-framed {
+      margin: 0 var(--bt-inset-page);
+      padding-left: var(--bt-inset-page);
+      padding-right: var(--bt-inset-page);
+      border: 1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 5px 14px color-mix(in srgb, var(--bt-text) 9%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 7%, transparent);
+    }
     canvas { width: 100% !important; height: 100% !important; }
     @media (max-height: 800px) {
       .chart-box { height: 210px; flex-basis: 210px; }
@@ -627,6 +949,26 @@
     .chart-tooltip .tip-date { color:var(--bt-text-secondary); }
     .chart-tooltip .tip-row { display:block; }
     .chart-tooltip .tip-row b { font-weight:650; color:var(--bt-text-secondary); }
+    .ias-tooltip-head { display:flex; align-items:center; gap:10px; margin:-1px 0 8px; padding-bottom:8px; border-bottom:1px solid var(--bt-divider); }
+    .ias-score-ring { --ias:0; --ias-color:var(--bt-primary); position:relative; flex:0 0 62px; width:62px; height:62px; display:grid; place-items:center; border-radius:50%; background:conic-gradient(var(--ias-color) calc(var(--ias) * 1%), color-mix(in srgb, var(--ias-color) 12%, var(--bt-divider)) 0); box-shadow:0 3px 12px color-mix(in srgb, var(--ias-color) 28%, transparent); }
+    .ias-score-ring::before { content:""; position:absolute; inset:6px; border-radius:50%; background:var(--bt-paper); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ias-color) 18%, var(--bt-divider)); }
+    .ias-score-value { position:relative; z-index:1; color:var(--ias-color); font:800 1.12rem/.9 var(--bt-font-mono); text-align:center; }
+    .ias-score-value small { display:block; margin-top:4px; color:var(--bt-text-secondary); font:700 .43rem/1 var(--bt-font); letter-spacing:.08em; text-transform:uppercase; }
+    .occupation-ias-summary { position:relative; display:flex; align-items:center; gap:5px; cursor:help; }
+    .occupation-ias-slot { flex:0 0 46px; width:46px; height:46px; }
+    .control-slot-hidden { visibility:hidden; pointer-events:none; }
+    .occupation-ias-ring { flex-basis:46px; width:46px; height:46px; box-shadow:0 2px 9px color-mix(in srgb, var(--ias-color) 24%, transparent); }
+    .occupation-ias-ring::before { inset:5px; }
+    .occupation-ias-ring .ias-score-value { font-size:.86rem; }
+    .occupation-ias-ring .ias-score-value small { margin-top:2px; font-size:.38rem; }
+    .occupation-ias-popover { position:absolute; z-index:9; left:0; top:calc(100% + 8px); width:280px; display:none; padding:10px; border:1px solid var(--bt-divider); border-radius:10px; background:var(--bt-paper); box-shadow:0 8px 24px rgba(0,0,0,.17); color:var(--bt-text); font:500 .65rem/1.4 var(--bt-font); pointer-events:none; }
+    .occupation-ias-summary:hover .occupation-ias-popover, .occupation-ias-summary:focus .occupation-ias-popover, .occupation-ias-summary:focus-within .occupation-ias-popover { display:block; }
+    .occupation-ias-popover strong { display:block; margin-bottom:5px; color:var(--bt-text); font-size:.74rem; }
+    .occupation-ias-popover .tip-row { display:block; }
+    .occupation-ias-popover .tip-row b { color:var(--bt-text-secondary); }
+    .ias-tooltip-title { min-width:0; }
+    .ias-tooltip-title strong { margin:0 0 4px; color:var(--bt-text); font-size:.76rem; line-height:1.25; }
+    .ias-evidence { display:inline-flex; padding:2px 6px; border:1px solid color-mix(in srgb, var(--ias-color) 38%, var(--bt-divider)); border-radius:999px; background:color-mix(in srgb, var(--ias-color) 10%, var(--bt-paper)); color:var(--ias-color); font-size:.52rem; font-weight:750; text-transform:uppercase; letter-spacing:.04em; }
 
     .legend {
       display: flex;
@@ -647,7 +989,8 @@
       margin-right: 2px;
     }
     .chart-axis-label {
-      flex: 0 0 auto;
+      flex: 0 0 220px;
+      width: 220px;
       color: var(--bt-text-secondary);
       font-size: 11px;
       font-weight: var(--bt-fw-semibold);
@@ -723,7 +1066,7 @@
 <body class="bt-body">
   <div class="shell">
     <div class="top">
-      <a class="brand-lockup" href="./" title="Return to the initial dashboard view" aria-label="Return to the initial dashboard view"><div class="brand-mark" aria-hidden="true"><span>I<span class="o">O</span><span class="h">h</span></span></div><h1 class="bt-page-title">Invitations · occupation history</h1></a>
+      <a class="brand-lockup" href="./" title="Return to the initial dashboard view" aria-label="Return to the initial dashboard view"><div class="brand-mark" aria-hidden="true"><img src="./logo-ias.png" alt="" /></div><span class="brand-copy"><h1 class="bt-page-title">Invitations · occupation history</h1><span class="brand-subtitle">Australian skilled migration evidence</span></span></a>
       <div class="top-right">
         <div class="top-meta" id="topMeta">…</div>
         <div class="theme-toggle" role="group" aria-label="Theme">
@@ -749,17 +1092,21 @@
       <select id="fVisto" aria-label="Visa"></select>
       <span class="filter-label">Year</span>
       <select id="fYear" aria-label="Year"></select>
+      <span class="filter-label">ANZSCO</span>
+      <select id="fAnzsco" aria-label="ANZSCO hierarchy"></select>
+      <button type="button" class="hierarchy-expand" id="btnHierarchyExpand" aria-label="Show all ANZSCO levels" aria-expanded="false" title="Show Minor, Unit and occupation levels">+</button>
+      <span class="filter-label">Skill</span>
+      <select id="fSkill" aria-label="Predominant ANZSCO skill level"></select>
       <span class="filter-label">Metric</span>
       <select id="fMetrica" aria-label="Metric"></select>
       <span class="filter-label">Sort</span>
       <select id="fSort" aria-label="Sort">
-        <option value="rank" selected>Rank descending</option>
+        <option value="ias" selected>Highest IAS</option>
         <option value="nome">Name A–Z</option>
-        <option value="baixa">Lowest last score</option>
-        <option value="frequente">Highest frequency</option>
-        <option value="media">Lowest average</option>
+        <option value="baixa">Lowest published score</option>
+        <option value="frequente">Most published records</option>
+        <option value="media">Lowest historical average</option>
       </select>
-      <input id="fBusca" type="search" placeholder="Occupation or code…" aria-label="Search occupation" />
       <input id="fCategoria" type="hidden" value="visto_de_convite" />
       <span class="filter-spacer"></span>
       <span id="filterSummary" class="bt-hint"></span>
@@ -767,24 +1114,23 @@
     </div>
 
     <section class="global-kpis" aria-label="Latest federal invitation round snapshot">
-      <div class="global-kpi round-linked" title="Most recent matching round with occupation scores"><div class="k" id="gRoundLabel">Latest federal round</div><div class="v" id="gLatestRound">—</div></div>
-      <div class="global-kpi round-linked" title="Number of occupations with a numeric score published in the latest federal round"><div class="k">Occupations in latest round</div><div class="v" id="gOccupationResults">—</div><div class="s" id="gOccupationDelta">published score results</div></div>
-      <div class="global-kpi round-linked" title="Published invitation total for the latest matching round"><div class="k">Invitations in latest round</div><div class="v" id="gInvitations">—</div><div class="s" id="gInvitationScope">subclass 189</div><div class="s" id="gInvitationDelta"></div></div>
-      <div class="global-kpi" title="Official Home Affairs expectation; this is not a guaranteed date"><div class="k">Next 189 round expected</div><div class="v" id="gNextRound">By 30 Sep 2026</div></div>
+      <div class="global-kpi round-linked"><div class="k"><span id="gRoundLabel">Latest federal round</span><span class="info-wrap"><button class="info-trigger" type="button" aria-label="About the latest federal round" aria-expanded="false">i</button><span class="info-popover" role="tooltip">Most recent federal SkillSelect invitation round represented in the current data. Federal rounds cover subclass 189 and subclass 491 Family Sponsored. State nomination rounds are separate events.</span></span></div><div class="v" id="gLatestRound">—</div></div>
+      <div class="global-kpi round-linked"><div class="k"><span>Occupation results published</span><span class="info-wrap"><button class="info-trigger" type="button" aria-label="About published occupation results" aria-expanded="false">i</button><span class="info-popover" role="tooltip">Distinct occupations or occupational groups with a numeric result in the latest matching round. This is not the number of people invited, and publication levels can differ between jurisdictions.</span></span></div><div class="v" id="gOccupationResults">—</div><div class="s" id="gOccupationDelta">published score results</div></div>
+      <div class="global-kpi round-linked"><div class="k"><span id="gInvitationLabel">Federal visa invitations</span><span class="info-wrap"><button class="info-trigger" type="button" aria-label="About the invitation total" aria-expanded="false">i</button><span class="info-popover" id="gInvitationInfo" role="tooltip">Total EOIs officially invited by Home Affairs in the matching federal round. The total covers the visa subclass and must not be attributed to individual occupations.</span></span></div><div class="v" id="gInvitations">—</div><div class="s" id="gInvitationScope">subclass 189</div><div class="s" id="gInvitationDelta"></div></div>
+      <div class="global-kpi"><div class="k"><span>Next federal 189 round</span><span class="info-wrap"><button class="info-trigger" type="button" aria-label="About the expected next federal round" aria-expanded="false">i</button><span class="info-popover" role="tooltip">Expectation published by the Australian Department of Home Affairs. It is not a guaranteed invitation date and may change when the official page is updated.</span></span></div><div class="v" id="gNextRound">Expected by 30 Sep 2026</div></div>
     </section>
 
     <div class="body">
       <aside class="bt-panel panel panel-left">
         <div class="panel-h">
           <h2>Occupations</h2>
-          <div class="tabs">
-            <button type="button" class="tab active" data-mode="baixa">Low score</button>
-            <button type="button" class="tab" data-mode="frequente">Frequent</button>
-            <button type="button" class="tab" data-mode="rara">Rare</button>
-          </div>
         </div>
         <div class="search-wrap">
-          <input id="fLista" type="search" placeholder="Filter list…" />
+          <div class="search-field">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+            <input id="fBusca" type="search" placeholder="Search occupation or ANZSCO code…" aria-label="Search occupation or ANZSCO code" autocomplete="off" />
+            <button class="search-clear" type="button" id="btnSearchClear" aria-label="Clear occupation search" hidden>×</button>
+          </div>
         </div>
         <div class="rank-scroll">
           <table class="occ-table">
@@ -792,10 +1138,10 @@
               <tr>
                 <th>Code</th>
                 <th class="sortable" data-col="nome">Name <span class="sort-ind" aria-hidden="true"></span></th>
-                <th class="rankh sortable" data-col="rank" title="Invitation frequency">Rank <span class="sort-ind" aria-hidden="true"></span></th>
-                <th class="numh sortable" data-col="last" title="Lower score means an easier invitation threshold">Last <span class="sort-ind" aria-hidden="true"></span></th>
-                <th class="numh sortable" data-col="avg" title="Lower score means an easier invitation threshold">Avg <span class="sort-ind" aria-hidden="true"></span></th>
-                <th class="numh sortable" data-col="freq">Freq <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="rankh sortable" data-col="ias">IAS <span class="sort-ind" aria-hidden="true"></span><span class="info-wrap ias-header-info"><button class="info-trigger" type="button" aria-label="About the Invitation Activity Score" aria-expanded="false">i</button><span class="info-popover" role="tooltip">IAS is a 0–100 historical activity signal: 30% recency + 25% frequency + 20% consistency + 15% coverage + 10% comparable score. Pink indicates lower activity, teal higher activity, and grey insufficient data. It is not an invitation probability or guarantee.</span></span></th>
+                <th class="numh sortable" data-col="last" title="Latest published score">Latest <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh sortable" data-col="avg" title="Historical average of published numeric scores">Average <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh sortable" data-col="freq" title="Number of published numeric records">Records <span class="sort-ind" aria-hidden="true"></span></th>
               </tr>
             </thead>
             <tbody id="rankBody"></tbody>
@@ -850,20 +1196,25 @@
     </div>
   </div>
 
+  <script src="./anzsco-hierarchy.js?v=20260902"></script>
   <script src="./data.js?v=20260813-state-audit"></script>
   <script>
     const SCORE = new Set(["pontos_minimos", "ultimo_eoi_pontos", "matrix_score"]);
-    const COLORS = (() => {
-      const s = getComputedStyle(document.documentElement);
-      const keys = [
-        "--bt-cat-violet", "--bt-cat-green", "--bt-cat-blue", "--bt-cat-amber",
-        "--bt-cat-slate", "--bt-cat-rust", "--bt-cat-brown", "--bt-cat-olive",
-      ];
-      const out = keys.map((k) => s.getPropertyValue(k).trim()).filter(Boolean);
-      return out.length ? out : ["#6d4bd8", "#2f8f6b", "#2f6fd8", "#c77d1a", "#5a6b7a", "#b0562a", "#7a5a2a", "#4a8f2f"];
-    })();
+    const COLORS = ["#00a691", "#e23084", "#2bc4ae", "#f05aa0", "#007f70", "#b51f69", "#67d9c8", "#f48abb"];
     const SCORE_CAP_PLAUSIBLE = 200;
     const Y_FLOOR_MAX = 105;
+    const ANZSCO_SUB_MAJOR_GROUPS = {
+      "11":"Chief Executives, General Managers and Legislators", "12":"Farmers and Farm Managers", "13":"Specialist Managers", "14":"Hospitality, Retail and Service Managers",
+      "21":"Arts and Media Professionals", "22":"Business, Human Resource and Marketing Professionals", "23":"Design, Engineering, Science and Transport Professionals", "24":"Education Professionals", "25":"Health Professionals", "26":"ICT Professionals", "27":"Legal, Social and Welfare Professionals",
+      "31":"Engineering, ICT and Science Technicians", "32":"Automotive and Engineering Trades Workers", "33":"Construction Trades Workers", "34":"Electrotechnology and Telecommunications Trades Workers", "35":"Food Trades Workers", "36":"Skilled Animal, Agricultural and Horticultural Workers", "39":"Other Technicians and Trades Workers",
+      "41":"Health and Welfare Support Workers", "42":"Carers and Aides", "43":"Hospitality Workers", "44":"Protective Service Workers", "45":"Sports and Personal Service Workers",
+      "51":"Office Managers and Program Administrators", "52":"Personal Assistants and Secretaries", "53":"General Clerical Workers", "54":"Inquiry Clerks and Receptionists", "55":"Numerical Clerks", "56":"Clerical and Office Support Workers", "59":"Other Clerical and Administrative Workers",
+      "61":"Sales Representatives and Agents", "62":"Sales Assistants and Salespersons", "63":"Sales Support Workers",
+      "71":"Machine and Stationary Plant Operators", "72":"Mobile Plant Operators", "73":"Road and Rail Drivers", "74":"Storepersons",
+      "81":"Cleaners and Laundry Workers", "82":"Construction and Mining Labourers", "83":"Factory Process Workers", "84":"Farm, Forestry and Garden Workers", "85":"Food Preparation Assistants", "89":"Other Labourers"
+    };
+    const ANZSCO_NODES = window.ANZSCO_HIERARCHY?.nodes || {};
+    const ANZSCO_LEVEL_LABELS = { major:"Major", sub_major:"Sub-major", minor:"Minor", unit:"Unit", occupation:"Occupation" };
 
     const raw = Array.isArray(window.CONVITES_DATA) ? window.CONVITES_DATA : [];
     const scoreRows = raw.filter((r) => {
@@ -872,6 +1223,7 @@
       return Number.isFinite(n) && n > 0 && n <= SCORE_CAP_PLAUSIBLE;
     });
     const GLOBAL_SCORE_MONTHS = uniq(scoreRows.map((r) => monthKey(r.data_round)).filter(Boolean));
+    const GLOBAL_SCORE_DATES = uniq(scoreRows.map((r) => String(r.data_round || "")).filter((d) => /^\d{4}-\d{2}(?:-\d{2})?$/.test(d)));
     const GLOBAL_MONTH_MIN = GLOBAL_SCORE_MONTHS[0] || "2020-08";
     const GLOBAL_MONTH_MAX = GLOBAL_SCORE_MONTHS.at(-1) || GLOBAL_MONTH_MIN;
 
@@ -879,14 +1231,19 @@
     let selected = null;
     let occupations = [];
     let chartEstados = new Set();
-    let colSort = { key: "rank", dir: "desc" };
+    let colSort = { key: "ias", dir: "desc" };
     let chartBarsSnapshot = [];
     let chartAnimationFrame = null;
-    let chartMode = "scores";
+    let chartMode = "groups";
     let chartStyle = "bar";
+    let groupMetric = "inv";
+    let chartStartDate = "";
+    let timeSliderFrame = null;
     let chartDateFilter = null;
     let lowerView = "history";
+    let hierarchyExpanded = false;
     let currentHistoryRows = [];
+    let allHistoryRows = [];
     const PROGRAM_METRICS = new Set(["nomeacoes_recebidas", "alocacao_nomeacoes"]);
     const programRows = raw.filter((r) => PROGRAM_METRICS.has(r.metrica) && Number.isFinite(Number(r.valor)));
     const publishedInvitationScopes = new Set(raw.filter((r) =>
@@ -971,15 +1328,45 @@
       return match ? match[1] : "";
     }
 
+    function anzscoSubMajorCode(row) {
+      const code = String(row?.anzsco || "").replace(/\D/g, "");
+      return code.length >= 2 && ANZSCO_SUB_MAJOR_GROUPS[code.slice(0, 2)] ? code.slice(0, 2) : "";
+    }
+
+    function rowAnzscoCode(row) {
+      const code = String(row?.anzsco || "").replace(/\D/g, "");
+      return [1, 2, 3, 4, 6].includes(code.length) ? code : "";
+    }
+
+    function selectedAnzscoCode() {
+      return $("fAnzsco").value;
+    }
+
+    function anzscoMatches(row, selection = selectedAnzscoCode()) {
+      if (!selection) return true;
+      const code = rowAnzscoCode(row);
+      if (selection === "__aggregate") return !code;
+      return Boolean(code) && code.startsWith(selection);
+    }
+
+    function skillMatches(row, skill = $("fSkill").value) {
+      if (!skill) return true;
+      const code = rowAnzscoCode(row);
+      const skills = ANZSCO_NODES[code]?.skills || [];
+      if (skill === "__unclassified") return !skills.length;
+      return skills.includes(Number(skill));
+    }
+
     function avg(nums) {
       if (!nums.length) return null;
       return nums.reduce((a, b) => a + b, 0) / nums.length;
     }
 
-    function activeFilterRows() {
+    function activeFilterRows({ ignoreGroup = false, ignoreSearch = false } = {}) {
       const vistos = selectedValues($("fVisto"));
       const years = selectedValues($("fYear"));
       const metricas = selectedValues($("fMetrica"));
+      const hierarchy = selectedAnzscoCode();
       const categoria = $("fCategoria").value;
       const busca = ($("fBusca").value || "").trim().toLowerCase();
 
@@ -989,10 +1376,152 @@
         if (!scoreMatchesVisaContext(r, vistos)) return false;
         if (years.length && !years.includes(calendarYear(r.data_round))) return false;
         if (metricas.length && !metricas.includes(r.metrica)) return false;
+        if (!ignoreGroup && hierarchy && !anzscoMatches(r, hierarchy)) return false;
+        if (!skillMatches(r)) return false;
         if (categoria && r.categoria !== categoria) return false;
-        if (busca && !(r.ocupacao || "").toLowerCase().includes(busca) && !(r.anzsco || "").includes(busca)) return false;
+        if (!ignoreSearch && busca && !(r.ocupacao || "").toLowerCase().includes(busca) && !(r.anzsco || "").includes(busca)) return false;
         return true;
       });
+    }
+
+    function groupInvitationRows({ ignoreGroup = false, ignoreSearch = false } = {}) {
+      const vistos = selectedValues($("fVisto"));
+      const years = selectedValues($("fYear"));
+      const hierarchy = selectedAnzscoCode();
+      const busca = ($("fBusca").value || "").trim().toLowerCase();
+      const candidates = raw.filter((r) => {
+        if (r.metrica !== "convites_emitidos" || !r.ocupacao || r.ocupacao === "agregado" || num(r.valor) == null) return false;
+        if (!anzscoSubMajorCode(r) || !selectedStates.has(r.jurisdicao)) return false;
+        if (vistos.length && !vistos.includes(r.visto)) return false;
+        if (years.length && !years.includes(calendarYear(r.data_round))) return false;
+        if (!ignoreGroup && hierarchy && !anzscoMatches(r, hierarchy)) return false;
+        if (!skillMatches(r)) return false;
+        if (!ignoreSearch && busca && !(r.ocupacao || "").toLowerCase().includes(busca) && !(r.anzsco || "").includes(busca)) return false;
+        return true;
+      });
+      // When an official monthly summary and a dated round coexist, use the
+      // monthly summary for totals so the dated round is not counted twice.
+      const monthlySummaries = new Set(candidates.filter((r) => /^\d{4}-\d{2}$/.test(r.data_round || ""))
+        .map((r) => `${r.jurisdicao}|${r.visto}|${r.data_round}`));
+      return candidates.filter((r) => !/^\d{4}-\d{2}-\d{2}$/.test(r.data_round || "") ||
+        !monthlySummaries.has(`${r.jurisdicao}|${r.visto}|${monthKey(r.data_round)}`));
+    }
+
+    function monthsBetween(a, b) {
+      const [ay, am] = String(a).split("-").map(Number);
+      const [by, bm] = String(b).split("-").map(Number);
+      return (by - ay) * 12 + (bm - am);
+    }
+
+    function offsetMonth(month, amount) {
+      const date = new Date(`${month}-01T00:00:00Z`);
+      date.setUTCMonth(date.getUTCMonth() + amount);
+      return date.toISOString().slice(0, 7);
+    }
+
+    function compactMonthLabel(month) {
+      return new Intl.DateTimeFormat("en-AU", { month:"short", year:"2-digit", timeZone:"UTC" })
+        .format(new Date(`${month}-01T00:00:00Z`));
+    }
+
+    function compactResultDate(value) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value || "")) {
+        return new Intl.DateTimeFormat("en-AU", { day:"numeric", month:"short", year:"2-digit", timeZone:"UTC" })
+          .format(new Date(`${value}T00:00:00Z`));
+      }
+      return compactMonthLabel(monthKey(value));
+    }
+
+    function sliderAxisDateLabel(value) {
+      const date = new Date(`${monthKey(value)}-01T00:00:00Z`);
+      const month = new Intl.DateTimeFormat("en-AU", { month:"short", timeZone:"UTC" }).format(date);
+      return `${month}-${String(date.getUTCFullYear()).slice(-2)}`;
+    }
+
+    function applyChartWindow(rows) {
+      if (!chartStartDate) return rows;
+      return rows.filter((r) => String(r.data_round || "") >= chartStartDate);
+    }
+
+    function activityScores(rows) {
+      const windowRows = applyChartWindow(rows);
+      const latestMonth = windowRows.map((r) => monthKey(r.data_round)).filter(Boolean).sort().at(-1);
+      const peers = new Map();
+      windowRows.forEach((r) => {
+        const key = `${r.jurisdicao}|${r.data_round}|${r.metrica}`;
+        if (!peers.has(key)) peers.set(key, []);
+        const value = num(r.valor);
+        if (value != null) peers.get(key).push(value);
+      });
+      const byOccupation = new Map();
+      windowRows.forEach((r) => {
+        const identity = r.identidade_ocupacional || `UNCLASSIFIED:${r.ocupacao}`;
+        if (!byOccupation.has(identity)) byOccupation.set(identity, []);
+        byOccupation.get(identity).push(r);
+      });
+      const maxDates = Math.max(1, ...[...byOccupation.values()].map((items) => new Set(items.map((r) => r.data_round).filter(Boolean)).size));
+      const maxContexts = Math.max(1, ...[...byOccupation.values()].map((items) => new Set(items.map((r) => `${r.jurisdicao}|${r.visto}`).filter(Boolean)).size));
+      const scores = new Map();
+      for (const [identity, items] of byOccupation) {
+        const dates = new Set(items.map((r) => r.data_round).filter(Boolean));
+        const quarters = new Set(items.map((r) => {
+          const month = monthKey(r.data_round); if (!month) return "";
+          return `${month.slice(0,4)}-Q${Math.ceil(Number(month.slice(5,7))/3)}`;
+        }).filter(Boolean));
+        const contexts = new Set(items.map((r) => `${r.jurisdicao}|${r.visto}`));
+        const lastMonth = items.map((r) => monthKey(r.data_round)).filter(Boolean).sort().at(-1);
+        const recency = latestMonth && lastMonth ? Math.max(0, 1 - monthsBetween(lastMonth, latestMonth) / 24) : 0;
+        const frequency = Math.min(1, dates.size / maxDates);
+        const selectedMonths = chartStartDate && latestMonth ? monthsBetween(monthKey(chartStartDate), latestMonth) + 1 : 24;
+        const consistency = Math.min(1, quarters.size / Math.min(8, Math.max(1, Math.ceil(selectedMonths / 3))));
+        const coverage = Math.min(1, contexts.size / maxContexts);
+        const relativeScores = items.map((r) => {
+          const value = num(r.valor); if (value == null) return null;
+          const peer = peers.get(`${r.jurisdicao}|${r.data_round}|${r.metrica}`) || [];
+          const min = Math.min(...peer), max = Math.max(...peer);
+          return max === min ? .5 : 1 - (value - min) / (max - min);
+        }).filter((value) => value != null);
+        const scorePosition = relativeScores.length ? relativeScores.reduce((sum, value) => sum + value, 0) / relativeScores.length : .5;
+        const score = Math.round((recency * .30 + frequency * .25 + consistency * .20 + coverage * .15 + scorePosition * .10) * 100);
+        const evidence = dates.size >= 8 && contexts.size >= 2 ? "High" : dates.size >= 3 ? "Medium" : "Low";
+        scores.set(identity, {
+          score, evidence, dates:dates.size, contexts:contexts.size,
+          components: {
+            recency:Math.round(recency*100), frequency:Math.round(frequency*100),
+            consistency:Math.round(consistency*100), coverage:Math.round(coverage*100),
+            comparableScore:Math.round(scorePosition*100)
+          }
+        });
+      }
+      return scores;
+    }
+
+    function activityColor(score) {
+      const t = Math.max(0, Math.min(1, Number(score) / 100));
+      const from = [226, 48, 132], to = [0, 166, 145];
+      const rgb = from.map((value, index) => Math.round(value + (to[index] - value) * t));
+      return `rgb(${rgb.join(",")})`;
+    }
+
+    function activityBand(score) {
+      if (score == null) return "Insufficient data";
+      if (score >= 70) return "High activity";
+      if (score >= 40) return "Moderate activity";
+      return "Lower activity";
+    }
+
+    function occupationIasHtml(activity) {
+      if (!activity) {
+        return `<span class="ias-list-dot" tabindex="0" data-tip="Insufficient comparable official data for an IAS calculation.">—</span>`;
+      }
+      const c = activity.components;
+      const tip = `IAS ${activity.score}/100 · ${activityBand(activity.score)}\nEvidence: ${activity.evidence} (${activity.dates} dates · ${activity.contexts} contexts)\n30% Recency: ${c.recency}/100\n25% Frequency: ${c.frequency}/100\n20% Consistency: ${c.consistency}/100\n15% Coverage: ${c.coverage}/100\n10% Comparable score: ${c.comparableScore}/100\nHistorical activity signal — not an invitation probability or guarantee.`;
+      return `<span class="ias-list-dot" tabindex="0" style="--ias-colour:${activityColor(activity.score)}" data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(`IAS ${activity.score} out of 100, ${activityBand(activity.score)}`)}">${activity.score}</span>`;
+    }
+
+    function updateOccupationActivity() {
+      const occupationActivity = activityScores(activeFilterRows({ ignoreGroup:true, ignoreSearch:true }));
+      occupations.forEach((occupation) => { occupation.activity = occupationActivity.get(occupation.identity) || null; });
     }
 
     function buildOccupations(rows) {
@@ -1065,7 +1594,9 @@
           cmp = (a.last ?? 999) - (b.last ?? 999);
         } else if (key === "avg") {
           cmp = (a.avg ?? 999) - (b.avg ?? 999);
-        } else if (key === "freq" || key === "rank") {
+        } else if (key === "ias") {
+          cmp = (a.activity?.score ?? -1) - (b.activity?.score ?? -1);
+        } else if (key === "freq") {
           cmp = (a.rounds ?? 0) - (b.rounds ?? 0);
         } else {
           cmp = a.nome.localeCompare(b.nome, undefined, { sensitivity: "base" });
@@ -1080,13 +1611,13 @@
     }
 
     function defaultDirForCol(col) {
-      if (col === "rank" || col === "freq") return "desc";
+      if (col === "ias" || col === "freq") return "desc";
       if (col === "last" || col === "avg") return "asc";
       return "asc";
     }
 
     function syncSortControls() {
-      const map = { nome: "nome", last: "baixa", avg: "media", freq: "frequente", rank: "rank" };
+      const map = { nome: "nome", last: "baixa", avg: "media", freq: "frequente", ias: "ias" };
       const opt = map[colSort.key];
       if (opt && $("fSort")) $("fSort").value = opt;
 
@@ -1111,7 +1642,7 @@
 
     function applySortFromSelect() {
       const v = $("fSort").value || "nome";
-      if (v === "rank") colSort = { key: "rank", dir: "desc" };
+      if (v === "ias") colSort = { key: "ias", dir: "desc" };
       else if (v === "baixa") colSort = { key: "last", dir: "asc" };
       else if (v === "frequente") colSort = { key: "freq", dir: "desc" };
       else if (v === "media") colSort = { key: "avg", dir: "asc" };
@@ -1143,12 +1674,12 @@
     }
 
     function freqLevelLabel(level) {
-      if (level <= 1) return "Very rare";
-      if (level <= 3) return "Rare";
+      if (level <= 1) return "Very limited history";
+      if (level <= 3) return "Limited history";
       if (level <= 5) return "Occasional";
-      if (level <= 7) return "Often";
-      if (level <= 9) return "Frequent";
-      return "Very often";
+      if (level <= 7) return "Published often";
+      if (level <= 9) return "Frequently published";
+      return "Extensively published";
     }
 
     function rankBarsHtml(rounds) {
@@ -1166,11 +1697,9 @@
     }
 
     function visibleOccupations() {
-      const q = ($("fLista").value || "").trim().toLowerCase();
       let list = sortOccupations(occupations);
       if (mode === "rara") list = list.filter((o) => o.rounds <= 3);
       if (mode === "frequente") list = list.filter((o) => o.rounds >= 5);
-      if (q) list = list.filter((o) => o.nome.toLowerCase().includes(q) || String(o.anzsco).includes(q));
       return list;
     }
 
@@ -1190,7 +1719,7 @@
           return `<tr class="${active}" data-key="${escapeAttr(o.key)}" title="${escapeAttr(labelMetric(o.metrica))}">
             <td class="code">${escapeHtml(o.anzsco)}</td>
             <td class="name">${escapeHtml(o.nome)}<div class="bt-hint">${escapeHtml(labelMetric(o.metrica))}</div></td>
-            <td class="rank">${rankBarsHtml(o.rounds)}</td>
+            <td class="rank">${occupationIasHtml(o.activity)}</td>
             <td class="num ${scoreClass(o.last)}">${o.last ?? "—"}</td>
             <td class="num ${scoreClass(o.avg)}">${o.avg ?? "—"}</td>
             <td class="num">${o.rounds}</td>
@@ -1201,7 +1730,7 @@
       body.querySelectorAll("tr[data-key]").forEach((tr) => {
         tr.addEventListener("click", () => {
           const occ = occupations.find((o) => o.key === tr.dataset.key);
-          if (occ) selectOccupation(occ);
+          if (occ) selectOccupation(occ, { showScores: true });
         });
       });
     }
@@ -1233,28 +1762,98 @@
       selectOccupation(list[0]);
     }
 
-    function selectOccupation(occ) {
+    function selectOccupation(occ, { showScores = false } = {}) {
+      if (showScores) {
+        chartMode = "scores";
+      }
       selected = occ;
       chartEstados = new Set(occ.juris);
       renderRank();
       renderHistory(occ);
     }
 
+    function effectiveGroupTimeDates() {
+      const sourceRows = groupMetric === "inv"
+        ? groupInvitationRows({ ignoreGroup:true })
+        : activeFilterRows({ ignoreGroup:true });
+      const allDates = uniq(sourceRows.map((row) => String(row.data_round || ""))
+        .filter((date) => /^\d{4}-\d{2}(?:-\d{2})?$/.test(date))).sort();
+      if (allDates.length < 2) return { allDates, cutoffDates:[] };
+
+      const signatureAt = (cutoff = "") => {
+        const windowRows = cutoff ? sourceRows.filter((row) => String(row.data_round || "") >= cutoff) : sourceRows;
+        if (groupMetric === "inv") {
+          const totals = new Map();
+          windowRows.forEach((row) => {
+            const code = anzscoSubMajorCode(row);
+            if (code) totals.set(code, (totals.get(code) || 0) + (num(row.valor) || 0));
+          });
+          return JSON.stringify([...totals].sort(([a], [b]) => a.localeCompare(b)));
+        }
+        if (groupMetric === "ias") {
+          const counts = new Map();
+          windowRows.forEach((row) => {
+            const identity = row.identidade_ocupacional || `UNCLASSIFIED:${row.ocupacao}`;
+            counts.set(identity, (counts.get(identity) || 0) + 1);
+          });
+          return JSON.stringify([...counts].sort(([a], [b]) => a.localeCompare(b)));
+        }
+        const groups = new Map();
+        windowRows.forEach((row) => {
+          const code = anzscoSubMajorCode(row);
+          if (!code) return;
+          if (!groups.has(code)) groups.set(code, new Set());
+          groups.get(code).add(row.identidade_ocupacional || `UNCLASSIFIED:${row.ocupacao}`);
+        });
+        return JSON.stringify([...groups].sort(([a], [b]) => a.localeCompare(b)).map(([code, identities]) => [code, [...identities].sort()]));
+      };
+
+      const cutoffDates = [];
+      let previousSignature = signatureAt();
+      allDates.slice(1).forEach((date) => {
+        const signature = signatureAt(date);
+        if (signature === previousSignature) return;
+        cutoffDates.push(date);
+        previousSignature = signature;
+      });
+      return { allDates, cutoffDates };
+    }
+
     function renderEstadoBar(occ) {
       const bar = $("estadoBar");
       const visaNumbers = uniq(occ.rows.map((r) => String(r.visto || "").match(/\d+/)?.[0]).filter(Boolean));
       const visaText = visaNumbers.length ? ` · Visa ${visaNumbers.join(" / ")}` : "";
-      bar.innerHTML = `<span class="chart-axis-label" id="chartAxisLabel" data-visa-text="${escapeAttr(visaText)}">${chartMode === "scores" ? "Score · 0–105" : chartMode === "invitations" ? "Invitations" : "Occupations"}${escapeHtml(visaText)}</span>` +
-        `<span class="hist-kpis" aria-label="Selected occupation KPIs">
-          <span class="kpi kpi-easy"><span class="k">Lowest score</span><span class="v" id="kMin">—</span></span>
-          <span class="kpi kpi-latest"><span class="k">Latest score</span><span class="v" id="kLast">—</span></span>
-          <span class="kpi kpi-date"><span class="k">Last invitation</span><span class="v" id="kLastDate">—</span></span>
-          <span class="kpi kpi-rounds"><span class="k">Rounds</span><span class="v" id="kRounds">—</span></span>
+      const axisTitle = chartMode === "groups" ? "ANZSCO group overview" : chartMode === "scores" ? "Score · 0–105" : chartMode === "invitations" ? "Invitation events" : "Published coverage";
+      const effectiveDates = effectiveGroupTimeDates();
+      const fullTimeDates = effectiveDates.allDates.length ? effectiveDates.allDates : (GLOBAL_SCORE_DATES.length ? GLOBAL_SCORE_DATES : [GLOBAL_MONTH_MIN]);
+      // Only expose cutoff dates that change the selected group measure.
+      const timeDates = effectiveDates.cutoffDates;
+      const matchedStartIndex = chartStartDate ? timeDates.findIndex((date) => date >= chartStartDate) : -1;
+      if (chartStartDate && matchedStartIndex < 0) chartStartDate = "";
+      else if (matchedStartIndex >= 0) chartStartDate = timeDates[matchedStartIndex];
+      const timeStartIndex = matchedStartIndex < 0 ? 0 : matchedStartIndex + 1;
+      const timeStartDate = timeStartIndex === 0 ? "" : timeDates[timeStartIndex - 1];
+      const timeMinLabel = sliderAxisDateLabel(fullTimeDates[0]);
+      const timeMaxLabel = sliderAxisDateLabel(fullTimeDates.at(-1));
+      bar.innerHTML = `<span class="chart-axis-label" id="chartAxisLabel" data-visa-text="${escapeAttr(visaText)}">${axisTitle}${chartMode === "scores" ? escapeHtml(visaText) : ""}</span>` +
+        (chartMode === "scores" ? `<span class="occupation-ias-summary occupation-ias-slot" id="occupationIasSummary" tabindex="0"><span class="ias-score-ring occupation-ias-ring" id="occupationIasRing"><span class="ias-score-value" id="occupationIasValue">—<small>IAS</small></span></span><span class="occupation-ias-popover" id="occupationIasPopover" role="tooltip"></span></span>` : `<span class="occupation-ias-slot control-slot-hidden" aria-hidden="true"></span>`) +
+        `<span class="hist-kpis" aria-label="Chart KPIs">
+          <span class="kpi kpi-easy"><span class="k" id="kMinLabel">—</span><span class="v" id="kMin">—</span></span>
+          <span class="kpi kpi-latest"><span class="k" id="kLastLabel">—</span><span class="v" id="kLast">—</span></span>
+          <span class="kpi kpi-date"><span class="k" id="kLastDateLabel">Latest result</span><span class="v" id="kLastDate">—</span></span>
+          <span class="kpi kpi-rounds"><span class="k" id="kRoundsLabel">—</span><span class="v" id="kRounds">—</span></span>
+        </span>` +
+        `<label class="chart-time-control${chartMode === "groups" ? "" : " control-slot-hidden"}" title="All covers the complete date range; every following step changes the selected group measure"${chartMode === "groups" ? "" : ` aria-hidden="true"`}><span class="chart-time-title">Date range</span><span class="chart-time-axis"><span class="chart-time-limits"><span>${timeMinLabel}</span><span>${timeMaxLabel}</span></span><input id="chartTimeRange" type="range" min="0" max="${timeDates.length}" step="1" value="${timeStartIndex}" aria-label="Chart starting result date"></span><span class="chart-time-value" id="chartTimeValue">${timeStartDate ? compactResultDate(timeStartDate) : "All"}</span></label>` +
+        `<span class="group-measure-switch${chartMode === "groups" ? "" : " control-slot-hidden"}" aria-label="Group chart measure"${chartMode === "groups" ? "" : ` aria-hidden="true"`}>
+          <button type="button" class="estado-chip chart-toggle${groupMetric === "inv" ? " on" : ""}" data-group-metric="inv" data-measure-info="INV sums only invitations explicitly attributed to an occupation group. Federal aggregate totals are excluded.">INV</button>
+          <button type="button" class="estado-chip chart-toggle${groupMetric === "occ" ? " on" : ""}" data-group-metric="occ" data-measure-info="OCC counts distinct occupations with an official published result in each ANZSCO group.">OCC</button>
+          <button type="button" class="estado-chip chart-toggle${groupMetric === "ias" ? " on" : ""}" data-group-metric="ias" data-measure-info="IAS is a 0–100 historical activity signal based on recency, frequency, consistency, coverage and comparable score. It is not an invitation probability.">IAS</button>
         </span>` +
         `<span class="chart-switch" aria-label="Chart view">
+          <button type="button" class="estado-chip chart-toggle${chartMode === "groups" ? " on" : ""}" data-chart-mode="groups">Occupation groups</button>
           <button type="button" class="estado-chip chart-toggle${chartMode === "scores" ? " on" : ""}" data-chart-mode="scores">Scores</button>
-          <button type="button" class="estado-chip chart-toggle${chartMode === "invitations" ? " on" : ""}" data-chart-mode="invitations">Invitations</button>
-          <button type="button" class="estado-chip chart-toggle${chartMode === "occupations" ? " on" : ""}" data-chart-mode="occupations">Occupations</button>
+          <button type="button" class="estado-chip chart-toggle${chartMode === "invitations" ? " on" : ""}" data-chart-mode="invitations">Invitation events</button>
+          <button type="button" class="estado-chip chart-toggle${chartMode === "occupations" ? " on" : ""}" data-chart-mode="occupations">Published coverage</button>
         </span>
         <span class="chart-style-switch" aria-label="Chart style">
           <button type="button" class="estado-chip chart-style-toggle${chartStyle === "bar" ? " on" : ""}" data-chart-style="bar" aria-label="Bar chart" title="Bar chart"><svg viewBox="0 0 16 16"><rect x="1.5" y="8.5" width="3" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="6.5" y="2.5" width="3" height="12" rx="1" fill="currentColor" stroke="none"/><rect x="11.5" y="5.5" width="3" height="9" rx="1" fill="currentColor" stroke="none"/></svg></button>
@@ -1273,6 +1872,62 @@
           chartBarsSnapshot = [];
           renderHistory(selected);
         }));
+      bar.querySelectorAll("[data-group-metric]").forEach((btn) => btn.addEventListener("click", () => {
+          if (groupMetric === btn.dataset.groupMetric) return;
+          groupMetric = btn.dataset.groupMetric;
+          renderHistory(selected);
+        }));
+      const chartTimeRange = $("chartTimeRange");
+      if (chartTimeRange) {
+        chartTimeRange.addEventListener("input", (event) => {
+          const startIndex = Number(event.target.value);
+          chartStartDate = startIndex <= 0 ? "" : timeDates[startIndex - 1];
+          $("chartTimeValue").textContent = chartStartDate ? compactResultDate(chartStartDate) : "All";
+          if (timeSliderFrame) cancelAnimationFrame(timeSliderFrame);
+          timeSliderFrame = requestAnimationFrame(() => {
+            timeSliderFrame = null;
+            updateGroupView();
+            occupations = buildOccupations(applyChartWindow(activeFilterRows()));
+            updateOccupationActivity();
+            renderRank();
+            currentHistoryRows = applyChartWindow(allHistoryRows);
+            renderLowerView(selected);
+          });
+        });
+      }
+      bar.querySelectorAll(".info-trigger").forEach((button) => button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const wrap = button.closest(".info-wrap");
+        const open = !wrap.classList.contains("open");
+        closeInfoPopovers();
+        wrap.classList.toggle("open", open);
+        button.setAttribute("aria-expanded", String(open));
+      }));
+    }
+
+    function updateGroupView() {
+      const groupRows = applyChartWindow(activeFilterRows({ ignoreGroup:true }));
+      const comparisonRows = applyChartWindow(activeFilterRows({ ignoreGroup:true, ignoreSearch:true }));
+      const attributedInvitations = applyChartWindow(groupInvitationRows({ ignoreGroup:true }));
+      const occupationActivity = activityScores(comparisonRows);
+      const activityValues = [...new Set(groupRows.map((r) => r.identidade_ocupacional).filter(Boolean))]
+        .map((identity) => occupationActivity.get(identity)?.score).filter((value) => value != null).sort((a,b) => a-b);
+      const medianActivity = activityValues.length ? Math.round(activityValues[Math.floor((activityValues.length - 1) / 2)]) : null;
+      const displayedRows = groupMetric === "inv" ? attributedInvitations : groupRows;
+      const groupCodes = new Set(displayedRows.map(anzscoSubMajorCode).filter(Boolean));
+      const latestGroupResult = displayedRows.map((r) => monthKey(r.data_round)).filter(Boolean).sort().at(-1) || "—";
+      $("kMinLabel").textContent = "Groups";
+      $("kMin").textContent = groupCodes.size;
+      $("kLastLabel").textContent = groupMetric === "inv" ? "Attributed invites" : groupMetric === "ias" ? "Median IAS" : "Occupations";
+      $("kLast").textContent = groupMetric === "inv"
+        ? attributedInvitations.reduce((sum, r) => sum + (num(r.valor) || 0), 0).toLocaleString("en-AU")
+        : groupMetric === "ias" ? (medianActivity ?? "—")
+        : new Set(groupRows.map((r) => r.identidade_ocupacional).filter(Boolean)).size;
+      $("kLastDateLabel").textContent = "Latest result";
+      $("kLastDate").textContent = latestGroupResult;
+      $("kRoundsLabel").textContent = groupMetric === "inv" ? "Published rows" : "Published records";
+      $("kRounds").textContent = displayedRows.length.toLocaleString("en-AU");
+      drawGroupChart(groupRows, attributedInvitations, occupationActivity);
     }
 
     function renderHistory(occ) {
@@ -1282,13 +1937,22 @@
       content.hidden = false;
       content.style.display = "flex";
 
-      $("histTitle").textContent = occ.nome;
-      $("histSub").textContent = [
+      $("histTitle").textContent = chartMode === "groups" ? "Occupation groups" : occ.nome;
+      $("chart").closest(".chart-box").classList.toggle("groups-framed", chartMode === "groups");
+      const levelLabel = ({
+        occupation: "Occupation-level result",
+        unit_group: "Unit-group result",
+        minor_group: "Minor-group result",
+        sub_major_group: "Sub-major-group result",
+        major_group: "Major-group result",
+        unclassified: "Published result",
+      })[occ.nivelOcupacional] || "Published result";
+      $("histSub").textContent = chartMode === "groups" ? "Official ANZSCO sub-major groups · Select a group to filter the occupation list · Select an occupation to open its score history" : [
         occ.anzsco && occ.anzsco !== "—" ? `ANZSCO ${occ.anzsco}` : null,
-        occ.nivelOcupacional.replaceAll("_", " "),
+        levelLabel,
         labelMetric(occ.metrica),
-        occ.codigoStatus.includes("abs_exact_title") ? "code matched exactly to ABS 2022" :
-          occ.codigoStatus.includes("source") ? "code published by source" : "code not published",
+        occ.codigoStatus.includes("abs_exact_title") ? "Title matched exactly to the ABS ANZSCO 2022 reference" :
+          occ.codigoStatus.includes("source") ? "Code published by the official source" : "Code not published by the source",
         `${occ.rounds} ${occ.rounds === 1 ? "record" : "records"}`,
         (() => {
           const count = new Set(occ.rows.map((r) => r.data_round).filter(Boolean)).size;
@@ -1320,7 +1984,8 @@
       ) : filteredRows;
       const chartRowsAsc = [...contextualRows].sort((a, b) => String(a.data_round).localeCompare(String(b.data_round)));
       const tableRowsAsc = chartDateFilter ? chartRowsAsc : rowsAsc;
-      currentHistoryRows = [...tableRowsAsc].reverse();
+      allHistoryRows = [...tableRowsAsc].reverse();
+      currentHistoryRows = applyChartWindow(allHistoryRows);
 
       const invitationSourceRows = raw.filter((r) =>
         r.jurisdicao === "FEDERAL" && r.ocupacao === "agregado" &&
@@ -1345,7 +2010,43 @@
           r.data_round === data_round && num(r.valor) != null
         ).map((r) => r.ocupacao_canonica || r.ocupacao).filter(Boolean)).size
       }));
-      drawChart(chartMode === "scores" ? chartRowsAsc : chartMode === "invitations" ? invitationRows : occupationRows);
+      const chartRows = chartMode === "scores" ? chartRowsAsc : chartMode === "invitations" ? invitationRows : occupationRows;
+      if (chartMode === "groups") {
+        updateGroupView();
+      } else {
+        const windowedChartRows = applyChartWindow(chartRows);
+        const chartValues = windowedChartRows.map((r) => num(r.valor)).filter((value) => value != null);
+        const latestChartRow = [...windowedChartRows].sort((a, b) => String(b.data_round).localeCompare(String(a.data_round)))[0];
+        if (chartMode === "scores") {
+          const comparisonRows = applyChartWindow(activeFilterRows({ ignoreGroup:true, ignoreSearch:true }));
+          const occupationSignal = activityScores(comparisonRows).get(occ.identity);
+          const occupationIas = occupationSignal?.score ?? null;
+          const occupationColour = occupationIas == null ? chartToken("--bt-text-secondary", "#8a8f98") : activityColor(occupationIas);
+          $("occupationIasRing").style.setProperty("--ias", occupationIas ?? 0);
+          $("occupationIasRing").style.setProperty("--ias-color", occupationColour);
+          $("occupationIasValue").innerHTML = `${occupationIas ?? "—"}<small>IAS</small>`;
+          $("occupationIasSummary").title = `Occupation IAS: ${occupationIas ?? "not available"}/100 · ${occupationSignal?.evidence || "Low"} evidence · Historical activity signal, not an invitation probability`;
+          $("occupationIasSummary").setAttribute("aria-label", $("occupationIasSummary").title);
+          const components = occupationSignal?.components || {};
+          $("occupationIasPopover").innerHTML = `<strong>Occupation Invitation Activity Score</strong>
+            <span class="tip-row"><b>IAS:</b> ${occupationIas ?? "—"}/100 · ${occupationSignal?.evidence || "Low"} evidence</span>
+            <span class="tip-row"><b>30% Recency:</b> ${components.recency ?? "—"}/100</span>
+            <span class="tip-row"><b>25% Frequency:</b> ${components.frequency ?? "—"}/100</span>
+            <span class="tip-row"><b>20% Consistency:</b> ${components.consistency ?? "—"}/100</span>
+            <span class="tip-row"><b>15% Coverage:</b> ${components.coverage ?? "—"}/100</span>
+            <span class="tip-row"><b>10% Comparable score:</b> ${components.comparableScore ?? "—"}/100</span>
+            <span class="tip-row" style="margin-top:6px;color:var(--bt-text-secondary)">Calculated from the selected period and comparable official results. IAS is a historical activity signal, not an invitation probability or guarantee.</span>`;
+        }
+        $("kMinLabel").textContent = chartMode === "scores" ? "Lowest score" : "Latest total";
+        $("kMin").textContent = chartMode === "scores" ? (chartValues.length ? Math.min(...chartValues).toLocaleString("en-AU") : "—") : (latestChartRow ? Number(latestChartRow.valor).toLocaleString("en-AU") : "—");
+        $("kLastLabel").textContent = chartMode === "scores" ? "Latest score" : "Peak total";
+        $("kLast").textContent = chartMode === "scores" ? (lastRow ? Number(lastRow.valor).toLocaleString("en-AU") : "—") : (chartValues.length ? Math.max(...chartValues).toLocaleString("en-AU") : "—");
+        $("kLastDateLabel").textContent = "Latest result";
+        $("kLastDate").textContent = latestChartRow ? monthKey(latestChartRow.data_round) : "—";
+        $("kRoundsLabel").textContent = chartMode === "scores" ? "Published dates" : "Events";
+        $("kRounds").textContent = new Set(windowedChartRows.map((r) => r.data_round).filter(Boolean)).size;
+        drawChart(windowedChartRows);
+      }
       renderLowerView(occ);
     }
 
@@ -1392,9 +2093,9 @@
             <td class="program-value">${selectedVisa.length && !selectedVisa.includes("190") ? "—" : formatN(sumFor(nominations,state,"190"))}</td>
             <td class="program-value">${selectedVisa.length && !selectedVisa.includes("491") ? "—" : formatN(sumFor(nominations,state,"491"))}</td>
             <td class="program-value"><strong>${formatN(total)}</strong></td><td class="program-value">${grandTotal ? (total/grandTotal*100).toFixed(1)+"%" : "—"}</td>
-            <td class="program-value">${allocated ? (total/allocated*100).toFixed(0)+"%" : "—"}</td><td><span class="availability ${details.length ? "yes" : ""}">${details.length ? "Available" : "Not published"}</span></td></tr>`;
+            <td class="program-value allocation-usage">${allocated ? `<strong>${(total/allocated*100).toFixed(0)}%</strong><div class="allocation-track" role="progressbar" aria-label="${escapeAttr(state)} nomination allocation used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100, Math.round(total/allocated*100))}"><div class="allocation-fill" style="width:${Math.min(100,total/allocated*100).toFixed(1)}%"></div></div>` : "—"}</td><td><span class="availability ${details.length ? "yes" : ""}">${details.length ? "Available" : "No suitable publication located"}</span></td></tr>`;
         }).join("");
-        setDetailTable([{label:"State"},{label:"190",numeric:true},{label:"491",numeric:true},{label:"Total",numeric:true},{label:"Share",numeric:true},{label:"Allocation used",numeric:true},{label:"Occupation detail"}], html, "Program year 2025–26 · through 30 Jun 2026");
+        setDetailTable([{label:"State"},{label:"190",numeric:true},{label:"491",numeric:true},{label:"Total",numeric:true},{label:"Share",numeric:true},{label:"Allocation used",numeric:true},{label:"Occupation detail"}], html, "Program year 2025–26 · nominations received through 30 Jun 2026 · allocation use does not represent visa grants");
         return;
       }
 
@@ -1429,6 +2130,204 @@
 
     function chartToken(name, fallback) {
       return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+    }
+
+    function drawGroupChart(rows, invitationRows, occupationActivity) {
+      const canvas = $("chart");
+      const ctx = canvas.getContext("2d");
+      const box = canvas.parentElement;
+      const w = box.clientWidth;
+      const h = box.clientHeight;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      if (chartAnimationFrame) cancelAnimationFrame(chartAnimationFrame);
+      chartAnimationFrame = null;
+      chartBarsSnapshot = [];
+
+      const summaries = new Map();
+      rows.forEach((row) => {
+        const code = anzscoSubMajorCode(row);
+        if (!code) return;
+        if (!summaries.has(code)) summaries.set(code, { code, name:ANZSCO_SUB_MAJOR_GROUPS[code], identities:new Set(), dates:new Set(), records:0, scores:[], activity:[], invitations:0, invitationRows:0 });
+        const item = summaries.get(code);
+        if (row.identidade_ocupacional) item.identities.add(row.identidade_ocupacional);
+        if (row.data_round) item.dates.add(row.data_round);
+        item.records += 1;
+        const score = num(row.valor);
+        if (score != null) item.scores.push(score);
+      });
+      invitationRows.forEach((row) => {
+        const code = anzscoSubMajorCode(row);
+        if (!code) return;
+        if (!summaries.has(code)) summaries.set(code, { code, name:ANZSCO_SUB_MAJOR_GROUPS[code], identities:new Set(), dates:new Set(), records:0, scores:[], activity:[], invitations:0, invitationRows:0 });
+        const item = summaries.get(code);
+        item.invitations += num(row.valor) || 0;
+        item.invitationRows += 1;
+        if (row.data_round) item.dates.add(row.data_round);
+      });
+      summaries.forEach((group) => {
+        group.activity = [...group.identities].map((identity) => occupationActivity.get(identity)?.score).filter((value) => value != null).sort((a,b) => a-b);
+        group.ias = group.activity.length ? Math.round(group.activity[Math.floor((group.activity.length - 1) / 2)]) : null;
+        group.highEvidence = [...group.identities].filter((identity) => occupationActivity.get(identity)?.evidence === "High").length;
+        group.evidence = group.identities.size && group.highEvidence / group.identities.size >= .5 ? "High"
+          : group.activity.length >= 3 ? "Medium" : "Low";
+        const medianComponent = (key) => {
+          const values = [...group.identities].map((identity) => occupationActivity.get(identity)?.components?.[key]).filter((value) => value != null).sort((a,b) => a-b);
+          return values.length ? values[Math.floor((values.length - 1) / 2)] : null;
+        };
+        group.components = {
+          recency:medianComponent("recency"), frequency:medianComponent("frequency"),
+          consistency:medianComponent("consistency"), coverage:medianComponent("coverage"),
+          comparableScore:medianComponent("comparableScore")
+        };
+        group.value = groupMetric === "inv" ? group.invitations : groupMetric === "ias" ? group.ias : group.identities.size;
+      });
+      const groups = [...summaries.values()].filter((group) => group.value != null && (groupMetric !== "inv" || group.invitations > 0)).sort((a, b) => a.code.localeCompare(b.code));
+      const metricLabel = groupMetric === "inv" ? "Attributed invitations" : groupMetric === "ias" ? "Invitation Activity Score (IAS)" : "Occupations with published results";
+      $("legend").innerHTML = `<span><i style="width:42px;background:#00a691"></i>Series · Teal</span><span>${metricLabel}</span><span title="IAS is not an invitation probability">IAS colour scale is shown in the hover score · 30% recency + 25% frequency + 20% consistency + 15% coverage + 10% comparable score</span>`;
+      $("chartAxisLabel").textContent = "ANZSCO group overview";
+      let tooltip = box.querySelector(".chart-tooltip");
+      if (!tooltip) {
+        tooltip = document.createElement("div");
+        tooltip.className = "chart-tooltip";
+        box.appendChild(tooltip);
+      }
+      if (!groups.length) {
+        ctx.fillStyle = chartToken("--bt-text-secondary", "#777");
+        ctx.font = `500 13px ${chartToken("--bt-font", "Inter, system-ui, sans-serif")}`;
+        ctx.textAlign = "center";
+        ctx.fillText("No official ANZSCO groups for the selected filters", w / 2, h / 2);
+        canvas.onmousemove = null; canvas.onmouseleave = null; canvas.onclick = null;
+        return;
+      }
+
+      const pad = { t:24, r:24, b:42, l:48 };
+      const plotW = w - pad.l - pad.r;
+      const plotH = h - pad.t - pad.b;
+      const maxValue = Math.max(...groups.map((group) => group.value), 1);
+      const ymax = groupMetric === "ias" ? 100 : Math.max(5, Math.ceil(maxValue / 5) * 5);
+      const yAt = (value) => pad.t + ((ymax - value) / ymax) * plotH;
+      const slot = plotW / groups.length;
+      const xAt = (index) => pad.l + slot * (index + .5);
+      const hierarchySelection = selectedAnzscoCode();
+      const hasHierarchySelection = Boolean(hierarchySelection);
+      const groupIsSelected = (groupCode) => {
+        if (!hierarchySelection) return true;
+        if (hierarchySelection === "__aggregate") return false;
+        return groupCode.startsWith(hierarchySelection) || hierarchySelection.startsWith(groupCode);
+      };
+      const groupColor = () => "#00a691";
+      const mutedGroupColor = chartToken("--bt-divider", "#d8dbe2");
+      const ticks = 5;
+      ctx.lineWidth = 1;
+      ctx.font = `500 9px ${chartToken("--bt-font", "Inter, system-ui, sans-serif")}`;
+      for (let i = 0; i <= ticks; i++) {
+        const value = ymax - (ymax * i / ticks);
+        const y = pad.t + plotH * i / ticks;
+        ctx.strokeStyle = chartToken("--bt-divider", "rgba(33,33,31,.1)");
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + plotW, y); ctx.stroke();
+        ctx.fillStyle = chartToken("--bt-text-secondary", "#777");
+        ctx.textAlign = "right"; ctx.fillText(Math.round(value).toLocaleString("en-AU"), pad.l - 7, y + 3);
+      }
+
+      if (chartStyle === "line") {
+        const gradient = ctx.createLinearGradient(pad.l, 0, pad.l + plotW, 0);
+        groups.forEach((group, index) => gradient.addColorStop(groups.length === 1 ? 0 : index / (groups.length - 1), groupColor(group)));
+        ctx.strokeStyle = hasHierarchySelection ? mutedGroupColor : gradient;
+        ctx.lineWidth = 2.5;
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        const linePoints = groups.map((group, index) => ({ x:xAt(index), y:yAt(group.value) }));
+        if (linePoints.length) ctx.moveTo(linePoints[0].x, linePoints[0].y);
+        for (let index = 1; index < linePoints.length; index++) {
+          const previous = linePoints[index - 1];
+          const current = linePoints[index];
+          const middleX = (previous.x + current.x) / 2;
+          ctx.bezierCurveTo(middleX, previous.y, middleX, current.y, current.x, current.y);
+        }
+        ctx.stroke();
+        groups.forEach((group, index) => {
+          ctx.globalAlpha = 1;
+          ctx.fillStyle = groupIsSelected(group.code) ? groupColor(group) : mutedGroupColor;
+          ctx.beginPath(); ctx.arc(xAt(index), yAt(group.value), 4, 0, Math.PI * 2); ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+      } else {
+        const barWidth = Math.max(8, Math.min(28, slot * .58));
+        groups.forEach((group, index) => {
+          ctx.globalAlpha = 1;
+          ctx.fillStyle = groupIsSelected(group.code) ? groupColor(group) : mutedGroupColor;
+          const y = yAt(group.value);
+          ctx.fillRect(xAt(index) - barWidth / 2, y, barWidth, yAt(0) - y);
+        });
+        ctx.globalAlpha = 1;
+      }
+
+      groups.forEach((group, index) => {
+        const x = xAt(index), y = yAt(group.value);
+        ctx.fillStyle = chartToken("--bt-text", "#141413");
+        ctx.font = `600 9px ${chartToken("--bt-font", "Inter, system-ui, sans-serif")}`;
+        ctx.textAlign = "center";
+        ctx.fillText(Number(group.value).toLocaleString("en-AU"), x, y - 7);
+        const fullLabel = `${group.code} · ${group.name}`;
+        ctx.textAlign = "center";
+        ctx.font = `600 8px "Arial Narrow", "Roboto Condensed", ${chartToken("--bt-font", "Inter, system-ui, sans-serif")}`;
+        let label = fullLabel;
+        const maxLabelWidth = Math.max(24, slot - 6);
+        while (label.length > 7 && ctx.measureText(`${label}…`).width > maxLabelWidth) label = label.slice(0, -1);
+        if (label !== fullLabel) label = `${label.trimEnd()}…`;
+        ctx.fillText(label, x, pad.t + plotH + 17);
+      });
+
+      const nearestIndex = (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = (event.clientX - rect.left) * (w / rect.width);
+        const index = Math.max(0, Math.min(groups.length - 1, Math.floor((mouseX - pad.l) / slot)));
+        return mouseX >= pad.l && mouseX <= pad.l + plotW ? index : -1;
+      };
+      canvas.onmousemove = (event) => {
+        const index = nearestIndex(event);
+        if (index < 0) { tooltip.style.display = "none"; return; }
+        const group = groups[index];
+        const average = group.scores.length ? group.scores.reduce((sum, value) => sum + value, 0) / group.scores.length : null;
+        const iasColour = group.ias == null ? chartToken("--bt-text-secondary", "#8a8f98") : activityColor(group.ias);
+        tooltip.innerHTML = `<div class="ias-tooltip-head" style="--ias-color:${iasColour}">
+          <div class="ias-score-ring" style="--ias:${group.ias ?? 0};--ias-color:${iasColour}"><span class="ias-score-value">${group.ias ?? "—"}<small>IAS / 100</small></span></div>
+          <div class="ias-tooltip-title"><strong>${group.code} · ${escapeHtml(group.name)}</strong><span class="ias-evidence" style="--ias-color:${iasColour}">${group.evidence} evidence</span></div>
+        </div>
+          <span class="tip-row"><b>Occupations:</b> ${group.identities.size.toLocaleString("en-AU")}</span>
+          <span class="tip-row"><b>Attributed invitations:</b> ${group.invitations ? group.invitations.toLocaleString("en-AU") : "Not published"}</span>
+          <span class="tip-row"><b>IAS:</b> ${group.ias ?? "—"}/100</span>
+          <span class="tip-row"><b>Recency (30%):</b> ${group.components.recency ?? "—"}/100</span>
+          <span class="tip-row"><b>Frequency (25%):</b> ${group.components.frequency ?? "—"}/100</span>
+          <span class="tip-row"><b>Consistency (20%):</b> ${group.components.consistency ?? "—"}/100</span>
+          <span class="tip-row"><b>Coverage (15%):</b> ${group.components.coverage ?? "—"}/100</span>
+          <span class="tip-row"><b>Comparable score (10%):</b> ${group.components.comparableScore ?? "—"}/100</span>
+          <span class="tip-row"><b>High-evidence occupations:</b> ${group.highEvidence.toLocaleString("en-AU")}</span>
+          <span class="tip-row"><b>Published records:</b> ${group.records.toLocaleString("en-AU")}</span>
+          <span class="tip-row"><b>Published dates:</b> ${group.dates.size.toLocaleString("en-AU")}</span>
+          <span class="tip-row"><b>Average published score:</b> ${average == null ? "—" : average.toFixed(1)}</span>
+          <span class="tip-row">Click to filter this group</span>`;
+        tooltip.style.display = "block";
+        const boxRect = box.getBoundingClientRect();
+        const pointerLeft = event.clientX - boxRect.left;
+        const pointerTop = event.clientY - boxRect.top;
+        const left = pointerLeft + tooltip.offsetWidth + 18 <= box.clientWidth
+          ? pointerLeft + 14 : pointerLeft - tooltip.offsetWidth - 14;
+        tooltip.style.left = `${Math.max(8, left)}px`;
+        tooltip.style.top = `${Math.max(8, pointerTop - tooltip.offsetHeight - 16)}px`;
+      };
+      canvas.onmouseleave = () => { tooltip.style.display = "none"; };
+      canvas.onclick = (event) => {
+        const index = nearestIndex(event);
+        if (index < 0) return;
+        $("fAnzsco").value = selectedAnzscoCode() === groups[index].code ? "" : groups[index].code;
+        selected = null;
+        refresh();
+      };
     }
 
     function drawChart(rows) {
@@ -1618,12 +2517,13 @@
           <span class="tip-row tip-date"><b>Round date:</b> ${escapeHtml(readableDates)}</span>
           ${chartMode === "scores" ? scoreDetails : `<span class="tip-row"><b>${valueLabel}:</b> ${formatChartNumber(totalValue)}</span><span class="tip-row"><b>Jurisdiction:</b> Federal</span><span class="tip-row"><b>Visa scope:</b> all visas in the published total</span>`}`;
         tooltip.style.display = "block";
-        const anchorLeft = canvas.offsetLeft + xAt(nearest) / scaleX;
-        const left = Math.min(box.clientWidth - tooltip.offsetWidth - 8, Math.max(8, anchorLeft - tooltip.offsetWidth / 2));
-        const cursorTop = canvas.offsetTop + (event.clientY - rect.top);
-        const top = Math.min(box.clientHeight - tooltip.offsetHeight - 8, Math.max(8, cursorTop - tooltip.offsetHeight - 10));
-        tooltip.style.left = `${left}px`;
-        tooltip.style.top = `${top}px`;
+        const boxRect = box.getBoundingClientRect();
+        const pointerLeft = event.clientX - boxRect.left;
+        const pointerTop = event.clientY - boxRect.top;
+        const left = pointerLeft + tooltip.offsetWidth + 18 <= box.clientWidth
+          ? pointerLeft + 14 : pointerLeft - tooltip.offsetWidth - 14;
+        tooltip.style.left = `${Math.max(8, left)}px`;
+        tooltip.style.top = `${Math.max(8, pointerTop - tooltip.offsetHeight - 16)}px`;
       };
       canvas.onmouseleave = () => { tooltip.style.display = "none"; };
       canvas.onclick = (event) => {
@@ -1860,11 +2760,14 @@
 
     function refresh() {
       const rows = activeFilterRows();
-      occupations = buildOccupations(rows);
+      occupations = buildOccupations(applyChartWindow(rows));
+      updateOccupationActivity();
 
       const vistos = selectedValues($("fVisto"));
       const years = selectedValues($("fYear"));
       const metricas = selectedValues($("fMetrica"));
+      const hierarchy = selectedAnzscoCode();
+      const skill = $("fSkill").value;
       const dateStateRows = scoreRows.filter((r) =>
         selectedStates.has(r.jurisdicao) && (!chartDateFilter || monthKey(r.data_round) === chartDateFilter)
       );
@@ -1888,6 +2791,13 @@
       if (vistos.length) activeChips.push({ key:"visa", label:`Visa: ${vistos.join(", ")}` });
       if (years.length) activeChips.push({ key:"year", label:`Year: ${years.join(", ")}` });
       if (metricas.length) activeChips.push({ key:"metric", label:`Metric: ${metricas.map(labelMetric).join(", ")}` });
+      if (hierarchy) {
+        const hierarchyLabel = hierarchy === "__aggregate"
+          ? "Aggregate / not attributable"
+          : `${hierarchy} · ${ANZSCO_NODES[hierarchy]?.name || "ANZSCO"}`;
+        activeChips.push({ key:"anzsco", label:`ANZSCO: ${hierarchyLabel}` });
+      }
+      if (skill) activeChips.push({ key:"skill", label:`Skill: ${skill === "__unclassified" ? "Not classified" : `Level ${skill}`}` });
       const searchValue = ($("fBusca").value || "").trim();
       if (searchValue) activeChips.push({ key:"search", label:`Search: ${searchValue}` });
       if (chartDateFilter) activeChips.push({ key:"date", label:`Date: ${chartDateFilter}` });
@@ -1900,6 +2810,8 @@
         if (key === "visa") $("fVisto").value = "";
         if (key === "year") $("fYear").value = "";
         if (key === "metric") $("fMetrica").value = "";
+        if (key === "anzsco") $("fAnzsco").value = "";
+        if (key === "skill") $("fSkill").value = "";
         if (key === "search") $("fBusca").value = "";
         if (key === "date") chartDateFilter = null;
         refresh();
@@ -1909,12 +2821,13 @@
       const defaultFederalRows = scoreRows.filter((r) =>
         r.jurisdicao === "FEDERAL" && r.visto === "189" && r.metrica === "pontos_minimos"
       );
-      const filtersActive = selectedStates.size !== filterStates.length || vistos.length || years.length || metricas.length || chartDateFilter || ($("fBusca").value || "").trim();
+      const filtersActive = selectedStates.size !== filterStates.length || vistos.length || years.length || metricas.length || hierarchy || skill || chartDateFilter || ($("fBusca").value || "").trim();
       const matchingInvitationRows = raw.filter((r) =>
         selectedStates.has(r.jurisdicao) && ["eois_convidados", "convites_emitidos"].includes(r.metrica) &&
         /^\d{4}-\d{2}(?:-\d{2})?$/.test(r.data_round || "") &&
         (!vistos.length || vistos.includes(r.visto)) &&
-        (!years.length || years.includes(calendarYear(r.data_round)))
+        (!years.length || years.includes(calendarYear(r.data_round))) &&
+        anzscoMatches(r, hierarchy) && skillMatches(r, skill)
       );
       const federalMinimums = filtersActive ? (rows.length ? rows : matchingInvitationRows) : defaultFederalRows;
       const latestFederalDate = federalMinimums
@@ -1926,7 +2839,7 @@
         .filter((d) => /^\d{4}-\d{2}(?:-\d{2})?$/.test(d)))].sort();
       const latestFederalRows = federalMinimums.filter((r) => r.data_round === latestFederalDate);
       const latestJurisdictions = new Set(latestFederalRows.map((r) => r.jurisdicao));
-      const aggregateRows = !($("fBusca").value || "").trim() ? raw.filter((r) =>
+      const aggregateRows = (!hierarchy || hierarchy === "__aggregate") && !skill && !($("fBusca").value || "").trim() ? raw.filter((r) =>
         latestJurisdictions.has(r.jurisdicao) && r.data_round === latestFederalDate &&
         ["eois_convidados", "convites_emitidos"].includes(r.metrica) && num(r.valor) != null &&
         (!vistos.length || vistos.includes(r.visto))
@@ -1952,11 +2865,21 @@
       $("gInvitationScope").textContent = latestInvitationVisas.size
         ? `subclass ${[...latestInvitationVisas].join(" / ")}`
         : filtersActive ? "matching published total" : "subclass 189";
+      const federalInvitationContext = latestJurisdictions.size === 1 && latestJurisdictions.has("FEDERAL");
+      const stateInvitationContext = latestJurisdictions.size > 0 && !latestJurisdictions.has("FEDERAL");
+      $("gInvitationLabel").textContent = federalInvitationContext || !filtersActive
+        ? "Federal visa invitations"
+        : stateInvitationContext ? "State nomination invitations" : "Invitation events";
+      $("gInvitationInfo").textContent = federalInvitationContext || !filtersActive
+        ? "Total EOIs officially invited by Home Affairs in the matching federal round. The total covers the visa subclass and must not be attributed to individual occupations."
+        : stateInvitationContext
+          ? "Invitations issued by the selected state or territory to apply for state nomination. These are not visa grants and are not directly comparable with federal SkillSelect visa invitations."
+          : "Federal visa invitations and state nomination invitations are different stages. They are shown as separate events and must not be combined.";
       const federalNextRoundApplies = !filtersActive || (
         latestJurisdictions.size === 1 && latestJurisdictions.has("FEDERAL") &&
         (!vistos.length || vistos.includes("189"))
       );
-      $("gNextRound").textContent = federalNextRoundApplies ? "By 30 Sep 2026" : "Not announced";
+      $("gNextRound").textContent = federalNextRoundApplies ? "Expected by 30 Sep 2026" : "Not currently announced";
       const latestOccupationCount = new Set(latestFederalRows
         .map((r) => r.ocupacao_canonica || r.ocupacao).filter(Boolean)).size;
       const contextOccupationCount = new Set(federalMinimums
@@ -1980,7 +2903,9 @@
         ? latestInvitationValue - previousInvitationValue : null;
       $("gInvitationDelta").textContent = invitationDelta == null
         ? ""
-        : `${invitationDelta >= 0 ? "+" : ""}${invitationDelta.toLocaleString("en-AU")} vs previous round (${previousInvitationValue.toLocaleString("en-AU")})`;
+        : invitationDelta === 0
+          ? `No change from the previous comparable round (${previousInvitationValue.toLocaleString("en-AU")})`
+          : `${Math.abs(invitationDelta).toLocaleString("en-AU")} ${invitationDelta > 0 ? "more" : "fewer"} than the previous comparable round (${previousInvitationValue.toLocaleString("en-AU")})`;
       $("gInvitationDelta").className = `s ${invitationDelta > 0 ? "delta-positive" : invitationDelta < 0 ? "delta-negative" : ""}`;
       const previousOccupationCount = new Set(federalMinimums.filter((r) =>
         r.data_round === previousFederalDate && num(r.valor) != null
@@ -1990,7 +2915,9 @@
       const occupationDelta = previousFederalDate ? latestOccupationCount - previousOccupationCount : null;
       $("gOccupationDelta").textContent = occupationDelta == null
         ? "published score results"
-        : `${occupationDelta >= 0 ? "+" : ""}${occupationDelta} vs previous round (${previousOccupationCount})`;
+        : occupationDelta === 0
+          ? `No change from the previous comparable round (${previousOccupationCount})`
+          : `${Math.abs(occupationDelta)} ${occupationDelta > 0 ? "more" : "fewer"} published results than the previous comparable round (${previousOccupationCount})`;
       $("gOccupationDelta").className = `s ${occupationDelta > 0 ? "delta-positive" : occupationDelta < 0 ? "delta-negative" : ""}`;
 
       if (selected) {
@@ -2012,8 +2939,7 @@
       $("themeLight").classList.toggle("on", next === "light");
       $("themeDark").classList.toggle("on", next === "dark");
       if (selected) {
-        const filtered = selected.rows.filter((r) => chartEstados.has(r.jurisdicao));
-        drawChart([...filtered].sort((a, b) => String(a.data_round).localeCompare(String(b.data_round))));
+        renderHistory(selected);
       }
     }
 
@@ -2037,8 +2963,50 @@
       return escapeHtml(s).replaceAll("'", "&#39;");
     }
 
+    function fillAnzscoHierarchySelect() {
+      const current = $("fAnzsco").value;
+      const represented = new Set();
+      raw.map(rowAnzscoCode).filter(Boolean).forEach((code) => {
+        [1, 2, 3, 4, 6].filter((length) => length <= code.length).forEach((length) => {
+          const ancestor = code.slice(0, length);
+          if (ANZSCO_NODES[ancestor]) represented.add(ancestor);
+        });
+      });
+      const select = $("fAnzsco");
+      select.innerHTML = '<option value="">All levels</option>';
+      [...represented].sort((a, b) => a.localeCompare(b)).filter((code) => hierarchyExpanded || code.length <= 2 || code === current).forEach((code) => {
+        const node = ANZSCO_NODES[code];
+        const depth = ({ 1:0, 2:1, 3:2, 4:3, 6:4 })[code.length] || 0;
+        const option = document.createElement("option");
+        option.value = code;
+        option.textContent = `${"\u00a0\u00a0".repeat(depth)}${code} · ${node.name}`;
+        option.title = `${ANZSCO_LEVEL_LABELS[node.level]}: ${code} · ${node.name}`;
+        select.appendChild(option);
+      });
+      const aggregate = document.createElement("option");
+      aggregate.value = "__aggregate";
+      aggregate.textContent = "Aggregate / not attributable";
+      aggregate.title = "Official totals that cannot be attributed to an ANZSCO code";
+      select.appendChild(aggregate);
+      select.value = current;
+      const button = $("btnHierarchyExpand");
+      button.textContent = hierarchyExpanded ? "−" : "+";
+      button.setAttribute("aria-expanded", String(hierarchyExpanded));
+      button.setAttribute("aria-label", hierarchyExpanded ? "Show Major and Sub-major levels only" : "Show all ANZSCO levels");
+      button.title = hierarchyExpanded ? "Show Major and Sub-major levels only" : "Show Minor, Unit and occupation levels";
+    }
+
+    function fillSkillSelect() {
+      const select = $("fSkill");
+      select.innerHTML = '<option value="">All</option>' +
+        [1, 2, 3, 4, 5].map((level) => `<option value="${level}">Level ${level}</option>`).join("") +
+        '<option value="__unclassified">Not classified</option>';
+    }
+
     fillSelect($("fVisto"), uniq(scoreRows.map((r) => r.visto)), false);
     fillSelect($("fYear"), uniq(scoreRows.map((r) => calendarYear(r.data_round)).filter(Boolean)), false);
+    fillAnzscoHierarchySelect();
+    fillSkillSelect();
     fillSelect($("fMetrica"), uniq(scoreRows.map((r) => r.metrica)), false, labelMetric);
     fillSelect($("fCategoria"), uniq(raw.map((r) => r.categoria)), false, labelCategory);
     $("fCategoria").value = "visto_de_convite";
@@ -2056,36 +3024,75 @@
       if (state && !scoreRows.some((r) => r.jurisdicao === state)) lowerView = "states";
       refresh();
     });
-    ["fVisto", "fYear", "fMetrica"].forEach((id) => $(id).addEventListener("change", refresh));
+    ["fVisto", "fYear", "fAnzsco", "fSkill", "fMetrica"].forEach((id) => $(id).addEventListener("change", () => {
+      selected = null;
+      refresh();
+    }));
+    $("btnHierarchyExpand").addEventListener("click", () => {
+      hierarchyExpanded = !hierarchyExpanded;
+      fillAnzscoHierarchySelect();
+      $("fAnzsco").focus();
+    });
 
     $("btnClear").addEventListener("click", () => {
       [...$("fVisto").options].forEach((o) => (o.selected = false));
       [...$("fYear").options].forEach((o) => (o.selected = false));
       [...$("fMetrica").options].forEach((o) => (o.selected = false));
+      $("fAnzsco").value = "";
+      $("fSkill").value = "";
       selectedStates = new Set(filterStates);
       renderGlobalStateFilter();
       $("fCategoria").value = "visto_de_convite";
       $("fBusca").value = "";
+      $("btnSearchClear").hidden = true;
       chartDateFilter = null;
+      chartMode = "groups";
+      groupMetric = "inv";
+      chartStartDate = "";
       lowerView = "history";
-      $("fLista").value = "";
-      $("fSort").value = "rank";
-      colSort = { key: "rank", dir: "desc" };
+      $("fSort").value = "ias";
+      colSort = { key: "ias", dir: "desc" };
       mode = "baixa";
       document.querySelectorAll(".tab[data-mode]").forEach((t) => t.classList.toggle("active", t.dataset.mode === "baixa"));
       selected = null;
       syncSortControls();
       refresh();
     });
+    const closeInfoPopovers = () => {
+      document.querySelectorAll(".info-wrap.open").forEach((wrap) => {
+        wrap.classList.remove("open");
+        wrap.querySelector(".info-trigger")?.setAttribute("aria-expanded", "false");
+      });
+    };
+    document.querySelectorAll(".info-trigger").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const wrap = button.closest(".info-wrap");
+        const willOpen = !wrap.classList.contains("open");
+        closeInfoPopovers();
+        wrap.classList.toggle("open", willOpen);
+        button.setAttribute("aria-expanded", String(willOpen));
+      });
+    });
+    document.addEventListener("click", closeInfoPopovers);
     document.addEventListener("keydown", (event) => {
       if (event.key !== "Escape") return;
+      if (document.querySelector(".info-wrap.open")) {
+        closeInfoPopovers();
+        return;
+      }
       event.preventDefault();
       $("btnClear").click();
     });
-    $("fBusca").addEventListener("input", refresh);
-
-    $("fLista").addEventListener("input", () => {
-      ensureSelection();
+    $("fBusca").addEventListener("input", () => {
+      $("btnSearchClear").hidden = !$("fBusca").value;
+      refresh();
+    });
+    $("btnSearchClear").addEventListener("click", () => {
+      $("fBusca").value = "";
+      $("btnSearchClear").hidden = true;
+      $("fBusca").focus();
+      refresh();
     });
     $("fSort").addEventListener("change", () => {
       applySortFromSelect();
@@ -2116,8 +3123,7 @@
 
     window.addEventListener("resize", () => {
       if (selected) {
-        const filtered = selected.rows.filter((r) => chartEstados.has(r.jurisdicao));
-        drawChart([...filtered].sort((a, b) => String(a.data_round).localeCompare(String(b.data_round))));
+        renderHistory(selected);
       }
     });
 
