@@ -1090,7 +1090,16 @@ def parse_act(manifesto: dict) -> list[dict]:
 
 def parse_wa_pdf(manifesto: dict) -> list[dict]:
     sources = [
+        ("dados/estados/wa/Last invited EOI by occupation - May 2023.pdf", "2023-05", "priority=published_round"),
+        ("dados/estados/wa/Last invited EOI by occupation - August 2023.pdf", "2023-08", "priority=published_round"),
+        ("dados/estados/wa/SNMP Invite Round - August 2024.pdf", "2024-08", "priority=published_round"),
+        ("dados/estados/wa/SNMP Invite Round - September 2024.pdf", "2024-09", "priority=published_round"),
+        ("dados/estados/wa/SNMP Invite Round - October 2024.pdf", "2024-10", "priority=published_round"),
+        ("dados/estados/wa/SNMP Invite Round - December 2024.pdf", "2024-12", "priority=published_round"),
+        ("dados/estados/wa/SNMP Invite Round - February 2025.pdf", "2025-02", "priority=published_round"),
+        ("dados/estados/wa/SNMP Invite Round - March 2025 Non Priority.pdf", "2025-03", "priority=non_priority"),
         ("dados/estados/wa/SNMP Invite Round - Last Invited By Occupation May 2025.pdf", "2025-05", "priority=published_round"),
+        ("dados/estados/wa/SNMP Invite Round - June 2025.pdf", "2025-06", "priority=published_round"),
         ("dados/estados/wa/SNMP - Priority Invite Round - October 2025.pdf", "2025-10", "priority=trades"),
         ("dados/estados/wa/SNMP Invite Round - December 2025.pdf", "2025-12", "priority=all_published"),
         ("dados/estados/wa/SNMP Invite Round - January 2026.pdf", "2026-01", "priority=trades"),
@@ -1100,10 +1109,10 @@ def parse_wa_pdf(manifesto: dict) -> list[dict]:
         ("dados/estados/wa/Last invited expression of interest - Priority trade occupations - May 2026.pdf", "2026-05-20", "priority=trades"),
     ]
     markers = [
-        (r"General stream\s*-\s*WASMOL Schedule 1", "WASMOL1"),
-        (r"General stream\s*-\s*WASMOL Schedule 2", "WASMOL2"),
-        (r"Graduate stream\s*-\s*Higher Education", "graduate_he"),
-        (r"Graduate stream\s*-\s*Vocational Education and Training", "graduate_vet"),
+        (r"General stream\s*[-–—]\s*WASMOL Schedule 1", "WASMOL1"),
+        (r"General stream\s*[-–—]\s*WASMOL Schedule 2", "WASMOL2"),
+        (r"Graduate stream\s*[-–—]\s*Higher Education", "graduate_he"),
+        (r"Graduate stream\s*[-–—]\s*Vocational Education and Training", "graduate_vet"),
     ]
     out = []
     occ_re = re.compile(

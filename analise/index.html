@@ -58,6 +58,20 @@
     }
 
     .top-meta { color: var(--bt-text-secondary); }
+    .top-link {
+      color: var(--bt-text);
+      text-decoration: none;
+      border: 1px solid color-mix(in srgb, #e23084 55%, transparent);
+      border-radius: var(--bt-r-round);
+      background: var(--bt-paper);
+      box-shadow: var(--bt-shadow-1);
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: var(--bt-fw-bold);
+      letter-spacing: .035em;
+      text-transform: uppercase;
+    }
+    .top-link:hover { background: color-mix(in srgb, #e23084 10%, var(--bt-paper)); }
 
     .brand-copy { display: grid; gap: 0; min-width: 0; }
     .brand-copy .bt-page-title {
@@ -337,8 +351,8 @@
       padding: 4px 9px;
       border: 1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
       border-radius: 12px;
-      background: #fff;
-      color: #242522;
+      background: var(--bt-paper);
+      color: var(--bt-text);
       box-shadow: 0 5px 14px color-mix(in srgb, var(--bt-text) 9%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 7%, transparent);
       font: var(--bt-fw-regular) var(--bt-fs-input)/1.2 var(--bt-font);
     }
@@ -351,12 +365,12 @@
       border-color: #00a691;
       box-shadow: 0 0 0 3px color-mix(in srgb, #00a691 18%, transparent), 0 8px 20px color-mix(in srgb, #00a691 13%, transparent);
     }
-    .filters-compact select option { background:#fff; color:#242522; }
+    .filters-compact select option { background:var(--bt-paper); color:var(--bt-text); }
     .filters-compact select option:hover,
     .filters-compact select option:focus,
     .filters-compact select option:checked {
-      background:#f6d7e6 linear-gradient(0deg, #f6d7e6 0%, #f6d7e6 100%);
-      color:#6f1743;
+      background:color-mix(in srgb, #e23084 18%, var(--bt-paper)) linear-gradient(0deg, color-mix(in srgb, #e23084 18%, var(--bt-paper)) 0%, color-mix(in srgb, #e23084 18%, var(--bt-paper)) 100%);
+      color:color-mix(in srgb, #e23084 72%, var(--bt-text));
     }
     .state-filter { display:flex; gap:3px; align-items:center; flex:0 0 auto; }
     .filter-chip {
@@ -381,24 +395,8 @@
     .active-filter-chip { height:25px; padding:0 7px; border:1px solid color-mix(in srgb, var(--bt-primary) 30%, var(--bt-divider)); border-radius:999px; background:color-mix(in srgb, var(--bt-primary) 8%, var(--bt-paper)); color:var(--bt-text); font:500 .625rem/1 var(--bt-font); cursor:pointer; }
     .active-filter-chip .x { margin-left:4px; color:var(--bt-primary); font-size:.78rem; }
     #fVisto { width:92px; }
-    #fAnzsco { width:190px; }
+    #fAnzsco { width:220px; }
     #fSkill { width:82px; }
-    .hierarchy-expand {
-      flex:0 0 24px;
-      width:24px;
-      height:24px;
-      padding:0;
-      display:grid;
-      place-items:center;
-      border:1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
-      border-radius:50%;
-      background:#fff;
-      color:#00a691;
-      box-shadow:0 3px 9px color-mix(in srgb, var(--bt-text) 8%, transparent);
-      font:700 15px/1 var(--bt-font);
-      cursor:pointer;
-    }
-    .hierarchy-expand:hover, .hierarchy-expand:focus-visible { border-color:#00a691; outline:none; background:color-mix(in srgb, #00a691 8%, #fff); }
     #fMetrica { width:142px; }
     #fSort { width:132px; }
 
@@ -640,7 +638,7 @@
       padding: 9px 12px 8px;
       border: 1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
       border-radius: 12px;
-      background: #fff;
+      background: var(--bt-paper);
       box-shadow: 0 5px 14px color-mix(in srgb, var(--bt-text) 9%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 7%, transparent);
       overflow: visible;
     }
@@ -658,7 +656,7 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      color: #6f747c;
+      color: var(--bt-text-secondary);
       font-size: 0.625rem;
       font-weight: var(--bt-fw-bold);
       letter-spacing: 0.06em;
@@ -674,15 +672,15 @@
     }
     .global-kpi .s {
       margin-top: 1px;
-      color: #6f747c;
+      color: var(--bt-text-secondary);
       font-size: 0.625rem;
     }
-    .global-kpi.round-linked { background:#fff; }
+    .global-kpi.round-linked { background:var(--bt-paper); }
     .global-kpi.round-linked .v { color:#00a691; }
     .global-kpi:nth-child(odd) .v { color:#e23084; }
     .global-kpi .v .positive { color:inherit; }
-    .global-kpi .v .denominator { color:#6f747c; font-size:.78em; }
-    .global-kpi .info-trigger { color:#6f747c; }
+    .global-kpi .v .denominator { color:var(--bt-text-secondary); font-size:.78em; }
+    .global-kpi .info-trigger { color:var(--bt-text-secondary); }
     .delta-positive, .delta-negative { color:var(--bt-text-secondary) !important; }
     .global-kpi:nth-child(4)::before { background:#00b89c; }
     .global-kpi:nth-child(4) .v { color:#00a691; }
@@ -801,7 +799,7 @@
       padding: 3px 7px;
       border: 1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
       border-radius: 12px;
-      background: #fff;
+      background: var(--bt-paper);
       box-shadow: 0 4px 11px color-mix(in srgb, var(--bt-text) 8%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 6%, transparent);
     }
     .kpi .k {
@@ -809,7 +807,7 @@
       font-size: .48rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #6f747c;
+      color: var(--bt-text-secondary);
       font-weight: var(--bt-fw-bold);
     }
     .kpi .v {
@@ -818,10 +816,10 @@
       font-weight: var(--bt-fw-heavy);
       font-variant-numeric: tabular-nums;
       font-family: var(--bt-font-mono);
-      color: #242522;
+      color: var(--bt-text);
       line-height: 1.02;
     }
-    .kpi-easy, .kpi-latest, .kpi-date, .kpi-rounds { background:#fff; }
+    .kpi-easy, .kpi-latest, .kpi-date, .kpi-rounds { background:var(--bt-paper); }
 
     .chart-switch {
       margin-left:auto;
@@ -861,9 +859,9 @@
       padding:8px 10px;
       border:1px solid color-mix(in srgb, #e23084 38%, var(--bt-divider));
       border-radius:10px;
-      background:#fff;
+      background:var(--bt-paper);
       box-shadow:0 7px 20px color-mix(in srgb, var(--bt-text) 14%, transparent);
-      color:#242522;
+      color:var(--bt-text);
       font:500 10px/1.45 var(--bt-font);
       text-align:left;
       white-space:normal;
@@ -879,17 +877,17 @@
       visibility:visible;
       transform:translate(-50%, 0);
     }
-    .chart-time-control { display:flex; flex:0 0 288px; width:288px; align-items:center; gap:7px; padding:4px 8px; border:1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider)); border-radius:12px; background:#fff; box-shadow:0 4px 11px color-mix(in srgb, var(--bt-text) 8%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 6%, transparent); color:#6f747c; font-size:10px; font-weight:var(--bt-fw-semibold); }
+    .chart-time-control { display:flex; flex:0 0 288px; width:288px; align-items:center; gap:7px; padding:4px 8px; border:1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider)); border-radius:12px; background:var(--bt-paper); box-shadow:0 4px 11px color-mix(in srgb, var(--bt-text) 8%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 6%, transparent); color:var(--bt-text-secondary); font-size:10px; font-weight:var(--bt-fw-semibold); }
     .chart-time-title { text-transform:uppercase; letter-spacing:.05em; white-space:nowrap; }
     .chart-time-axis { display:grid; grid-template-rows:auto 14px; width:148px; }
     .chart-time-limits { display:flex; justify-content:space-between; align-items:center; color:var(--bt-text-secondary); font:600 8px/1 var(--bt-font-mono); }
     .chart-time-control input { width:148px; height:14px; margin:0; appearance:none; background:transparent; cursor:grab; }
-    .chart-time-control input::-webkit-slider-runnable-track { height:5px; border:1px solid color-mix(in srgb, #e23084 58%, var(--bt-divider)); border-radius:999px; background:color-mix(in srgb, #e23084 10%, #fff); }
-    .chart-time-control input::-webkit-slider-thumb { width:14px; height:14px; margin-top:-5px; appearance:none; border:2px solid #fff; border-radius:50%; background:#00a691; box-shadow:0 1px 4px color-mix(in srgb, #00a691 45%, transparent); }
-    .chart-time-control input::-moz-range-track { height:4px; border:1px solid color-mix(in srgb, #e23084 58%, var(--bt-divider)); border-radius:999px; background:color-mix(in srgb, #e23084 10%, #fff); }
-    .chart-time-control input::-moz-range-thumb { width:12px; height:12px; border:2px solid #fff; border-radius:50%; background:#00a691; box-shadow:0 1px 4px color-mix(in srgb, #00a691 45%, transparent); }
+    .chart-time-control input::-webkit-slider-runnable-track { height:5px; border:1px solid color-mix(in srgb, #e23084 58%, var(--bt-divider)); border-radius:999px; background:color-mix(in srgb, #e23084 10%, var(--bt-paper)); }
+    .chart-time-control input::-webkit-slider-thumb { width:14px; height:14px; margin-top:-5px; appearance:none; border:2px solid var(--bt-paper); border-radius:50%; background:#00a691; box-shadow:0 1px 4px color-mix(in srgb, #00a691 45%, transparent); }
+    .chart-time-control input::-moz-range-track { height:4px; border:1px solid color-mix(in srgb, #e23084 58%, var(--bt-divider)); border-radius:999px; background:color-mix(in srgb, #e23084 10%, var(--bt-paper)); }
+    .chart-time-control input::-moz-range-thumb { width:12px; height:12px; border:2px solid var(--bt-paper); border-radius:50%; background:#00a691; box-shadow:0 1px 4px color-mix(in srgb, #00a691 45%, transparent); }
     .chart-time-control input:active { cursor:grabbing; }
-    .chart-time-value { min-width:46px; padding:2px 5px; border:1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider)); border-radius:999px; background:#fff; color:#242522; text-align:center; font-family:var(--bt-font-mono); font-size:9px; }
+    .chart-time-value { min-width:46px; padding:2px 5px; border:1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider)); border-radius:999px; background:var(--bt-paper); color:var(--bt-text); text-align:center; font-family:var(--bt-font-mono); font-size:9px; }
     .estado-bar {
       display: flex;
       align-items: center;
@@ -936,7 +934,7 @@
       padding-right: var(--bt-inset-page);
       border: 1px solid color-mix(in srgb, #e23084 46%, var(--bt-divider));
       border-radius: 12px;
-      background: #fff;
+      background: var(--bt-paper);
       box-shadow: 0 5px 14px color-mix(in srgb, var(--bt-text) 9%, transparent), 0 1px 2px color-mix(in srgb, var(--bt-text) 7%, transparent);
     }
     canvas { width: 100% !important; height: 100% !important; }
@@ -1068,6 +1066,7 @@
     <div class="top">
       <a class="brand-lockup" href="./" title="Return to the initial dashboard view" aria-label="Return to the initial dashboard view"><div class="brand-mark" aria-hidden="true"><img src="./logo-ias.png" alt="" /></div><span class="brand-copy"><h1 class="bt-page-title">Invitations · occupation history</h1><span class="brand-subtitle">Australian skilled migration evidence</span></span></a>
       <div class="top-right">
+        <a class="top-link" href="./analytics.html">Analytics</a>
         <div class="top-meta" id="topMeta">…</div>
         <div class="theme-toggle" role="group" aria-label="Theme">
           <button type="button" class="theme-btn" id="themeLight" data-theme-set="light" title="Light" aria-label="Light">
@@ -1094,7 +1093,6 @@
       <select id="fYear" aria-label="Year"></select>
       <span class="filter-label">ANZSCO</span>
       <select id="fAnzsco" aria-label="ANZSCO hierarchy"></select>
-      <button type="button" class="hierarchy-expand" id="btnHierarchyExpand" aria-label="Show all ANZSCO levels" aria-expanded="false" title="Show Minor, Unit and occupation levels">+</button>
       <span class="filter-label">Skill</span>
       <select id="fSkill" aria-label="Predominant ANZSCO skill level"></select>
       <span class="filter-label">Metric</span>
@@ -1138,7 +1136,7 @@
               <tr>
                 <th>Code</th>
                 <th class="sortable" data-col="nome">Name <span class="sort-ind" aria-hidden="true"></span></th>
-                <th class="rankh sortable" data-col="ias">IAS <span class="sort-ind" aria-hidden="true"></span><span class="info-wrap ias-header-info"><button class="info-trigger" type="button" aria-label="About the Invitation Activity Score" aria-expanded="false">i</button><span class="info-popover" role="tooltip">IAS is a 0–100 historical activity signal: 30% recency + 25% frequency + 20% consistency + 15% coverage + 10% comparable score. Pink indicates lower activity, teal higher activity, and grey insufficient data. It is not an invitation probability or guarantee.</span></span></th>
+                <th class="rankh sortable" data-col="ias">IAS <span class="sort-ind" aria-hidden="true"></span><span class="info-wrap ias-header-info"><button class="info-trigger" type="button" aria-label="About the Invitation Activity Score" aria-expanded="false">i</button><span class="info-popover" role="tooltip">IAS is a 0–100 round-based historical activity signal: 35% participation across all comparable rounds + 30% round recency + 20% participation in the last 8 comparable rounds + 10% recent continuity + 5% comparable score. Context breadth is shown as evidence, not scored. Pink indicates lower activity, teal higher activity, and grey insufficient evidence. It is not an invitation probability or guarantee.</span></span></th>
                 <th class="numh sortable" data-col="last" title="Latest published score">Latest <span class="sort-ind" aria-hidden="true"></span></th>
                 <th class="numh sortable" data-col="avg" title="Historical average of published numeric scores">Average <span class="sort-ind" aria-hidden="true"></span></th>
                 <th class="numh sortable" data-col="freq" title="Number of published numeric records">Records <span class="sort-ind" aria-hidden="true"></span></th>
@@ -1197,7 +1195,7 @@
   </div>
 
   <script src="./anzsco-hierarchy.js?v=20260902"></script>
-  <script src="./data.js?v=20260813-state-audit"></script>
+  <script src="./data.js?v=20260903-wa-history"></script>
   <script>
     const SCORE = new Set(["pontos_minimos", "ultimo_eoi_pontos", "matrix_score"]);
     const COLORS = ["#00a691", "#e23084", "#2bc4ae", "#f05aa0", "#007f70", "#b51f69", "#67d9c8", "#f48abb"];
@@ -1222,8 +1220,8 @@
       const n = Number(r.valor);
       return Number.isFinite(n) && n > 0 && n <= SCORE_CAP_PLAUSIBLE;
     });
-    const GLOBAL_SCORE_MONTHS = uniq(scoreRows.map((r) => monthKey(r.data_round)).filter(Boolean));
-    const GLOBAL_SCORE_DATES = uniq(scoreRows.map((r) => String(r.data_round || "")).filter((d) => /^\d{4}-\d{2}(?:-\d{2})?$/.test(d)));
+    const GLOBAL_SCORE_MONTHS = uniq(scoreRows.map((r) => monthKey(roundDate(r))).filter(Boolean));
+    const GLOBAL_SCORE_DATES = uniq(scoreRows.map(roundDate).filter(isRoundDate));
     const GLOBAL_MONTH_MIN = GLOBAL_SCORE_MONTHS[0] || "2020-08";
     const GLOBAL_MONTH_MAX = GLOBAL_SCORE_MONTHS.at(-1) || GLOBAL_MONTH_MIN;
 
@@ -1241,7 +1239,6 @@
     let timeSliderFrame = null;
     let chartDateFilter = null;
     let lowerView = "history";
-    let hierarchyExpanded = false;
     let currentHistoryRows = [];
     let allHistoryRows = [];
     const PROGRAM_METRICS = new Set(["nomeacoes_recebidas", "alocacao_nomeacoes"]);
@@ -1328,6 +1325,43 @@
       return match ? match[1] : "";
     }
 
+    function extraFields(value) {
+      return Object.fromEntries(String(value || "").split(";").map((part) => part.split("=", 2)).filter((pair) => pair.length === 2));
+    }
+
+    function isRoundDate(value) {
+      return /^\d{4}-\d{2}(?:-\d{2})?$/.test(String(value || ""));
+    }
+
+    function roundDate(row) {
+      return isRoundDate(row?.data_round) ? String(row.data_round) : "";
+    }
+
+    function roundContext(row) {
+      const extra = extraFields(row?.unidade_extra);
+      const parts = [row?.jurisdicao || "", row?.visto || "", row?.metrica || "", row?.nivel_ocupacional || ""];
+      // WA thresholds are only comparable inside the same published stream,
+      // residence and priority context. Other sources do not publish all of
+      // these dimensions consistently, so absent fields stay empty.
+      if (row?.jurisdicao === "WA") parts.push(extra.stream || "", extra.residence || "", extra.priority || "");
+      if (row?.jurisdicao === "ACT") parts.push(extra.residence || extra.applicant_location || "");
+      return parts.join("|");
+    }
+
+    function roundId(row) {
+      const date = roundDate(row);
+      return date ? `${row?.jurisdicao || ""}|${date}` : "";
+    }
+
+    function comparisonId(row) {
+      const date = roundDate(row);
+      return date ? `${roundContext(row)}|${date}` : "";
+    }
+
+    function distinctRoundCount(rows) {
+      return new Set(rows.map(roundId).filter(Boolean)).size;
+    }
+
     function anzscoSubMajorCode(row) {
       const code = String(row?.anzsco || "").replace(/\D/g, "");
       return code.length >= 2 && ANZSCO_SUB_MAJOR_GROUPS[code.slice(0, 2)] ? code.slice(0, 2) : "";
@@ -1380,6 +1414,22 @@
         if (!skillMatches(r)) return false;
         if (categoria && r.categoria !== categoria) return false;
         if (!ignoreSearch && busca && !(r.ocupacao || "").toLowerCase().includes(busca) && !(r.anzsco || "").includes(busca)) return false;
+        return true;
+      });
+    }
+
+    function scoreAxisContextRows() {
+      const vistos = selectedValues($("fVisto"));
+      const years = selectedValues($("fYear"));
+      const metricas = selectedValues($("fMetrica"));
+      const categoria = $("fCategoria").value;
+      return scoreRows.filter((r) => {
+        if (!selectedStates.has(r.jurisdicao)) return false;
+        if (!scoreMatchesVisaContext(r, vistos)) return false;
+        if (years.length && !years.includes(calendarYear(r.data_round))) return false;
+        if (metricas.length && !metricas.includes(r.metrica)) return false;
+        if (categoria && r.categoria !== categoria) return false;
+        if (!skillMatches(r)) return false;
         return true;
       });
     }
@@ -1445,10 +1495,15 @@
 
     function activityScores(rows) {
       const windowRows = applyChartWindow(rows);
-      const latestMonth = windowRows.map((r) => monthKey(r.data_round)).filter(Boolean).sort().at(-1);
+      const roundsByContext = new Map();
+      windowRows.forEach((r) => {
+        const context = roundContext(r);
+        if (!roundsByContext.has(context)) roundsByContext.set(context, new Set());
+        if (roundDate(r)) roundsByContext.get(context).add(roundDate(r));
+      });
       const peers = new Map();
       windowRows.forEach((r) => {
-        const key = `${r.jurisdicao}|${r.data_round}|${r.metrica}`;
+        const key = comparisonId(r);
         if (!peers.has(key)) peers.set(key, []);
         const value = num(r.valor);
         if (value != null) peers.get(key).push(value);
@@ -1459,35 +1514,48 @@
         if (!byOccupation.has(identity)) byOccupation.set(identity, []);
         byOccupation.get(identity).push(r);
       });
-      const maxDates = Math.max(1, ...[...byOccupation.values()].map((items) => new Set(items.map((r) => r.data_round).filter(Boolean)).size));
-      const maxContexts = Math.max(1, ...[...byOccupation.values()].map((items) => new Set(items.map((r) => `${r.jurisdicao}|${r.visto}`).filter(Boolean)).size));
       const scores = new Map();
       for (const [identity, items] of byOccupation) {
-        const dates = new Set(items.map((r) => r.data_round).filter(Boolean));
-        const quarters = new Set(items.map((r) => {
-          const month = monthKey(r.data_round); if (!month) return "";
-          return `${month.slice(0,4)}-Q${Math.ceil(Number(month.slice(5,7))/3)}`;
-        }).filter(Boolean));
-        const contexts = new Set(items.map((r) => `${r.jurisdicao}|${r.visto}`));
-        const lastMonth = items.map((r) => monthKey(r.data_round)).filter(Boolean).sort().at(-1);
-        const recency = latestMonth && lastMonth ? Math.max(0, 1 - monthsBetween(lastMonth, latestMonth) / 24) : 0;
-        const frequency = Math.min(1, dates.size / maxDates);
-        const selectedMonths = chartStartDate && latestMonth ? monthsBetween(monthKey(chartStartDate), latestMonth) + 1 : 24;
-        const consistency = Math.min(1, quarters.size / Math.min(8, Math.max(1, Math.ceil(selectedMonths / 3))));
-        const coverage = Math.min(1, contexts.size / maxContexts);
+        const contexts = new Set(items.map(roundContext));
+        const comparableRoundIds = [...new Set([...contexts].flatMap((context) =>
+          [...(roundsByContext.get(context) || new Set())].map((date) => `${context.split("|", 1)[0]}|${date}`)
+        ))].sort((a, b) => a.split("|").at(-1).localeCompare(b.split("|").at(-1)) || a.localeCompare(b));
+        const appeared = new Set(items.map(roundId).filter(Boolean));
+        const recentRounds = comparableRoundIds.slice(-8);
+        const lastAppearanceIndex = comparableRoundIds.reduce((found, id, index) => appeared.has(id) ? index : found, -1);
+        const roundsSinceLast = lastAppearanceIndex < 0 ? comparableRoundIds.length : comparableRoundIds.length - 1 - lastAppearanceIndex;
+        const totalParticipation = comparableRoundIds.length ? comparableRoundIds.filter((id) => appeared.has(id)).length / comparableRoundIds.length : 0;
+        const recency = Math.max(0, 1 - roundsSinceLast / 5);
+        const frequency = recentRounds.length ? recentRounds.filter((id) => appeared.has(id)).length / recentRounds.length : 0;
+        const recentWeights = recentRounds.map((_, index) => index + 1);
+        const weightTotal = recentWeights.reduce((sum, value) => sum + value, 0) || 1;
+        const consistency = recentRounds.reduce((sum, id, index) => sum + (appeared.has(id) ? recentWeights[index] : 0), 0) / weightTotal;
+        const coverage = contexts.size ? [...contexts].filter((context) => {
+          const latestContextDate = [...(roundsByContext.get(context) || [])].sort().at(-1);
+          return latestContextDate && items.some((r) => roundContext(r) === context && roundDate(r) === latestContextDate);
+        }).length / contexts.size : 0;
         const relativeScores = items.map((r) => {
           const value = num(r.valor); if (value == null) return null;
-          const peer = peers.get(`${r.jurisdicao}|${r.data_round}|${r.metrica}`) || [];
+          const peer = peers.get(comparisonId(r)) || [];
           const min = Math.min(...peer), max = Math.max(...peer);
           return max === min ? .5 : 1 - (value - min) / (max - min);
         }).filter((value) => value != null);
         const scorePosition = relativeScores.length ? relativeScores.reduce((sum, value) => sum + value, 0) / relativeScores.length : .5;
-        const score = Math.round((recency * .30 + frequency * .25 + consistency * .20 + coverage * .15 + scorePosition * .10) * 100);
-        const evidence = dates.size >= 8 && contexts.size >= 2 ? "High" : dates.size >= 3 ? "Medium" : "Low";
+        // Invitation counts cannot safely be attributed to most individual
+        // occupations. Until a source provides that split, coverage is retained
+        // as a small evidence component and no aggregate total is invented.
+        const rawScore = (totalParticipation * .35 + recency * .30 + frequency * .20 + consistency * .10 + scorePosition * .05) * 100;
+        const observedRounds = appeared.size;
+        // Sparse histories are uncertain. Shrink them towards the neutral
+        // midpoint until eight comparable rounds are available, preventing a
+        // single recent appearance from being presented as IAS 100.
+        const confidence = Math.min(1, comparableRoundIds.length / 8);
+        const score = Math.round(50 + (rawScore - 50) * confidence);
+        const evidence = observedRounds >= 8 && comparableRoundIds.length >= 8 ? "High" : observedRounds >= 3 ? "Medium" : "Low";
         scores.set(identity, {
-          score, evidence, dates:dates.size, contexts:contexts.size,
+          score, rawScore:Math.round(rawScore), confidence:Math.round(confidence*100), evidence, dates:observedRounds, contexts:contexts.size, comparableRounds:comparableRoundIds.length, roundsSinceLast,
           components: {
-            recency:Math.round(recency*100), frequency:Math.round(frequency*100),
+            totalParticipation:Math.round(totalParticipation*100), recency:Math.round(recency*100), frequency:Math.round(frequency*100),
             consistency:Math.round(consistency*100), coverage:Math.round(coverage*100),
             comparableScore:Math.round(scorePosition*100)
           }
@@ -1515,7 +1583,7 @@
         return `<span class="ias-list-dot" tabindex="0" data-tip="Insufficient comparable official data for an IAS calculation.">—</span>`;
       }
       const c = activity.components;
-      const tip = `IAS ${activity.score}/100 · ${activityBand(activity.score)}\nEvidence: ${activity.evidence} (${activity.dates} dates · ${activity.contexts} contexts)\n30% Recency: ${c.recency}/100\n25% Frequency: ${c.frequency}/100\n20% Consistency: ${c.consistency}/100\n15% Coverage: ${c.coverage}/100\n10% Comparable score: ${c.comparableScore}/100\nHistorical activity signal — not an invitation probability or guarantee.`;
+      const tip = `IAS ${activity.score}/100 · ${activityBand(activity.score)}\nEvidence: ${activity.evidence} (${activity.dates} observed of ${activity.comparableRounds} comparable rounds; ${activity.confidence}% confidence)\nObserved activity before evidence adjustment: ${activity.rawScore}/100\n35% All-round participation: ${c.totalParticipation}/100\n30% Round recency: ${c.recency}/100\n20% Last-8 participation: ${c.frequency}/100\n10% Recent continuity: ${c.consistency}/100\n5% Comparable score: ${c.comparableScore}/100\nContext breadth: ${c.coverage}/100 (evidence only)\nRound-based historical activity signal — not an invitation probability or guarantee.`;
       return `<span class="ias-list-dot" tabindex="0" style="--ias-colour:${activityColor(activity.score)}" data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(`IAS ${activity.score} out of 100, ${activityBand(activity.score)}`)}">${activity.score}</span>`;
     }
 
@@ -1573,7 +1641,8 @@
           max: scores.length ? Math.max(...scores) : null,
           last: scores.length ? num(sortedRows[0].valor) : null,
           avg: mean == null ? null : Math.round(mean * 10) / 10,
-          rounds: o.rows.length,
+          records: o.rows.length,
+          rounds: distinctRoundCount(o.rows),
           juris: [...o.juris],
           vistos: [...o.vistos],
           lastDate: dates[dates.length - 1] || "",
@@ -1692,7 +1761,7 @@
         else if (level === threshold - 1) cls = "half";
         bars.push(`<i class="${cls}"></i>`);
       }
-      const label = `${freqLevelLabel(level)} · ${rounds} records · ${level}/10`;
+      const label = `${freqLevelLabel(level)} · ${rounds} official rounds · ${level}/10`;
       return `<span class="rank-bars" title="${escapeAttr(label)}" aria-label="${escapeAttr(label)}">${bars.join("")}</span>`;
     }
 
@@ -1722,7 +1791,7 @@
             <td class="rank">${occupationIasHtml(o.activity)}</td>
             <td class="num ${scoreClass(o.last)}">${o.last ?? "—"}</td>
             <td class="num ${scoreClass(o.avg)}">${o.avg ?? "—"}</td>
-            <td class="num">${o.rounds}</td>
+            <td class="num">${o.records}</td>
           </tr>`;
         })
         .join("");
@@ -1847,7 +1916,7 @@
         `<span class="group-measure-switch${chartMode === "groups" ? "" : " control-slot-hidden"}" aria-label="Group chart measure"${chartMode === "groups" ? "" : ` aria-hidden="true"`}>
           <button type="button" class="estado-chip chart-toggle${groupMetric === "inv" ? " on" : ""}" data-group-metric="inv" data-measure-info="INV sums only invitations explicitly attributed to an occupation group. Federal aggregate totals are excluded.">INV</button>
           <button type="button" class="estado-chip chart-toggle${groupMetric === "occ" ? " on" : ""}" data-group-metric="occ" data-measure-info="OCC counts distinct occupations with an official published result in each ANZSCO group.">OCC</button>
-          <button type="button" class="estado-chip chart-toggle${groupMetric === "ias" ? " on" : ""}" data-group-metric="ias" data-measure-info="IAS is a 0–100 historical activity signal based on recency, frequency, consistency, coverage and comparable score. It is not an invitation probability.">IAS</button>
+          <button type="button" class="estado-chip chart-toggle${groupMetric === "ias" ? " on" : ""}" data-group-metric="ias" data-measure-info="IAS is a 0–100 signal calculated from comparable official rounds: all-round participation, recency, last-8 participation, recent continuity and comparable score. Context breadth is evidence only. It is not an invitation probability.">IAS</button>
         </span>` +
         `<span class="chart-switch" aria-label="Chart view">
           <button type="button" class="estado-chip chart-toggle${chartMode === "groups" ? " on" : ""}" data-chart-mode="groups">Occupation groups</button>
@@ -1953,11 +2022,8 @@
         labelMetric(occ.metrica),
         occ.codigoStatus.includes("abs_exact_title") ? "Title matched exactly to the ABS ANZSCO 2022 reference" :
           occ.codigoStatus.includes("source") ? "Code published by the official source" : "Code not published by the source",
-        `${occ.rounds} ${occ.rounds === 1 ? "record" : "records"}`,
-        (() => {
-          const count = new Set(occ.rows.map((r) => r.data_round).filter(Boolean)).size;
-          return `${count} ${count === 1 ? "date" : "dates"}`;
-        })(),
+        `${occ.records} ${occ.records === 1 ? "published result" : "published results"}`,
+        `${occ.rounds} ${occ.rounds === 1 ? "official round" : "official rounds"}`,
         occ.vistos.join(" · "),
         `Timeline: ${GLOBAL_MONTH_MIN} → ${GLOBAL_MONTH_MAX}`,
         "Y-axis: 0 → max (min 105)",
@@ -1974,7 +2040,7 @@
       const lastRow = [...detailRows].sort((a, b) => String(b.data_round).localeCompare(String(a.data_round)))[0];
       $("kLast").textContent = lastRow ? lastRow.valor : "—";
       $("kLastDate").textContent = lastRow ? String(lastRow.data_round).slice(0, 7) : "—";
-      $("kRounds").textContent = new Set(detailRows.map((r) => r.data_round).filter(Boolean)).size;
+      $("kRounds").textContent = distinctRoundCount(detailRows);
 
       const rowsAsc = [...detailRows].sort((a, b) => String(a.data_round).localeCompare(String(b.data_round)));
       const contextualRows = chartDateFilter ? scoreRows.filter((r) =>
@@ -2030,12 +2096,16 @@
           const components = occupationSignal?.components || {};
           $("occupationIasPopover").innerHTML = `<strong>Occupation Invitation Activity Score</strong>
             <span class="tip-row"><b>IAS:</b> ${occupationIas ?? "—"}/100 · ${occupationSignal?.evidence || "Low"} evidence</span>
-            <span class="tip-row"><b>30% Recency:</b> ${components.recency ?? "—"}/100</span>
-            <span class="tip-row"><b>25% Frequency:</b> ${components.frequency ?? "—"}/100</span>
-            <span class="tip-row"><b>20% Consistency:</b> ${components.consistency ?? "—"}/100</span>
-            <span class="tip-row"><b>15% Coverage:</b> ${components.coverage ?? "—"}/100</span>
-            <span class="tip-row"><b>10% Comparable score:</b> ${components.comparableScore ?? "—"}/100</span>
-            <span class="tip-row" style="margin-top:6px;color:var(--bt-text-secondary)">Calculated from the selected period and comparable official results. IAS is a historical activity signal, not an invitation probability or guarantee.</span>`;
+            <span class="tip-row"><b>Rounds:</b> ${occupationSignal?.dates ?? "—"} observed of ${occupationSignal?.comparableRounds ?? "—"} comparable</span>
+            <span class="tip-row"><b>Evidence confidence:</b> ${occupationSignal?.confidence ?? "—"}%</span>
+            <span class="tip-row"><b>Observed activity:</b> ${occupationSignal?.rawScore ?? "—"}/100 before evidence adjustment</span>
+            <span class="tip-row"><b>35% All-round participation:</b> ${components.totalParticipation ?? "—"}/100</span>
+            <span class="tip-row"><b>30% Round recency:</b> ${components.recency ?? "—"}/100</span>
+            <span class="tip-row"><b>20% Last-8 participation:</b> ${components.frequency ?? "—"}/100</span>
+            <span class="tip-row"><b>10% Recent continuity:</b> ${components.consistency ?? "—"}/100</span>
+            <span class="tip-row"><b>5% Comparable score:</b> ${components.comparableScore ?? "—"}/100</span>
+            <span class="tip-row"><b>Context breadth:</b> ${components.coverage ?? "—"}/100 (evidence only)</span>
+            <span class="tip-row" style="margin-top:6px;color:var(--bt-text-secondary)">Calculated from comparable official rounds. Missing publication is not treated as zero outside an observed context. IAS is not an invitation probability or guarantee.</span>`;
         }
         $("kMinLabel").textContent = chartMode === "scores" ? "Lowest score" : "Latest total";
         $("kMin").textContent = chartMode === "scores" ? (chartValues.length ? Math.min(...chartValues).toLocaleString("en-AU") : "—") : (latestChartRow ? Number(latestChartRow.valor).toLocaleString("en-AU") : "—");
@@ -2043,8 +2113,8 @@
         $("kLast").textContent = chartMode === "scores" ? (lastRow ? Number(lastRow.valor).toLocaleString("en-AU") : "—") : (chartValues.length ? Math.max(...chartValues).toLocaleString("en-AU") : "—");
         $("kLastDateLabel").textContent = "Latest result";
         $("kLastDate").textContent = latestChartRow ? monthKey(latestChartRow.data_round) : "—";
-        $("kRoundsLabel").textContent = chartMode === "scores" ? "Published dates" : "Events";
-        $("kRounds").textContent = new Set(windowedChartRows.map((r) => r.data_round).filter(Boolean)).size;
+        $("kRoundsLabel").textContent = chartMode === "scores" ? "Official rounds" : "Events";
+        $("kRounds").textContent = chartMode === "scores" ? distinctRoundCount(windowedChartRows) : new Set(windowedChartRows.map((r) => r.data_round).filter(Boolean)).size;
         drawChart(windowedChartRows);
       }
       renderLowerView(occ);
@@ -2179,7 +2249,7 @@
           return values.length ? values[Math.floor((values.length - 1) / 2)] : null;
         };
         group.components = {
-          recency:medianComponent("recency"), frequency:medianComponent("frequency"),
+          totalParticipation:medianComponent("totalParticipation"), recency:medianComponent("recency"), frequency:medianComponent("frequency"),
           consistency:medianComponent("consistency"), coverage:medianComponent("coverage"),
           comparableScore:medianComponent("comparableScore")
         };
@@ -2187,7 +2257,7 @@
       });
       const groups = [...summaries.values()].filter((group) => group.value != null && (groupMetric !== "inv" || group.invitations > 0)).sort((a, b) => a.code.localeCompare(b.code));
       const metricLabel = groupMetric === "inv" ? "Attributed invitations" : groupMetric === "ias" ? "Invitation Activity Score (IAS)" : "Occupations with published results";
-      $("legend").innerHTML = `<span><i style="width:42px;background:#00a691"></i>Series · Teal</span><span>${metricLabel}</span><span title="IAS is not an invitation probability">IAS colour scale is shown in the hover score · 30% recency + 25% frequency + 20% consistency + 15% coverage + 10% comparable score</span>`;
+      $("legend").innerHTML = `<span><i style="width:42px;background:#00a691"></i>Series · Teal</span><span>${metricLabel}</span><span title="IAS is not an invitation probability">IAS colour scale is shown in the hover score · 35% all-round participation + 30% recency + 20% last-8 participation + 10% continuity + 5% comparable score</span>`;
       $("chartAxisLabel").textContent = "ANZSCO group overview";
       let tooltip = box.querySelector(".chart-tooltip");
       if (!tooltip) {
@@ -2301,14 +2371,15 @@
           <span class="tip-row"><b>Occupations:</b> ${group.identities.size.toLocaleString("en-AU")}</span>
           <span class="tip-row"><b>Attributed invitations:</b> ${group.invitations ? group.invitations.toLocaleString("en-AU") : "Not published"}</span>
           <span class="tip-row"><b>IAS:</b> ${group.ias ?? "—"}/100</span>
-          <span class="tip-row"><b>Recency (30%):</b> ${group.components.recency ?? "—"}/100</span>
-          <span class="tip-row"><b>Frequency (25%):</b> ${group.components.frequency ?? "—"}/100</span>
-          <span class="tip-row"><b>Consistency (20%):</b> ${group.components.consistency ?? "—"}/100</span>
-          <span class="tip-row"><b>Coverage (15%):</b> ${group.components.coverage ?? "—"}/100</span>
-          <span class="tip-row"><b>Comparable score (10%):</b> ${group.components.comparableScore ?? "—"}/100</span>
+          <span class="tip-row"><b>All-round participation (35%):</b> ${group.components.totalParticipation ?? "—"}/100</span>
+          <span class="tip-row"><b>Round recency (30%):</b> ${group.components.recency ?? "—"}/100</span>
+          <span class="tip-row"><b>Last-8 participation (20%):</b> ${group.components.frequency ?? "—"}/100</span>
+          <span class="tip-row"><b>Recent continuity (10%):</b> ${group.components.consistency ?? "—"}/100</span>
+          <span class="tip-row"><b>Comparable score (5%):</b> ${group.components.comparableScore ?? "—"}/100</span>
+          <span class="tip-row"><b>Context breadth:</b> ${group.components.coverage ?? "—"}/100 (evidence only)</span>
           <span class="tip-row"><b>High-evidence occupations:</b> ${group.highEvidence.toLocaleString("en-AU")}</span>
           <span class="tip-row"><b>Published records:</b> ${group.records.toLocaleString("en-AU")}</span>
-          <span class="tip-row"><b>Published dates:</b> ${group.dates.size.toLocaleString("en-AU")}</span>
+          <span class="tip-row"><b>Official result dates:</b> ${group.dates.size.toLocaleString("en-AU")}</span>
           <span class="tip-row"><b>Average published score:</b> ${average == null ? "—" : average.toFixed(1)}</span>
           <span class="tip-row">Click to filter this group</span>`;
         tooltip.style.display = "block";
@@ -2343,7 +2414,16 @@
       ctx.clearRect(0, 0, w, h);
       const formatChartNumber = (value) => Math.round(value).toLocaleString("en-AU");
 
-      const months = uniq(rows.map((r) => monthKey(r.data_round)).filter(Boolean));
+      const isFixedScoreAxis = chartMode === "scores";
+      const axisKey = (row) => isFixedScoreAxis ? String(row.data_round || "") : monthKey(row.data_round);
+      const validAxisKey = (value) => isFixedScoreAxis
+        ? /^\d{4}-\d{2}(?:-\d{2})?$/.test(value)
+        : /^\d{4}-\d{2}$/.test(value);
+      const observedKeys = new Set(rows.map(axisKey).filter(validAxisKey));
+      const axisSourceRows = isFixedScoreAxis ? applyChartWindow(scoreAxisContextRows()) : rows;
+      // Scores use every official result date in the current non-occupation
+      // context. Changing occupation only changes which fixed slots are filled.
+      const months = uniq(axisSourceRows.map(axisKey).filter(validAxisKey));
 
       const extraFields = (value) => Object.fromEntries(String(value || "").split(";").map((part) => part.split("=", 2)).filter((pair) => pair.length === 2));
       const streamLabel = (stream) => ({
@@ -2388,7 +2468,7 @@
         const key = `${r.jurisdicao}|${r.visto}|${r.metrica}|${r.unidade_extra || ""}`;
         if (!seriesMap.has(key)) seriesMap.set(key, { points: new Map(), ...visual });
         const s = num(r.valor);
-        const mk = monthKey(r.data_round);
+        const mk = axisKey(r);
         if (s != null && mk) {
           const pointMap = seriesMap.get(key).points;
           const prev = pointMap.get(mk);
@@ -2443,22 +2523,22 @@
         ctx.fillText(formatChartNumber(val), 4, y + 3);
       }
 
-      const monthTimes = months.map((m) => Date.parse(`${m}-01T00:00:00Z`));
-      const displayMonthMin = chartMode === "scores" ? GLOBAL_MONTH_MIN : months[0];
-      const displayMonthMax = chartMode === "scores" ? GLOBAL_MONTH_MAX : months.at(-1);
-      const timeMin = Date.parse(`${displayMonthMin}-01T00:00:00Z`);
-      const timeMax = Date.parse(`${displayMonthMax}-01T00:00:00Z`);
       const edgeInset = 11;
       const axisMonths = [];
-      const axisCursor = new Date(`${displayMonthMin}-01T00:00:00Z`);
-      const axisEnd = new Date(`${displayMonthMax}-01T00:00:00Z`);
-      while (axisCursor <= axisEnd) {
-        axisMonths.push(axisCursor.toISOString().slice(0, 7));
-        axisCursor.setUTCMonth(axisCursor.getUTCMonth() + 1);
+      if (isFixedScoreAxis) {
+        axisMonths.push(...months);
+      } else {
+        const axisCursor = new Date(`${months[0]}-01T00:00:00Z`);
+        const axisEnd = new Date(`${months.at(-1)}-01T00:00:00Z`);
+        while (axisCursor <= axisEnd) {
+          axisMonths.push(axisCursor.toISOString().slice(0, 7));
+          axisCursor.setUTCMonth(axisCursor.getUTCMonth() + 1);
+        }
       }
-      const dataMonths = new Set(months);
+      const dataMonths = observedKeys;
       const yearsWithData = new Set(months.map((month) => month.slice(0, 4)));
       const monthWeights = axisMonths.map((month) => {
+        if (isFixedScoreAxis) return 1;
         if (dataMonths.has(month)) return 1.42;
         return yearsWithData.has(month.slice(0, 4)) ? 0.48 : 0.16;
       });
@@ -2469,7 +2549,7 @@
         accumulatedWeight += monthWeights[index];
       });
       function xForMonth(month) {
-        if (timeMax === timeMin || accumulatedWeight === 0) return pad.l + plotW / 2;
+        if (axisMonths.length === 1 || accumulatedWeight === 0) return pad.l + plotW / 2;
         const position = monthPositions.get(month);
         if (position == null) return pad.l + plotW / 2;
         return pad.l + edgeInset + (plotW - edgeInset * 2) * (position / accumulatedWeight);
@@ -2500,16 +2580,16 @@
           return;
         }
         const month = months[nearest];
-        const monthRows = rows.filter((r) => monthKey(r.data_round) === month);
+        const monthRows = rows.filter((r) => axisKey(r) === month);
         const fullDates = uniq(monthRows.map((r) => r.data_round).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)));
         const values = series.map((s) => s.points[nearest]).filter((v) => v != null);
         const modeLabel = chartMode === "scores" ? "Scores" : chartMode === "invitations" ? "Invitations" : "Occupations";
-        const readableDates = fullDates.length ? fullDates.map(fullRoundLabel).join(", ") : shortMonthLabel(month);
+        const readableDates = fullDates.length ? fullDates.map(fullRoundLabel).join(", ") : axisDateLabel(month);
         const totalValue = values.reduce((sum, value) => sum + value, 0);
         const scoreDetails = series.map((s) => ({ name:s.name, value:s.points[nearest] }))
           .filter((item) => item.value != null)
           .map((item) => `<span class="tip-row"><b>${escapeHtml(item.name)}:</b> ${formatChartNumber(item.value)}</span>`)
-          .join("");
+          .join("") || '<span class="tip-row">No result published for this occupation on this official result date.</span>';
         const title = chartMode === "scores" ? (selected?.nome || "Occupation score") : modeLabel;
         const valueLabel = chartMode === "invitations" ? "Total invitations" : "Occupations published";
         tooltip.innerHTML = `<strong>${escapeHtml(title)}</strong>
@@ -2534,7 +2614,10 @@
         for (let i = 1; i < months.length; i++) {
           if (Math.abs(xAt(i) - clickX) < Math.abs(xAt(nearest) - clickX)) nearest = i;
         }
-        chartDateFilter = chartDateFilter === months[nearest] ? null : months[nearest];
+        const selectedMonth = monthKey(months[nearest]);
+        const hasPublishedPoint = series.some((seriesItem) => seriesItem.points[nearest] != null);
+        if (!hasPublishedPoint) return;
+        chartDateFilter = chartDateFilter === selectedMonth ? null : selectedMonth;
         refresh();
       };
 
@@ -2546,15 +2629,20 @@
       }
       const fullDateByMonth = new Map();
       rows.forEach((r) => {
-        if (/^\d{4}-\d{2}-\d{2}$/.test(r.data_round || "")) fullDateByMonth.set(monthKey(r.data_round), r.data_round);
+        if (/^\d{4}-\d{2}-\d{2}$/.test(r.data_round || "")) fullDateByMonth.set(axisKey(r), r.data_round);
       });
       function fullRoundLabel(value) {
         return new Intl.DateTimeFormat("en-AU", {
           day:"numeric", month:"short", year:"2-digit", timeZone:"UTC"
         }).format(new Date(`${value}T00:00:00Z`));
       }
-      const labelEvery = plotW >= 900 ? 3 : 6;
-      const dataMonthIndexes = new Set(axisMonths.map((month, index) => months.includes(month) ? index : -1).filter((index) => index >= 0));
+      function axisDateLabel(value) {
+        return /^\d{4}-\d{2}-\d{2}$/.test(value || "") ? fullRoundLabel(value) : shortMonthLabel(monthKey(value));
+      }
+      const labelEvery = isFixedScoreAxis
+        ? Math.max(1, Math.ceil(axisMonths.length / (plotW >= 900 ? 14 : 10)))
+        : (plotW >= 900 ? 3 : 6);
+      const dataMonthIndexes = new Set(axisMonths.map((month, index) => dataMonths.has(month) ? index : -1).filter((index) => index >= 0));
       for (let i = 0; i < axisMonths.length; i++) {
         const x = xForMonth(axisMonths[i]);
         ctx.strokeStyle = chartToken("--bt-divider", "rgba(33,33,31,0.1)");
@@ -2562,21 +2650,21 @@
         ctx.moveTo(x, pad.t + plotH);
         const isEnd = i === axisMonths.length - 1;
         const isDataMonth = dataMonthIndexes.has(i);
-        const nearDataMonth = dataMonthIndexes.has(i - 1) || dataMonthIndexes.has(i + 1);
+        const nearDataMonth = !isFixedScoreAxis && (dataMonthIndexes.has(i - 1) || dataMonthIndexes.has(i + 1));
         const roomBeforeEnd = isEnd || xForMonth(axisMonths.at(-1)) - x >= 64;
         const isPeriodic = i % labelEvery === 0 && !nearDataMonth;
-        const isLabel = i === 0 || isEnd || isDataMonth || (isPeriodic && roomBeforeEnd);
+        const isLabel = isFixedScoreAxis || i === 0 || isEnd || isDataMonth || (isPeriodic && roomBeforeEnd);
         ctx.lineTo(x, pad.t + plotH + (isLabel ? 5 : 2));
         ctx.stroke();
         if (!isLabel) continue;
         ctx.fillStyle = chartToken("--bt-text", "rgba(20,20,19,0.9)");
-        ctx.font = `400 8px ` + chartToken("--bt-font", "Inter, system-ui, sans-serif");
+        ctx.font = `400 ${isFixedScoreAxis ? 7 : 8}px ` + chartToken("--bt-font", "Inter, system-ui, sans-serif");
         ctx.save();
-        ctx.translate(x, pad.t + plotH + 16);
-        ctx.rotate(-Math.PI / 4);
+        ctx.translate(x, pad.t + plotH + (isFixedScoreAxis ? 12 : 16));
+        ctx.rotate(isFixedScoreAxis ? -Math.PI / 2 : -Math.PI / 4);
         ctx.textAlign = "right";
         const exactDate = fullDateByMonth.get(axisMonths[i]);
-        ctx.fillText(exactDate ? fullRoundLabel(exactDate) : shortMonthLabel(axisMonths[i]), 0, 0);
+        ctx.fillText(exactDate ? fullRoundLabel(exactDate) : axisDateLabel(axisMonths[i]), 0, 0);
         ctx.restore();
       }
 
@@ -2618,23 +2706,34 @@
         chartAnimationFrame = null;
         chartBarsSnapshot = [];
         series.forEach((s) => {
-          const points = s.points.map((value, i) => value == null ? null : ({ x:xAt(i), y:yAt(value), value, month:months[i] })).filter(Boolean);
+          const allPoints = s.points.map((value, i) => value == null ? null : ({ x:xAt(i), y:yAt(value), value, month:months[i] }));
+          const points = allPoints.filter(Boolean);
           if (!points.length) return;
           ctx.strokeStyle = s.color;
           ctx.globalAlpha = chartDateFilter ? 0.34 : 1;
           ctx.lineWidth = 2.25;
           ctx.lineJoin = "round";
           ctx.lineCap = "round";
-          ctx.beginPath();
-          ctx.moveTo(points[0].x, points[0].y);
-          for (let i = 1; i < points.length; i++) {
-            const prev = points[i - 1], current = points[i];
-            const midX = (prev.x + current.x) / 2;
-            ctx.bezierCurveTo(midX, prev.y, midX, current.y, current.x, current.y);
-          }
-          ctx.stroke();
+          const segments = [];
+          let segment = [];
+          allPoints.forEach((point) => {
+            if (point) segment.push(point);
+            else if (segment.length) { segments.push(segment); segment = []; }
+          });
+          if (segment.length) segments.push(segment);
+          segments.forEach((currentSegment) => {
+            if (currentSegment.length < 2) return;
+            ctx.beginPath();
+            ctx.moveTo(currentSegment[0].x, currentSegment[0].y);
+            for (let i = 1; i < currentSegment.length; i++) {
+              const prev = currentSegment[i - 1], current = currentSegment[i];
+              const midX = (prev.x + current.x) / 2;
+              ctx.bezierCurveTo(midX, prev.y, midX, current.y, current.x, current.y);
+            }
+            ctx.stroke();
+          });
           points.forEach((p) => {
-            ctx.globalAlpha = !chartDateFilter || p.month === chartDateFilter ? 1 : 0.32;
+            ctx.globalAlpha = !chartDateFilter || monthKey(p.month) === chartDateFilter ? 1 : 0.32;
             ctx.fillStyle = s.color;
             ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill();
             const label = formatChartNumber(p.value);
@@ -2676,7 +2775,7 @@
             key: `${item.series.name}|${months[i]}`,
             x, width: barWidth, value: item.value,
             color: item.series.color, labelLane: barIndex % 2,
-            alpha: !chartDateFilter || months[i] === chartDateFilter ? 1 : 0.36,
+            alpha: !chartDateFilter || monthKey(months[i]) === chartDateFilter ? 1 : 0.36,
           });
         });
       }
@@ -2974,7 +3073,7 @@
       });
       const select = $("fAnzsco");
       select.innerHTML = '<option value="">All levels</option>';
-      [...represented].sort((a, b) => a.localeCompare(b)).filter((code) => hierarchyExpanded || code.length <= 2 || code === current).forEach((code) => {
+      [...represented].sort((a, b) => a.localeCompare(b)).forEach((code) => {
         const node = ANZSCO_NODES[code];
         const depth = ({ 1:0, 2:1, 3:2, 4:3, 6:4 })[code.length] || 0;
         const option = document.createElement("option");
@@ -2989,11 +3088,6 @@
       aggregate.title = "Official totals that cannot be attributed to an ANZSCO code";
       select.appendChild(aggregate);
       select.value = current;
-      const button = $("btnHierarchyExpand");
-      button.textContent = hierarchyExpanded ? "−" : "+";
-      button.setAttribute("aria-expanded", String(hierarchyExpanded));
-      button.setAttribute("aria-label", hierarchyExpanded ? "Show Major and Sub-major levels only" : "Show all ANZSCO levels");
-      button.title = hierarchyExpanded ? "Show Major and Sub-major levels only" : "Show Minor, Unit and occupation levels";
     }
 
     function fillSkillSelect() {
@@ -3028,11 +3122,6 @@
       selected = null;
       refresh();
     }));
-    $("btnHierarchyExpand").addEventListener("click", () => {
-      hierarchyExpanded = !hierarchyExpanded;
-      fillAnzscoHierarchySelect();
-      $("fAnzsco").focus();
-    });
 
     $("btnClear").addEventListener("click", () => {
       [...$("fVisto").options].forEach((o) => (o.selected = false));

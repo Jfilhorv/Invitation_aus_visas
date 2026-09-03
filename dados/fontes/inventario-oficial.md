@@ -27,7 +27,7 @@ Regra de validade: HTTP 200 + host final `.gov.au` + PDF `%PDF-` ou HTML com tit
 - PDF canonico: [2025-26 Invitation round rankings](https://www.act.gov.au/__data/assets/pdf_file/0009/2920554/2025-26-Invitation-round-rankings.pdf) → `dados/estados/act/2025-26-Invitation-round-rankings.pdf`
 - Pagina [Canberra Matrix – Invitation Round](https://www.act.gov.au/migration/resources/canberra-matrix-invitation-round) → `dados/estados/act/canberra-matrix-invitation-round.html` (explica o round; rankings no PDF).
 
-**Anos anteriores no site oficial:** a biblioteca lista apenas o PDF **2025-26**. Nao ha link 2024-25 / 2023-24 de rankings. Existe DOCX equivalente do mesmo 2025-26 (nao baixado: duplicata do mesmo conteudo). Listas de ocupacao elegivel e guidelines 190/491 **nao** foram baixadas (nao sao resultados de convite).
+**Anos anteriores no site oficial:** a biblioteca lista apenas o PDF **2025-26**. Um resultado de busca ainda referencia o antigo `2024-25-Invitation-Round-Rankings.pdf`, mas a URL oficial devolveu HTTP 404 na verificacao de 3 Sep 2026; por isso ele nao foi incorporado. Nao ha link recuperavel 2024-25 / 2023-24 de rankings. Existe DOCX equivalente do mesmo 2025-26 (nao baixado: duplicata do mesmo conteudo). Listas de ocupacao elegivel e guidelines 190/491 **nao** foram baixadas (nao sao resultados de convite).
 
 ## WA
 
@@ -37,11 +37,20 @@ Regra de validade: HTTP 200 + host final `.gov.au` + PDF `%PDF-` ou HTML com tit
 - Unico PDF de convite por ocupacao **ligado na pagina atual:** [Last invited expression of interest - Priority trade occupations - May 2026](https://migration.wa.gov.au/sites/default/files/2026-05/Last%20invited%20expression%20of%20interest%20-%20Priority%20trade%20occupations%20-%20May%202026.pdf) → `dados/estados/wa/Last invited expression of interest - Priority trade occupations - May 2026.pdf`
 - Round corrente na aba: convites de trades prioritarias em **20 May 2026**.
 
-**Anos anteriores no site oficial:** sim, mas como **tabelas HTML na mesma pagina** (nao PDFs separados):
+**Anos anteriores no site oficial:** sim. Alem das tabelas HTML agregadas, foram localizados e arquivados PDFs oficiais de last-invited EOI por ocupacao:
+
+- maio e agosto de 2023;
+- agosto, setembro, outubro e dezembro de 2024;
+- fevereiro, marco, maio, junho, outubro e dezembro de 2025;
+- janeiro, marco e maio de 2026.
+
+No total, a extracao representa 15 rodadas/periodos ocupacionais de WA. Os PDFs preservam ANZSCO, stream, residencia, EOI points score e data de submissao. Eles nao publicam a quantidade de convites por profissao.
+
+As abas HTML tambem fornecem:
 
 - Aba **2024-25 Invitation rounds** — totais mensais por stream/visa (nao last-invited por ocupacao).
 - Aba **2023-24 Invitation rounds** — idem.
-- PDFs mensais antigos (Oct 2025, Dec 2025, Jan 2026, Mar 2026) **nao** estao mais ligados como documentos vigentes; nao foram mantidos.
+- Alguns PDFs historicos deixam de aparecer na navegacao corrente, mas continuam hospedados no dominio oficial e sao preservados no arquivo do projeto com URL e SHA-256.
 - PDF de criterios SNMP / occupation lists / payslip **nao** baixados (nao sao invitation results).
 
 ## SA
@@ -108,7 +117,7 @@ Tentativas oficiais:
 |---|---|---|---|
 | Federal | Invitation rounds (4 Jun 2026) + previous rounds | HTML | Sim (pagina previous-rounds) |
 | ACT | 2025-26 Invitation round rankings | PDF | Nao listados (so o ano vigente) |
-| WA | Last invited EOI — priority trades May 2026 | PDF + HTML | Sim: tabelas HTML 2024-25 e 2023-24 na mesma pagina |
+| WA | 15 last-invited EOI rounds/periods, May 2023–May 2026 | PDF + HTML | Sim: PDFs ocupacionais e tabelas HTML agregadas |
 | SA | News "Invitations issued" (Late May 2026 + meses 2025-26) | HTML | Indice atual lista Dec 2025–Late May 2026 |
 | NSW | **NOT_PUBLISHED** | — | — |
 | VIC | **NOT_PUBLISHED** | — | — |

@@ -10,7 +10,7 @@ Atualizada em 13 de agosto de 2026. Regra de inclusão: somente fonte oficial `.
 - QLD: publica listas de elegibilidade, fatores de seleção e alguns avisos de campanhas, mas não uma tabela de resultados por ocupação/score.
 - SA: sete publicações oficiais de dezembro de 2025 a maio de 2026 já estão incorporadas por sub-major group e subclass. Não foi localizada série oficial equivalente anterior no site atual.
 - TAS: não publica resultados por ocupação. A fonte confirma 1.200 nomeações 190 e 650 nomeações 491 em 2025–26; esses valores não são convites e deixaram de alimentar essa métrica. A página oficial informa alocação 2026–27 de 1.250/800, mas bloqueia arquivamento automatizado via Cloudflare; encontrada, ainda não incorporada.
-- WA: resultados por ocupação incorporados para maio, outubro e dezembro de 2025; janeiro, março e maio de 2026. PDFs adicionais indexados para fevereiro/abril e trades de março não estavam acessíveis por URL oficial verificável; não incorporados.
+- WA: 15 rodadas/períodos com resultados por ocupação incorporados entre maio de 2023 e maio de 2026. Nove PDFs oficiais adicionais foram localizados e incorporados: maio/agosto de 2023; agosto, setembro, outubro e dezembro de 2024; fevereiro, março e junho de 2025. A série preserva stream, residência, EOI points score e data de submissão. São 1.259 linhas de last-invited EOI e 227 identidades ocupacionais; os totais mensais permanecem uma métrica agregada separada.
 - NT: não foi localizada publicação oficial `.gov.au` de resultados por ocupação, score ou rodada. O antigo endereço de migração redireciona para domínio não governamental e foi rejeitado.
 
 ## Fontes oficiais consultadas

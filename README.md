@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <strong>7,014 normalized records · 445 occupational identities · 9 jurisdictions · 24 official source URLs · January 2021–June 2026 score history</strong>
+  <strong>7,910 normalized records · 488 occupational identities · 9 jurisdictions · 33 official source URLs · January 2021–June 2026 score history</strong>
 </p>
 
 > [!IMPORTANT]
@@ -37,6 +37,7 @@
 | | |
 |---|---|
 | **[Open the dashboard](https://jfilhorv.github.io/Invitation_aus_visas/analise/)** | Filter by state, visa, year, ANZSCO hierarchy, skill level, metric and occupation |
+| **[Open the analytical explorer](https://jfilhorv.github.io/Invitation_aus_visas/analise/analytics.html)** | Scroll through recent evidence, jurisdiction coverage, published volume, ANZSCO concentration and WA-specific lenses |
 | **[Open the GitHub repository](https://github.com/Jfilhorv/Invitation_aus_visas)** | Browse the code, normalized data, archived evidence and update scripts |
 | **[Understand the metrics](#reading-the-headline-figures)** | Learn what each KPI measures — and what it does not measure |
 | **[See the analysis views](#analysis-views)** | Scores, invitations, occupations, states and documentation |
@@ -62,6 +63,12 @@ The objective is not merely to collect rows. It is to expose the relationships b
 
 ## Analysis views
 
+### Analytical explorer
+
+The separate scroll-based analytical page turns the archive into a guided overview while preserving the dashboard's pink-and-teal visual language. It includes a recent-evidence strip, a next-activity watchlist, evidence coverage by jurisdiction, published invitation volume, ANZSCO concentration, and WA breakdowns by residence context, nomination stream, observed EOI score band and approximate EOI queue age.
+
+Percentages describe the records represented in the archive. They are not invitation probabilities or labour-demand estimates. Officially announced future dates are labelled **Official**; modelled monitoring horizons are labelled **Watch estimate**; missing dates remain **Awaiting**. Cross-jurisdiction volume is shown as source coverage rather than a ranking because publication periods and reporting methods differ.
+
 ### Global snapshot
 
 The top of the dashboard answers four immediate questions using the active filters:
@@ -80,7 +87,6 @@ The occupation list combines published score evidence with the **Invitation Acti
 | Control | What it does |
 |---|---|
 | **ANZSCO** | Filters the official hierarchy from Major group to six-digit occupation |
-| **`+` hierarchy expansion** | Reveals Minor groups, Unit groups and individual occupations; the compact view retains Major and Sub-major groups |
 | **Skill** | Filters official Australian ANZSCO skill levels 1–5 |
 | **Search** | Finds an occupation by title or ANZSCO code |
 | **IAS** | Ranks historical invitation activity using the evidence represented in this repository |
@@ -124,7 +130,7 @@ The lower views provide program-level context and the documentary trail behind t
 | **Invitation variation** | Difference from the previous comparable published round | Comparison uses the same jurisdiction and visa scope |
 | **Lowest score** | Lowest numeric score in the selected occupation history | A lower score is historically more accessible, not a guarantee |
 | **Latest score** | Most recent published score for the selected occupation | Different streams or applicant locations can have different scores |
-| **Rounds** | Number of distinct published dates represented | Publication frequency varies considerably between governments |
+| **Rounds** | Number of distinct comparable official rounds represented | Publication frequency and occupational detail vary between governments |
 | **IAS** | A 0–100 historical activity signal | It is not an invitation probability, eligibility score or government measure |
 
 The federal figure of **10,000 invitations** refers to the entire subclass **189** round of 4 June 2026. Home Affairs does not publish how those 10,000 invitations were distributed among individual occupations.
@@ -135,13 +141,13 @@ IAS makes several dimensions of the collected history easier to compare. Its dis
 
 | Component | Weight |
 |---|---:|
-| Recency of published activity | 30% |
-| Frequency of published observations | 25% |
-| Consistency across the observed history | 20% |
-| Coverage within the selected context | 15% |
-| Comparable published score | 10% |
+| Participation across all comparable rounds | 35% |
+| Recency measured in comparable rounds | 30% |
+| Participation in the last eight comparable rounds | 20% |
+| Recent round-by-round continuity | 10% |
+| Comparable published score within the same round context | 5% |
 
-Pink represents lower historical activity and teal higher activity. Grey indicates insufficient evidence. The score is recalculated from the active context and should be read together with its hover explanation and evidence level.
+Pink represents lower historical activity and teal higher activity. Grey indicates insufficient evidence. Context breadth remains visible in the hover as evidence quality but no longer adds points to IAS. The score is recalculated from the active context and should be read together with its hover explanation and evidence level. Recency is based on the number of comparable rounds since the last appearance, not simply elapsed calendar months. Federal, ACT and WA thresholds are compared only inside compatible jurisdiction, visa, metric and published stream contexts; aggregate invitation totals are never assigned to an individual occupation. Histories with fewer than eight comparable rounds are progressively adjusted towards the neutral midpoint of 50, preventing one recent observation from appearing as a fully established IAS 100.
 
 ## Visa and jurisdiction context
 
@@ -171,21 +177,21 @@ Filtering WA by 190 or 491 therefore keeps relevant WA occupation criteria visib
 
 ## Chart methodology
 
-The chart always retains the complete historical boundary, currently **January 2021 to June 2026** for score data.
+The chart always retains the complete available official-result boundary, currently **January 2021 to June 2026** for numeric score data. A date enters this axis only when the collected source publishes a numeric occupational result for that event. Monthly program summaries, financial-year allocations and administrative updates do not create score-round dates.
 
 The default **Occupation groups** view uses official ANZSCO Sub-major groups. Its Date Range control is available only in this view because it recalculates the group comparison, occupation list and supporting table over the selected historical window. `All` represents the complete available range. Other chart tabs retain stable control positions but do not display Date Range where it has no meaningful role.
 
 Clicking a group filters the occupation list. Other groups remain visible in light grey so the user can change the selection or click the active group again to clear it. Bar and smooth-line modes use the same underlying values.
 
-Because many months have no published round, the horizontal layout uses a restrained adaptive timeline:
+The **Scores** view uses a fixed sequence of every valid official result date in the active State, Visa, Year, Metric and Skill context. Selecting a different occupation does not rebuild or shift this date base:
 
-- every year remains visible and chronologically ordered;
-- months with published data receive more room;
-- empty months and entirely empty years are compressed;
-- year brackets show where each calendar year begins and ends;
-- a break mark identifies a compressed year without published data.
+- a bar or point appears only where the selected occupation has a published result;
+- an empty position means no result was published for that occupation on that valid date, not zero;
+- every official result date keeps a fixed axis position and a compact visible label;
+- year brackets preserve chronological orientation;
+- smooth lines break at missing result dates instead of implying continuous observations.
 
-This improves readability but means horizontal distance is not a perfectly uniform measure of elapsed time. Dates and year labels remain the authoritative temporal reference.
+The fixed event sequence makes occupations directly comparable. Horizontal slots represent official result events rather than a uniform number of elapsed calendar days; dates remain the authoritative temporal reference.
 
 Scores, invitations, occupation coverage and IAS remain separate measures. Bar and line modes change only the presentation, not the underlying values.
 
@@ -260,6 +266,7 @@ These are the original government links from which the source material was colle
 | **ACT** | [ACT — 2025–26 invitation-round rankings](https://www.act.gov.au/__data/assets/pdf_file/0009/2920554/2025-26-Invitation-round-rankings.pdf) | PDF | Rankings, occupations and score criteria |
 | **WA** | [WA — State Nominated Migration Program](https://migration.wa.gov.au/our-services-support/state-nominated-migration-program) | HTML | Program information, visa totals and historical round tables |
 | **WA** | [WA — May 2025 occupation results](https://migration.wa.gov.au/sites/default/files/2025-05/SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20May%202025.pdf) | PDF | Last invited EOI by occupation |
+| **WA** | [WA — historical occupation rounds, May 2023–June 2025](https://migration.wa.gov.au/sites/default/files/2025-06/SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation.pdf) | PDF collection | Nine additional official rounds with occupation, residence, stream, EOI score and submission date |
 | **WA** | [WA — October 2025 priority round](https://migration.wa.gov.au/sites/default/files/2025-10/SNMP%20-%20Priority%20Invite%20Round%20-%20October%202025.pdf) | PDF | Occupation-level round results |
 | **WA** | [WA — December 2025 invitation round](https://migration.wa.gov.au/sites/default/files/2025-12/SNMP%20Invite%20Round%20-%20December%202025.pdf) | PDF | Occupation-level round results |
 | **WA** | [WA — January 2026 invitation round](https://migration.wa.gov.au/sites/default/files/2026-01/SNMP%20Invite%20Round%20-%20January%202026.pdf) | PDF | Occupation-level round results |
@@ -330,6 +337,15 @@ The repository retains the official HTML and PDF material used to make the analy
 <summary><strong>Western Australia — 9 downloads</strong></summary>
 
 - [Download 2025–26 WA SNMP criteria](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/2025-26%20WA%20SNMP%20Criteria%20-%20July%202025.pdf)
+- [Download May 2023 occupation results](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/Last%20invited%20EOI%20by%20occupation%20-%20May%202023.pdf)
+- [Download August 2023 occupation results](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/Last%20invited%20EOI%20by%20occupation%20-%20August%202023.pdf)
+- [Download August 2024 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20August%202024.pdf)
+- [Download September 2024 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20September%202024.pdf)
+- [Download October 2024 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20October%202024.pdf)
+- [Download December 2024 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20December%202024.pdf)
+- [Download February 2025 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20February%202025.pdf)
+- [Download March 2025 non-priority round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20March%202025%20Non%20Priority.pdf)
+- [Download June 2025 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20June%202025.pdf)
 - [Download May 2026 priority-trade results](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/Last%20invited%20expression%20of%20interest%20-%20Priority%20trade%20occupations%20-%20May%202026.pdf)
 - [Download October 2025 priority round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20-%20Priority%20Invite%20Round%20-%20October%202025.pdf)
 - [Download December 2025 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20December%202025.pdf)

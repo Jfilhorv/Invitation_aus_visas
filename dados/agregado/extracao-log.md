@@ -1,6 +1,6 @@
 # Log de extracao - vistos de convite
 
-Gerado em 2026-08-13 17:21:40.
+Gerado em 2026-09-03 19:46:39.
 
 Somente fontes oficiais `.gov.au` ja baixadas em `dados/` foram usadas.
 Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
@@ -11,14 +11,14 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 |---|---|
 | FEDERAL | 3509 |
 | ACT | 2712 |
-| WA | 492 |
+| WA | 1388 |
 | SA | 276 |
 | NSW | 5 |
 | VIC | 5 |
 | QLD | 5 |
 | TAS | 5 |
 | NT | 5 |
-| **Total** | **7014** |
+| **Total** | **7910** |
 
 ## Notas de parse
 
@@ -52,13 +52,22 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 - ACT round 2025-09-15: 608 linhas matrix_score
 - ACT round 2026-06-11: 77 convites subclass 190
 - ACT round 2026-06-11: 5 convites subclass 491
+- WA PDF Last invited EOI by occupation - May 2023.pdf: 116 linhas ultimo_eoi_pontos
+- WA PDF Last invited EOI by occupation - August 2023.pdf: 23 linhas ultimo_eoi_pontos
+- WA PDF SNMP Invite Round - August 2024.pdf: 105 linhas ultimo_eoi_pontos
+- WA PDF SNMP Invite Round - September 2024.pdf: 102 linhas ultimo_eoi_pontos
+- WA PDF SNMP Invite Round - October 2024.pdf: 96 linhas ultimo_eoi_pontos
+- WA PDF SNMP Invite Round - December 2024.pdf: 187 linhas ultimo_eoi_pontos
+- WA PDF SNMP Invite Round - February 2025.pdf: 124 linhas ultimo_eoi_pontos
+- WA PDF SNMP Invite Round - March 2025 Non Priority.pdf: 104 linhas ultimo_eoi_pontos
 - WA PDF SNMP Invite Round - Last Invited By Occupation May 2025.pdf: 45 linhas ultimo_eoi_pontos
+- WA PDF SNMP Invite Round - June 2025.pdf: 39 linhas ultimo_eoi_pontos
 - WA PDF SNMP - Priority Invite Round - October 2025.pdf: 19 linhas ultimo_eoi_pontos
 - WA PDF SNMP Invite Round - December 2025.pdf: 139 linhas ultimo_eoi_pontos
 - WA PDF SNMP Invite Round - January 2026.pdf: 27 linhas ultimo_eoi_pontos
 - WA PDF v.1OTHER priority occupations - SNMP Invite round - March 2026.pdf: 115 linhas ultimo_eoi_pontos
 - WA PDF Last invited expression of interest - Priority trade occupations - May 2026.pdf: 18 linhas ultimo_eoi_pontos
-- WA PDFs last-invited: 363 linhas
+- WA PDFs last-invited: 1259 linhas
 - WA PDFs: stream, residencia e data de submissao preservados; totais mensais permanecem em metrica separada.
 - WA HTML: 125 linhas
 - SA invitations-issued-late-may-2026.html: 36 linhas
@@ -73,10 +82,10 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 - QLD: 1 linha publicacao=NOT_PUBLISHED
 - NT: 1 linha publicacao=NOT_PUBLISHED
 - TAS: 1 NOT_PUBLISHED; totais 2025-26 nao duplicados como convites
-- Normalizacao ANZSCO 2022 (ABS): abs_exact_title=3215, missing=411, source=3388
-- CSV escrito: C:\Users\efilh\Invitation_aus_visa\dados\agregado\vistos-de-convites.csv (7014 linhas)
-- JSON escrito: C:\Users\efilh\Invitation_aus_visa\dados\agregado\vistos-de-convites.json
-- Dashboard escrito: C:\Users\efilh\Invitation_aus_visa\analise\data.js
+- Normalizacao ANZSCO 2022 (ABS): abs_exact_title=3215, missing=411, source=4284
+- CSV escrito: C:\Users\efilh\Documents\Codex\2026-09-01\github-plugin-github-openai-curated-remote\Invitation_aus_visas\dados\agregado\vistos-de-convites.csv (7910 linhas)
+- JSON escrito: C:\Users\efilh\Documents\Codex\2026-09-01\github-plugin-github-openai-curated-remote\Invitation_aus_visas\dados\agregado\vistos-de-convites.json
+- Dashboard escrito: C:\Users\efilh\Documents\Codex\2026-09-01\github-plugin-github-openai-curated-remote\Invitation_aus_visas\analise\data.js
 
 ## Erros / avisos
 

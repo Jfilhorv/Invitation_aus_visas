@@ -30,6 +30,29 @@ Uma atualização só entra no dataset quando:
 
 Blogs, agentes, redes sociais e resumos comerciais não são fontes de dados do projeto.
 
+## Definição canônica de rodada e data
+
+Toda análise temporal deve partir de um evento oficial identificável. Uma rodada
+comparável é identificada por jurisdição, visto, métrica, nível ocupacional,
+stream/residência quando publicados e data oficial. Várias linhas ocupacionais na
+mesma combinação pertencem à mesma rodada; não são várias rodadas.
+
+- `YYYY-MM-DD` representa o dia oficial quando a fonte o informa;
+- `YYYY-MM` representa o período oficial quando a fonte publica somente o mês;
+- tabelas mensais de resumo federal não criam uma segunda rodada quando já existe
+  a data exata correspondente;
+- acumulados do program year, allocations, nominations recebidas e atualizações
+  administrativas não entram no eixo de score nem no IAS;
+- ausência de uma profissão só pode ser interpretada como ausência naquela rodada
+  quando a fonte publica um universo ocupacional comparável; nos demais casos é
+  `não conhecido`, nunca zero;
+- resultados por Sub-major Group ou Unit Group não devem ser atribuídos
+  automaticamente a todas as profissões descendentes.
+
+Essa mesma identidade de rodada deve alimentar eixo temporal, Date Range, KPIs,
+histórico, contagem de rodadas e IAS. Não criar uma regra de datas exclusiva para
+um gráfico ou cartão.
+
 ## Como adicionar uma nova publicação
 
 ### 1. Arquivar a fonte

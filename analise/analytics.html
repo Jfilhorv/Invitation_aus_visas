@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Migration invitation analytics</title>
+  <link rel="icon" href="./logo-ias.png?v=2" type="image/png" />
+  <link rel="stylesheet" href="./site-tokens.css" />
+  <style>
+    :root { --pink:#e23084; --pink-soft:#f7a8cc; --teal:#08b9aa; --teal-dark:#087e77; }
+    html { scroll-behavior:smooth; }
+    body { min-height:100vh; }
+    .top { height:58px; position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:0 22px; background:color-mix(in srgb,var(--bt-paper) 91%,transparent); backdrop-filter:blur(16px); border-bottom:1px solid color-mix(in srgb,var(--pink) 35%,var(--bt-divider)); }
+    .brand { display:flex; align-items:center; min-width:0; color:var(--bt-text); text-decoration:none; }
+    .brand img { width:46px; height:46px; object-fit:contain; margin-right:7px; }
+    .brand-copy { display:grid; line-height:1.05; }
+    .brand strong { color:var(--pink); font-size:17px; letter-spacing:-.025em; }
+    .brand small { margin-top:4px; color:var(--bt-text-secondary); font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .actions { display:flex; align-items:center; gap:8px; }
+    .pill { border:1px solid color-mix(in srgb,var(--pink) 50%,transparent); border-radius:999px; background:var(--bt-paper); color:var(--bt-text); padding:7px 13px; text-decoration:none; font:700 11px/1 var(--bt-font); cursor:pointer; box-shadow:var(--bt-shadow-1); }
+    .pill:hover { background:color-mix(in srgb,var(--pink) 10%,var(--bt-paper)); }
+    .pulse { position:sticky; top:58px; z-index:25; display:flex; align-items:center; gap:9px; min-height:38px; padding:5px 22px; overflow-x:auto; background:color-mix(in srgb,var(--bt-paper) 94%,transparent); backdrop-filter:blur(14px); border-bottom:1px solid var(--bt-divider); scrollbar-width:thin; }
+    .pulse-label { flex:0 0 auto; color:var(--pink); font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    .event { flex:0 0 auto; display:flex; align-items:center; gap:6px; padding:5px 9px; border-radius:999px; border:1px solid var(--bt-divider); background:var(--bt-paper); font-size:10px; color:var(--bt-text-secondary); }
+    .event b { color:var(--teal-dark); }
+    main { width:min(1480px,100%); margin:auto; padding:26px 24px 70px; }
+    .hero { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr); gap:18px; align-items:stretch; }
+    .hero-copy,.hero-note,.card { border:1px solid color-mix(in srgb,var(--pink) 45%,var(--bt-divider)); border-radius:18px; background:var(--bt-paper); box-shadow:var(--bt-shadow-2); }
+    .hero-copy { padding:30px; background:linear-gradient(135deg,color-mix(in srgb,var(--pink) 8%,var(--bt-paper)),var(--bt-paper) 48%,color-mix(in srgb,var(--teal) 8%,var(--bt-paper))); }
+    .eyebrow { color:var(--teal-dark); font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    h1 { max-width:850px; margin:8px 0 10px; font-size:clamp(30px,4vw,58px); line-height:.98; letter-spacing:-.055em; }
+    .pink { color:var(--pink); } .teal { color:var(--teal-dark); }
+    .lead { max-width:780px; margin:0; color:var(--bt-text-secondary); font-size:14px; }
+    .hero-note { padding:24px; display:flex; flex-direction:column; justify-content:flex-end; }
+    .hero-note .big { color:var(--teal-dark); font:800 clamp(38px,5vw,68px)/1 var(--bt-font-mono-finance); }
+    .hero-note p { margin:8px 0 0; color:var(--bt-text-secondary); }
+    .kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:18px 0 36px; }
+    .kpi { position:relative; overflow:hidden; padding:18px 20px; border:1px solid color-mix(in srgb,var(--pink) 48%,var(--bt-divider)); border-radius:16px; background:var(--bt-paper); box-shadow:var(--bt-shadow-1); }
+    .kpi:before { content:""; position:absolute; inset:0 auto 0 0; width:4px; background:var(--teal); }
+    .kpi:nth-child(even):before { background:var(--pink); }
+    .kpi small { color:var(--bt-text-secondary); font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    .kpi strong { display:block; margin-top:5px; color:var(--teal-dark); font:800 29px/1 var(--bt-font-mono-finance); }
+    .kpi:nth-child(even) strong { color:var(--pink); }
+    .watchlist { display:grid; gap:8px; }
+    .watch-row { display:grid; grid-template-columns:100px minmax(120px,.8fr) minmax(160px,1fr) 150px; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--bt-divider); border-radius:12px; background:color-mix(in srgb,var(--teal) 3%,var(--bt-paper)); color:inherit; text-decoration:none; }
+    .watch-state { font-size:12px; font-weight:800; }
+    .watch-visas { color:var(--teal-dark); font:700 11px/1.3 var(--bt-font-mono-finance); }
+    .watch-date { font:700 11px/1.3 var(--bt-font-mono-finance); }
+    .watch-status { justify-self:end; padding:4px 8px; border-radius:999px; font-size:9px; font-weight:800; letter-spacing:.055em; text-transform:uppercase; white-space:nowrap; }
+    .watch-status.official { color:var(--teal-dark); background:color-mix(in srgb,var(--teal) 16%,transparent); }
+    .watch-status.estimate { color:var(--pink); background:color-mix(in srgb,var(--pink) 13%,transparent); }
+    .watch-status.awaiting { color:var(--bt-text-secondary); background:var(--bt-menu-hover); }
+    section { margin-top:44px; scroll-margin-top:110px; }
+    .section-head { display:flex; align-items:end; justify-content:space-between; gap:16px; margin:0 2px 13px; }
+    h2 { margin:0; font-size:25px; letter-spacing:-.035em; }
+    .section-head p { max-width:700px; margin:0; color:var(--bt-text-secondary); font-size:12px; text-align:right; }
+    .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .card { min-width:0; padding:20px; }
+    .card h3 { margin:0 0 3px; font-size:15px; }
+    .card-sub { margin:0 0 18px; color:var(--bt-text-secondary); font-size:11px; }
+    .bars { display:grid; gap:10px; }
+    .bar-row { display:grid; grid-template-columns:minmax(115px,1.2fr) minmax(130px,4fr) 56px; align-items:center; gap:10px; font-size:11px; }
+    .bar-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .track { height:10px; overflow:hidden; border-radius:999px; background:color-mix(in srgb,var(--teal) 8%,var(--bt-bg)); }
+    .fill { height:100%; min-width:2px; border-radius:999px; background:linear-gradient(90deg,var(--pink),var(--teal)); }
+    .bar-value { text-align:right; color:var(--bt-text-secondary); font-family:var(--bt-font-mono-finance); }
+    .coverage { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:9px; overflow-x:auto; padding-bottom:3px; }
+    .state { min-height:128px; padding:15px; border-radius:14px; background:color-mix(in srgb,var(--teal) 4%,var(--bt-paper)); border:1px solid var(--bt-divider); }
+    .state.live { border-color:color-mix(in srgb,var(--teal) 55%,var(--bt-divider)); }
+    .state.context { border-color:color-mix(in srgb,var(--pink) 38%,var(--bt-divider)); }
+    .state-code { display:flex; justify-content:space-between; align-items:center; font-size:18px; font-weight:800; }
+    .dot { width:9px;height:9px;border-radius:50%;background:var(--teal); }
+    .context .dot { background:var(--pink-soft); }
+    .state p { margin:9px 0 0; color:var(--bt-text-secondary); font-size:10.5px; }
+    .state b { display:block; margin-top:11px; color:var(--teal-dark); font-size:11px; }
+    .wa-grid { display:grid; grid-template-columns:1.15fr .85fr .85fr; gap:14px; }
+    .callout { margin-top:14px; padding:15px 18px; border-radius:14px; border:1px dashed color-mix(in srgb,var(--pink) 58%,var(--bt-divider)); background:color-mix(in srgb,var(--pink) 5%,var(--bt-paper)); color:var(--bt-text-secondary); font-size:11px; }
+    .callout b { color:var(--pink); }
+    .source-note { margin:40px 0 0; color:var(--bt-text-secondary); font-size:10px; text-align:center; }
+    @media(max-width:900px){ .hero,.grid-2,.wa-grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.section-head{align-items:start;flex-direction:column}.section-head p{text-align:left}.top{padding:0 12px}.pulse{padding-left:12px}main{padding:18px 12px 55px}.hero-copy{padding:22px}.top .brand small{display:none} }
+    @media(max-width:650px){ .watch-row{grid-template-columns:68px 1fr auto}.watch-date{grid-column:2/4}.watch-status{grid-column:3;grid-row:1}.watch-visas{padding-right:88px} }
+    @media(max-width:520px){ .kpis{grid-template-columns:1fr 1fr;gap:8px}.kpi{padding:14px}.kpi strong{font-size:22px}.actions .pill:first-child{display:none}.brand strong{font-size:14px}.brand img{width:40px;height:40px}.bar-row{grid-template-columns:94px 1fr 45px} }
+  </style>
+</head>
+<body class="bt-body">
+  <header class="top">
+    <a class="brand" href="./index.html"><img src="./logo-ias.png" alt="" /><span class="brand-copy"><strong>Invitation analytics</strong><small>Australian skilled migration evidence</small></span></a>
+    <nav class="actions"><a class="pill" href="#wa">WA lenses</a><a class="pill" href="./index.html">Occupation explorer</a><button class="pill" id="theme">Theme</button></nav>
+  </header>
+  <div class="pulse" id="pulse"><span class="pulse-label">Recent evidence</span></div>
+  <main>
+    <div class="hero">
+      <div class="hero-copy"><span class="eyebrow">Analytical explorer</span><h1>Read the evidence as a <span class="pink">story</span>, not just a <span class="teal">table</span>.</h1><p class="lead">A scroll-based view of official invitation publications. It highlights volume, coverage and observed cut-offs while keeping different state reporting systems separate.</p></div>
+      <div class="hero-note"><span class="eyebrow">Core rule</span><span class="big">≠ chance</span><p>Published activity and IAS are historical signals. Neither is a probability, forecast or guarantee of invitation.</p></div>
+    </div>
+    <div class="kpis"><div class="kpi"><small>Evidence rows</small><strong id="kRows">—</strong></div><div class="kpi"><small>Occupation identities</small><strong id="kOcc">—</strong></div><div class="kpi"><small>Published dates</small><strong id="kDates">—</strong></div><div class="kpi"><small>Official sources</small><strong id="kSources">—</strong></div></div>
+
+    <section id="outlook"><div class="section-head"><h2>Next activity watchlist</h2><p>Official dates are separated from analytical watch dates. “Awaiting” means the jurisdiction has not published a defensible next-round date.</p></div><article class="card"><div class="watchlist">
+      <a class="watch-row" href="https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/invitation-rounds" target="_blank" rel="noopener"><span class="watch-state">Federal</span><span class="watch-visas">189</span><span class="watch-date">By 30 Sep 2026</span><span class="watch-status official">Official</span></a>
+      <div class="watch-row"><span class="watch-state">WA</span><span class="watch-visas">190 · 491</span><span class="watch-date">By 30 Dec 2026</span><span class="watch-status estimate">Watch estimate</span></div>
+      <div class="watch-row"><span class="watch-state">TAS</span><span class="watch-visas">190 · 491</span><span class="watch-date">Program active · next date not stated</span><span class="watch-status awaiting">Awaiting</span></div>
+      <div class="watch-row"><span class="watch-state">ACT</span><span class="watch-visas">190 · 491</span><span class="watch-date">Waiting for 2026–27 allocation</span><span class="watch-status awaiting">Awaiting</span></div>
+      <div class="watch-row"><span class="watch-state">NSW</span><span class="watch-visas">190 · 491</span><span class="watch-date">Waiting for program-year settings</span><span class="watch-status awaiting">Awaiting</span></div>
+      <div class="watch-row"><span class="watch-state">VIC</span><span class="watch-visas">190 · 491</span><span class="watch-date">2026–27 program not open</span><span class="watch-status awaiting">Awaiting</span></div>
+      <div class="watch-row"><span class="watch-state">QLD</span><span class="watch-visas">190 · 491</span><span class="watch-date">Waiting for 2026–27 program / QSOL</span><span class="watch-status awaiting">Awaiting</span></div>
+      <div class="watch-row"><span class="watch-state">SA</span><span class="watch-visas">190 · 491</span><span class="watch-date">Waiting for 2026–27 program</span><span class="watch-status awaiting">Awaiting</span></div>
+      <div class="watch-row"><span class="watch-state">NT</span><span class="watch-visas">190 · 491</span><span class="watch-date">Next round not announced</span><span class="watch-status awaiting">Awaiting</span></div>
+    </div><div class="callout"><b>Forecast rule:</b> WA’s 30 December date is a monitoring horizon inferred from its irregular historical publication cadence. It is not an announced invitation date. No estimated date is shown where the archive does not support a useful window.</div></article></section>
+
+    <section id="coverage"><div class="section-head"><h2>What each jurisdiction actually publishes</h2><p>Teal cards contain usable invitation outcomes. Pink cards provide allocations, eligibility or context only.</p></div><div class="card"><div class="coverage" id="coverageGrid"></div></div></section>
+
+    <section><div class="section-head"><h2>Published invitation volume</h2><p>Aggregate counts only. Coverage periods differ, so these totals describe the archive and must not be used as a state ranking.</p></div><div class="grid-2"><article class="card"><h3>By jurisdiction</h3><p class="card-sub">Sum of aggregate period records represented in the archive</p><div class="bars" id="volumeState"></div></article><article class="card"><h3>By visa</h3><p class="card-sub">189, 190 and 491 within each source’s available published periods</p><div class="bars" id="volumeVisa"></div></article></div></section>
+
+    <section><div class="section-head"><h2>Where published occupation evidence concentrates</h2><p>Share of distinct occupation or ANZSCO-group results, not share of people invited.</p></div><article class="card"><h3>Top ANZSCO sub-major groups</h3><p class="card-sub">Derived from official occupation codes and published result rows</p><div class="bars" id="groups"></div></article></section>
+
+    <section id="wa"><div class="section-head"><h2>Western Australia · deeper lenses</h2><p>WA’s last-invited EOI publications preserve context that most jurisdictions do not publish.</p></div><div class="wa-grid"><article class="card"><h3>Residence context</h3><p class="card-sub">Published WA last-invited EOI rows</p><div class="bars" id="waResidence"></div></article><article class="card"><h3>Nomination stream</h3><p class="card-sub">General and graduate streams</p><div class="bars" id="waStream"></div></article><article class="card"><h3>Observed score bands</h3><p class="card-sub">Last invited EOI points, not eligibility thresholds</p><div class="bars" id="waScore"></div></article></div><div class="callout" id="waAge"><b>EOI queue age:</b> calculating…</div></section>
+
+    <p class="source-note">Built from locally archived official Australian Government and state/territory publications. Reporting methods differ by jurisdiction; comparisons are descriptive only.</p>
+  </main>
+  <script src="./data.js?v=20260903-wa-history"></script>
+  <script>
+  (()=>{
+    const rows=(window.CONVITES_DATA||[]).filter(r=>r.validado==='true');
+    const fmt=n=>new Intl.NumberFormat('en-AU').format(Math.round(n));
+    const uniq=a=>new Set(a.filter(Boolean));
+    const extra=s=>Object.fromEntries(String(s||'').split(';').map(x=>x.split('=').map(y=>y.trim())).filter(x=>x.length===2));
+    const numeric=r=>{const n=Number(String(r.valor).replace(/,/g,''));return Number.isFinite(n)?n:null};
+    const isResult=r=>['pontos_minimos','matrix_score','ultimo_eoi_pontos'].includes(r.metrica);
+    document.querySelector('#kRows').textContent=fmt(rows.length);
+    document.querySelector('#kOcc').textContent=fmt(uniq(rows.filter(isResult).map(r=>r.identidade_ocupacional)).size);
+    document.querySelector('#kDates').textContent=fmt(uniq(rows.filter(isResult).map(r=>r.data_round)).size);
+    document.querySelector('#kSources').textContent=fmt(uniq(rows.map(r=>r.fonte_url)).size);
+    const recent=[...new Map(rows.filter(r=>r.data_round&&isResult(r)).map(r=>[r.jurisdicao+'|'+r.data_round,r])).values()].sort((a,b)=>b.data_round.localeCompare(a.data_round)).slice(0,12);
+    document.querySelector('#pulse').insertAdjacentHTML('beforeend',recent.map(r=>`<span class="event"><b>${r.jurisdicao}</b>${r.data_round}</span>`).join(''));
+    const coverage={FEDERAL:['live','Occupation scores + invitation totals'],ACT:['live','Matrix cut-offs by ANZSCO group'],WA:['live','Last invited EOI + aggregate totals'],SA:['live','Invitation counts by ANZSCO group'],NSW:['context','Skills lists + allocations'],VIC:['context','Priorities + allocations'],QLD:['context','Occupation lists + allocations'],TAS:['context','ROI and allocation totals'],NT:['context','Program context; no results table']};
+    document.querySelector('#coverageGrid').innerHTML=Object.entries(coverage).map(([k,v])=>`<div class="state ${v[0]}"><div class="state-code">${k}<span class="dot"></span></div><p>${v[1]}</p><b>${v[0]==='live'?'Analytical data':'Context only'}</b></div>`).join('');
+    function bars(id,items,percent=false){const max=Math.max(...items.map(x=>x[1]),1),total=items.reduce((s,x)=>s+x[1],0);document.querySelector('#'+id).innerHTML=items.map(([label,val])=>`<div class="bar-row" title="${label}: ${fmt(val)}"><span class="bar-label">${label}</span><span class="track"><span class="fill" style="display:block;width:${100*val/max}%"></span></span><span class="bar-value">${percent?Math.round(100*val/total)+'%':fmt(val)}</span></div>`).join('')||'<span class="card-sub">No comparable data.</span>'}
+    const aggregate=rows.filter(r=>['convites_emitidos','eois_convidados'].includes(r.metrica)&&String(r.ocupacao).toLowerCase()==='agregado'&&numeric(r)!=null);
+    const sumBy=(arr,key)=>Object.entries(arr.reduce((o,r)=>(o[key(r)]=(o[key(r)]||0)+numeric(r),o),{})).sort((a,b)=>b[1]-a[1]);
+    bars('volumeState',sumBy(aggregate,r=>r.jurisdicao));bars('volumeVisa',sumBy(aggregate,r=>r.visto));
+    const occRows=rows.filter(isResult).filter(r=>/^\d{2,6}$/.test(r.anzsco||''));
+    const groupNames={13:'Specialist Managers',14:'Hospitality & Service Managers',22:'Business & Marketing Professionals',23:'Engineering & Science Professionals',24:'Education Professionals',25:'Health Professionals',26:'ICT Professionals',27:'Legal & Welfare Professionals',31:'Engineering & Science Technicians',32:'Automotive & Engineering Trades',33:'Construction Trades',34:'Electrotechnology Trades',35:'Food Trades',41:'Health & Welfare Support'};
+    const distinct={};occRows.forEach(r=>{const g=r.anzsco.slice(0,2),k=g+'|'+r.identidade_ocupacional;distinct[k]=g});
+    const gc=Object.values(distinct).reduce((o,g)=>(o[g]=(o[g]||0)+1,o),{});bars('groups',Object.entries(gc).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([g,n])=>[`${g} · ${groupNames[g]||'Other ANZSCO group'}`,n]),true);
+    const wa=rows.filter(r=>r.jurisdicao==='WA'&&r.metrica==='ultimo_eoi_pontos'&&numeric(r)!=null);
+    const countExtra=k=>Object.entries(wa.reduce((o,r)=>{const v=extra(r.unidade_extra)[k]||'Not stated';o[v]=(o[v]||0)+1;return o},{})).sort((a,b)=>b[1]-a[1]);
+    bars('waResidence',countExtra('residence'),true);bars('waStream',countExtra('stream'),true);
+    const bands={'65–69':0,'70–79':0,'80–89':0,'90+':0};wa.forEach(r=>{const n=numeric(r);bands[n>=90?'90+':n>=80?'80–89':n>=70?'70–79':'65–69']++});bars('waScore',Object.entries(bands),true);
+    const ages=wa.map(r=>{const e=extra(r.unidade_extra).eoi_submission_date;if(!e||!r.data_round)return null;const round=new Date(r.data_round.length===7?r.data_round+'-28':r.data_round);const sent=new Date(e);const days=(round-sent)/86400000;return days>=0?days:null}).filter(Number.isFinite).sort((a,b)=>a-b);
+    const median=ages.length?ages[Math.floor(ages.length/2)]:null;document.querySelector('#waAge').innerHTML=`<b>EOI queue age:</b> the median published last-invited EOI was approximately <b>${median==null?'not available':fmt(median)+' days old'}</b> at the represented WA round. Month-only round dates make this an estimate, not an exact waiting time.`;
+    const root=document.documentElement, saved=localStorage.getItem('invitation-theme');if(saved)root.dataset.theme=saved;
+    document.querySelector('#theme').onclick=()=>{const next=root.dataset.theme==='dark'?'light':'dark';root.dataset.theme=next;localStorage.setItem('invitation-theme',next)};
+  })();
+  </script>
+</body>
+</html>
