@@ -3115,7 +3115,19 @@
     $("fEstado").addEventListener("change", () => {
       const state = $("fEstado").value;
       selectedStates = state ? new Set([state]) : new Set(filterStates);
-      if (state && !scoreRows.some((r) => r.jurisdicao === state)) lowerView = "states";
+      selected = null;
+      chartDateFilter = null;
+      chartStartDate = "";
+      if (state && scoreRows.some((r) => r.jurisdicao === state)) {
+        chartMode = "scores";
+        lowerView = "history";
+      } else if (state) {
+        chartMode = "groups";
+        lowerView = "states";
+      } else {
+        chartMode = "groups";
+        lowerView = "history";
+      }
       refresh();
     });
     ["fVisto", "fYear", "fAnzsco", "fSkill", "fMetrica"].forEach((id) => $(id).addEventListener("change", () => {
