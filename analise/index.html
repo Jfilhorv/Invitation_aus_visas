@@ -1470,6 +1470,8 @@
     }
     :is(.group-measure-switch .estado-chip,.chart-style-toggle,.theme-btn):hover::before,
     :is(.group-measure-switch .estado-chip.on,.chart-style-toggle.on,.theme-btn.on)::before { opacity:1; }
+    .group-measure-switch { position:relative; z-index:20; overflow:visible; }
+    .group-measure-switch .estado-chip[data-measure-info] { overflow:visible; }
     .group-measure-switch .estado-chip { padding-left:9px; }
     .chart-style-toggle,
     .theme-btn { border-radius:10px; }
