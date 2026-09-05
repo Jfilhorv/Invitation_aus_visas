@@ -160,18 +160,39 @@
       width: 1%;
       white-space: nowrap;
     }
+    .occ-table thead th.jurh,
+    .occ-table tbody td.jur-cell { width:1%; white-space:nowrap; text-align:left; }
+    .jur-list { display:inline-flex; align-items:center; gap:2px; }
+    .jur-pill {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:23px;
+      padding:2px 4px;
+      border-radius:999px;
+      background:color-mix(in srgb,#08b9aa 13%,var(--bt-paper));
+      color:#087e77;
+      font:750 8px/1 var(--bt-font);
+      letter-spacing:.01em;
+    }
+    .jur-pill.federal { background:color-mix(in srgb,#e23084 12%,var(--bt-paper)); color:#c32670; }
+    .jur-more { color:var(--bt-text-secondary); font:700 8px/1 var(--bt-font-mono); }
     /* IAS list UX: compact score marker and contextual explanation. */
     .ias-list-dot {
+      --ias: 0;
       --ias-colour: var(--bt-text-secondary);
       position: relative;
       display: inline-grid;
       place-items: center;
       width: 27px;
       height: 27px;
-      border: 2px solid var(--ias-colour);
+      border: 0;
       border-radius: 50%;
       color: var(--ias-colour);
-      background: color-mix(in srgb, var(--ias-colour) 9%, var(--bt-paper));
+      background:
+        radial-gradient(circle at center, var(--bt-paper) 0 56%, transparent 59%),
+        conic-gradient(var(--ias-colour) calc(var(--ias) * 1%), color-mix(in srgb, var(--ias-colour) 13%, var(--bt-divider)) 0);
+      box-shadow:0 2px 7px color-mix(in srgb,var(--ias-colour) 20%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--ias-colour) 10%,transparent);
       font-size: 9px;
       font-weight: var(--bt-fw-bold);
       line-height: 1;
@@ -412,14 +433,15 @@
 
     .body {
       display: grid;
-      grid-template-columns: minmax(320px, 28vw) minmax(0, 1fr);
+      grid-template-columns: minmax(396px, 35.2vw) minmax(0, 1fr);
       gap: var(--bt-sp-1);
+      margin-inline:16px;
       min-height: 0;
       height: 100%;
       overflow: hidden;
     }
     @media (max-width: 920px) {
-      .body { grid-template-columns: 1fr; overflow: auto; }
+      .body { grid-template-columns: 1fr; margin-inline:5px; overflow: auto; }
       html, body { overflow: auto; }
       .shell { height: auto; min-height: 100vh; overflow: visible; }
     }
@@ -584,6 +606,17 @@
     }
     .occ-table thead th.numh,
     .occ-table tbody td.num { text-align: center; }
+    .occ-table thead th.published-stat,
+    .occ-table tbody td.published-stat {
+      width:1%;
+      padding-left:3px;
+      padding-right:3px;
+      white-space:nowrap;
+    }
+    .occ-table thead th.published-stat:first-of-type,
+    .occ-table tbody td.published-stat:first-of-type { padding-left:5px; }
+    .occ-table thead th.published-stat:last-of-type,
+    .occ-table tbody td.published-stat:last-of-type { padding-right:5px; }
     .occ-table tbody td,
     table.hist-table td {
       padding: 3.6px 8px;
@@ -595,6 +628,12 @@
     .occ-table tbody tr:nth-child(even) td,
     table.hist-table tr:nth-child(even) td {
       background: var(--bt-zebra-odd);
+    }
+    :where(:root:not([data-theme="dark"])) .occ-table thead th,
+    :where(:root:not([data-theme="dark"])) table.hist-table th,
+    :where(:root:not([data-theme="dark"])) .occ-table tbody td,
+    :where(:root:not([data-theme="dark"])) table.hist-table tbody td {
+      background: var(--bt-paper);
     }
     .occ-table tbody tr:hover td,
     table.hist-table tr:hover td {
@@ -1051,7 +1090,20 @@
       font-variant-numeric: tabular-nums;
       font-family: var(--bt-font-mono);
       font-weight: var(--bt-fw-semibold);
+      text-align: right;
     }
+    .latest-value { display:inline-flex; align-items:baseline; justify-content:center; gap:4px; white-space:nowrap; }
+    .latest-delta { font:750 8.5px/1 var(--bt-font-mono); letter-spacing:-.02em; }
+    /* A higher invitation threshold is less favourable; a lower one is better. */
+    .latest-delta.positive { color:#d62c72; }
+    .latest-delta.negative { color:#008f80; }
+    .latest-delta.neutral { color:var(--bt-text-secondary); }
+    .streak-cell { white-space:nowrap; }
+    .streak-value { font:750 10px/1 var(--bt-font-mono); color:var(--bt-text); }
+    .streak-dots { display:inline-flex; gap:2px; margin-left:4px; vertical-align:middle; }
+    .streak-dots i { width:4px; height:4px; border-radius:50%; background:var(--bt-divider); }
+    .streak-dots i.hit { background:color-mix(in srgb,#00a691 42%,var(--bt-paper)); }
+    .streak-dots i.latest-run { background:#00a691; }
     .badge {
       display: inline-block;
       border: 0;
@@ -1640,12 +1692,14 @@
           <table class="occ-table">
             <thead>
               <tr>
+                <th class="jurh" title="Jurisdictions with published results">Jur.</th>
                 <th>Code</th>
                 <th class="sortable" data-col="nome">Name <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh sortable published-stat" data-col="last" title="Latest published score">Latest <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh sortable published-stat" data-col="avg" title="Historical average of published numeric scores">Average <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh sortable published-stat" data-col="freq" title="Number of published numeric records">Records <span class="sort-ind" aria-hidden="true"></span></th>
                 <th class="rankh sortable" data-col="ias">IAS <span class="sort-ind" aria-hidden="true"></span><span class="info-wrap ias-header-info"><button class="info-trigger" type="button" aria-label="About the Invitation Activity Score" aria-expanded="false">i</button><span class="info-popover" role="tooltip">IAS is a 0–100 round-based historical activity signal: 35% participation across all comparable rounds + 30% round recency + 20% participation in the last 8 comparable rounds + 10% recent continuity + 5% comparable score. Context breadth is shown as evidence, not scored. Pink indicates lower activity, teal higher activity, and grey insufficient evidence. It is not an invitation probability or guarantee.</span></span></th>
-                <th class="numh sortable" data-col="last" title="Latest published score">Latest <span class="sort-ind" aria-hidden="true"></span></th>
-                <th class="numh sortable" data-col="avg" title="Historical average of published numeric scores">Average <span class="sort-ind" aria-hidden="true"></span></th>
-                <th class="numh sortable" data-col="freq" title="Number of published numeric records">Records <span class="sort-ind" aria-hidden="true"></span></th>
+                <th class="numh" title="Consecutive comparable rounds ending at the occupation's latest appearance">Streak</th>
               </tr>
             </thead>
             <tbody id="rankBody"></tbody>
@@ -1721,6 +1775,16 @@
     const ANZSCO_LEVEL_LABELS = { major:"Major", sub_major:"Sub-major", minor:"Minor", unit:"Unit", occupation:"Occupation" };
 
     const raw = Array.isArray(window.CONVITES_DATA) ? window.CONVITES_DATA : [];
+    // Explicit title alias: the federal publication uses this label without
+    // printing the ANZSCO code, while WA publishes the corresponding 332211 code.
+    raw.forEach((row) => {
+      if (row.jurisdicao !== "FEDERAL" || row.ocupacao !== "Painting Trades Worker" || !String(row.identidade_ocupacional || "").startsWith("UNCLASSIFIED:")) return;
+      row.anzsco = "332211";
+      row.ocupacao_canonica = "Painter";
+      row.nivel_ocupacional = "occupation";
+      row.codigo_status = "curated_title_alias";
+      row.identidade_ocupacional = "ANZSCO-2022:332211";
+    });
     const scoreRows = raw.filter((r) => {
       if (!SCORE.has(r.metrica) || !r.ocupacao || r.ocupacao === "agregado") return false;
       const n = Number(r.valor);
@@ -1812,6 +1876,28 @@
         return '<span title="Official WA occupation-level source does not separate subclass 190 from 491">190 / 491*</span>';
       }
       return escapeHtml(row.visto || "—");
+    }
+
+    function publishedContext(row) {
+      const extra = extraFields(row?.unidade_extra);
+      const location = String(extra.location || "").toLowerCase();
+      const applicant = String(extra.applicant || extra.applicant_location || "").toLowerCase();
+      const parts = [];
+      if (extra.stream) parts.push(({
+        WASMOL1:"Schedule 1", WASMOL2:"Schedule 2",
+        graduate_he:"Graduate · Higher Ed", graduate_vet:"Graduate · VET",
+        published_stream:"Published stream"
+      })[extra.stream] || extra.stream);
+      if (location === "onshore") parts.push("Onshore");
+      else if (location === "offshore") parts.push("Offshore");
+      if (applicant === "canberra_resident") parts.push("Canberra resident");
+      else if (applicant === "overseas") parts.push("Overseas");
+      if (extra.residence) parts.push(({
+        WA:"WA resident", Overseas:"Overseas",
+        "Another Australian State or Territory":"Interstate"
+      })[extra.residence] || extra.residence);
+      if (extra.priority) parts.push(extra.priority.replaceAll("_", " "));
+      return [...new Set(parts)].join(" · ") || "—";
     }
 
     function num(v) {
@@ -1930,7 +2016,9 @@
       const metricas = selectedValues($("fMetrica"));
       const categoria = $("fCategoria").value;
       return scoreRows.filter((r) => {
-        if (!selectedStates.has(r.jurisdicao)) return false;
+        const relevantStates = chartEstados.size ? chartEstados : selectedStates;
+        if (!relevantStates.has(r.jurisdicao)) return false;
+        if (selected?.metricas?.length && !selected.metricas.includes(r.metrica)) return false;
         if (!scoreMatchesVisaContext(r, vistos)) return false;
         if (years.length && !years.includes(calendarYear(r.data_round))) return false;
         if (metricas.length && !metricas.includes(r.metrica)) return false;
@@ -2030,6 +2118,12 @@
         const recentRounds = comparableRoundIds.slice(-8);
         const lastAppearanceIndex = comparableRoundIds.reduce((found, id, index) => appeared.has(id) ? index : found, -1);
         const roundsSinceLast = lastAppearanceIndex < 0 ? comparableRoundIds.length : comparableRoundIds.length - 1 - lastAppearanceIndex;
+        // The streak is current: start at the newest comparable official round
+        // and stop at the first round where the occupation was not published.
+        // Do not report an older run as if it were still active.
+        let streak = 0;
+        for (let index = comparableRoundIds.length - 1; index >= 0 && appeared.has(comparableRoundIds[index]); index--) streak += 1;
+        const recentPattern = recentRounds.map((id) => appeared.has(id));
         const totalParticipation = comparableRoundIds.length ? comparableRoundIds.filter((id) => appeared.has(id)).length / comparableRoundIds.length : 0;
         const recency = Math.max(0, 1 - roundsSinceLast / 5);
         const frequency = recentRounds.length ? recentRounds.filter((id) => appeared.has(id)).length / recentRounds.length : 0;
@@ -2059,7 +2153,7 @@
         const score = Math.round(50 + (rawScore - 50) * confidence);
         const evidence = observedRounds >= 8 && comparableRoundIds.length >= 8 ? "High" : observedRounds >= 3 ? "Medium" : "Low";
         scores.set(identity, {
-          score, rawScore:Math.round(rawScore), confidence:Math.round(confidence*100), evidence, dates:observedRounds, contexts:contexts.size, comparableRounds:comparableRoundIds.length, roundsSinceLast,
+          score, rawScore:Math.round(rawScore), confidence:Math.round(confidence*100), evidence, dates:observedRounds, contexts:contexts.size, comparableRounds:comparableRoundIds.length, roundsSinceLast, streak, recentPattern,
           components: {
             totalParticipation:Math.round(totalParticipation*100), recency:Math.round(recency*100), frequency:Math.round(frequency*100),
             consistency:Math.round(consistency*100), coverage:Math.round(coverage*100),
@@ -2089,8 +2183,18 @@
         return `<span class="ias-list-dot" tabindex="0" data-tip="Insufficient comparable official data for an IAS calculation.">—</span>`;
       }
       const c = activity.components;
-      const tip = `IAS ${activity.score}/100 · ${activityBand(activity.score)}\nEvidence: ${activity.evidence} (${activity.dates} observed of ${activity.comparableRounds} comparable rounds; ${activity.confidence}% confidence)\nObserved activity before evidence adjustment: ${activity.rawScore}/100\n35% All-round participation: ${c.totalParticipation}/100\n30% Round recency: ${c.recency}/100\n20% Last-8 participation: ${c.frequency}/100\n10% Recent continuity: ${c.consistency}/100\n5% Comparable score: ${c.comparableScore}/100\nContext breadth: ${c.coverage}/100 (evidence only)\nRound-based historical activity signal — not an invitation probability or guarantee.`;
-      return `<span class="ias-list-dot" tabindex="0" style="--ias-colour:${activityColor(activity.score)}" data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(`IAS ${activity.score} out of 100, ${activityBand(activity.score)}`)}">${activity.score}</span>`;
+      const scope = [...selectedStates].sort().join(" + ") || "No jurisdiction";
+      const tip = `IAS ${activity.score}/100 · ${activityBand(activity.score)}\nScope: active filters · ${scope}\nEvidence: ${activity.evidence} (${activity.dates} observed of ${activity.comparableRounds} comparable rounds; ${activity.confidence}% confidence)\nObserved activity before evidence adjustment: ${activity.rawScore}/100\n35% All-round participation: ${c.totalParticipation}/100\n30% Round recency: ${c.recency}/100\n20% Last-8 participation: ${c.frequency}/100\n10% Recent continuity: ${c.consistency}/100\n5% Comparable score: ${c.comparableScore}/100\nContext breadth: ${c.coverage}/100 (evidence only)\nRound-based historical activity signal — not an invitation probability or guarantee.`;
+      return `<span class="ias-list-dot" tabindex="0" style="--ias:${activity.score};--ias-colour:${activityColor(activity.score)}" data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(`IAS ${activity.score} out of 100, ${activityBand(activity.score)}`)}">${activity.score}</span>`;
+    }
+
+    function occupationStreakHtml(activity) {
+      if (!activity) return "—";
+      const pattern = activity.recentPattern || [];
+      const lastHit = pattern.lastIndexOf(true);
+      const dots = pattern.map((hit, index) => `<i class="${hit ? `hit${index > lastHit - activity.streak ? " latest-run" : ""}` : ""}"></i>`).join("");
+      const label = `${activity.streak} consecutive comparable ${activity.streak === 1 ? "round" : "rounds"} in the current run · latest 8: ${pattern.map((hit) => hit ? "published" : "not published").join(", ")}`;
+      return `<span class="streak-value" title="${escapeAttr(label)}" aria-label="${escapeAttr(label)}">${activity.streak}×<span class="streak-dots" aria-hidden="true">${dots}</span></span>`;
     }
 
     function updateOccupationActivity() {
@@ -2102,7 +2206,7 @@
       const map = new Map();
       for (const r of rows) {
         const identity = r.identidade_ocupacional || `UNCLASSIFIED:${r.ocupacao}`;
-        const key = `${identity}|${r.metrica}`;
+        const key = identity;
         let o = map.get(key);
         if (!o) {
           o = {
@@ -2113,7 +2217,7 @@
             anzsco: r.anzsco || "",
             nivelOcupacional: r.nivel_ocupacional || "unclassified",
             codigoStatus: new Set(),
-            metrica: r.metrica,
+            metricas: new Set(),
             scores: [], dates: [], juris: new Set(), vistos: new Set(), rows: []
           };
           map.set(key, o);
@@ -2124,6 +2228,7 @@
         o.juris.add(r.jurisdicao);
         o.vistos.add(r.visto);
         o.rows.push(r);
+        o.metricas.add(r.metrica);
         o.nomesPublicados.add(r.ocupacao);
         o.codigoStatus.add(r.codigo_status || "missing");
         if (!o.anzsco && r.anzsco) o.anzsco = r.anzsco;
@@ -2133,7 +2238,19 @@
         const scores = o.scores;
         const dates = [...o.dates].sort();
         const sortedRows = [...o.rows].sort((a, b) => String(b.data_round).localeCompare(String(a.data_round)));
-        const mean = avg(scores);
+        const latestRow = sortedRows.find((row) => num(row.valor) != null) || null;
+        const previousRow = latestRow ? sortedRows.find((row) =>
+          num(row.valor) != null &&
+          String(row.data_round || "") < String(latestRow.data_round || "") &&
+          row.jurisdicao === latestRow.jurisdicao &&
+          row.visto === latestRow.visto &&
+          row.metrica === latestRow.metrica
+        ) || null : null;
+        const latestValue = latestRow ? num(latestRow.valor) : null;
+        const previousValue = previousRow ? num(previousRow.valor) : null;
+        const primaryMetric = latestRow?.metrica || [...o.metricas][0] || "";
+        const primaryScores = o.rows.filter((row) => row.metrica === primaryMetric).map((row) => num(row.valor)).filter((value) => value != null);
+        const mean = avg(primaryScores);
         return {
           key: o.key,
           identity: o.identity,
@@ -2142,10 +2259,12 @@
           anzsco: o.anzsco || "—",
           nivelOcupacional: o.nivelOcupacional,
           codigoStatus: [...o.codigoStatus],
-          metrica: o.metrica,
-          min: scores.length ? Math.min(...scores) : null,
-          max: scores.length ? Math.max(...scores) : null,
-          last: scores.length ? num(sortedRows[0].valor) : null,
+          metrica: primaryMetric,
+          metricas: [...o.metricas],
+          min: primaryScores.length ? Math.min(...primaryScores) : null,
+          max: primaryScores.length ? Math.max(...primaryScores) : null,
+          last: latestValue,
+          delta: latestValue != null && previousValue != null ? latestValue - previousValue : null,
           avg: mean == null ? null : Math.round(mean * 10) / 10,
           records: o.rows.length,
           rounds: distinctRoundCount(o.rows),
@@ -2278,12 +2397,20 @@
       return list;
     }
 
+    function jurisdictionHtml(jurisdictions) {
+      const ordered = [...jurisdictions].sort((a, b) => (a === "FEDERAL") - (b === "FEDERAL") || a.localeCompare(b));
+      const visible = ordered.slice(0, 2);
+      const pills = visible.map((jurisdiction) => `<span class="jur-pill${jurisdiction === "FEDERAL" ? " federal" : ""}">${jurisdiction === "FEDERAL" ? "FED" : escapeHtml(jurisdiction)}</span>`).join("");
+      const more = ordered.length > 2 ? `<span class="jur-more">+${ordered.length - 2}</span>` : "";
+      return `<span class="jur-list" title="${escapeAttr(ordered.join(" · "))}" aria-label="Published in ${escapeAttr(ordered.join(", "))}">${pills}${more}</span>`;
+    }
+
     function renderRank() {
       const list = visibleOccupations();
 
       const body = $("rankBody");
       if (!list.length) {
-        body.innerHTML = `<tr><td colspan="6" style="padding:1.5rem;color:var(--bt-text-secondary);text-align:center;">No occupations for these filters.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="8" style="padding:1.5rem;color:var(--bt-text-secondary);text-align:center;">No occupations for these filters.</td></tr>`;
         return;
       }
 
@@ -2291,13 +2418,18 @@
         .slice(0, 500)
         .map((o) => {
           const active = selected && selected.key === o.key ? "active" : "";
+          const deltaClass = o.delta > 0 ? "positive" : o.delta < 0 ? "negative" : "neutral";
+          const deltaText = o.delta == null ? "" : o.delta > 0 ? `+${o.delta}` : o.delta < 0 ? `−${Math.abs(o.delta)}` : "0";
+          const metricSummary = o.metricas.map(labelMetric).join(" · ");
           return `<tr class="${active}" data-key="${escapeAttr(o.key)}" title="${escapeAttr(labelMetric(o.metrica))}">
+            <td class="jur-cell">${jurisdictionHtml(o.juris)}</td>
             <td class="code">${escapeHtml(o.anzsco)}</td>
-            <td class="name">${escapeHtml(o.nome)}<div class="bt-hint">${escapeHtml(labelMetric(o.metrica))}</div></td>
+            <td class="name">${escapeHtml(o.nome)}<div class="bt-hint" title="${escapeAttr(metricSummary)}">${escapeHtml(metricSummary)}</div></td>
+            <td class="num published-stat ${scoreClass(o.last)}"><span class="latest-value"><span>${o.last ?? "—"}</span>${deltaText ? `<small class="latest-delta ${deltaClass}" title="Score threshold change from the previous comparable result · lower is more favourable">${deltaText}</small>` : ""}</span></td>
+            <td class="num published-stat ${scoreClass(o.avg)}">${o.avg ?? "—"}</td>
+            <td class="num published-stat">${o.records}</td>
             <td class="rank">${occupationIasHtml(o.activity)}</td>
-            <td class="num ${scoreClass(o.last)}">${o.last ?? "—"}</td>
-            <td class="num ${scoreClass(o.avg)}">${o.avg ?? "—"}</td>
-            <td class="num">${o.records}</td>
+            <td class="num streak-cell">${occupationStreakHtml(o.activity)}</td>
           </tr>`;
         })
         .join("");
@@ -2541,8 +2673,9 @@
       $("histSub").textContent = chartMode === "groups" ? "Official ANZSCO sub-major groups · Select a group to filter the occupation list · Select an occupation to open its score history" : [
         occ.anzsco && occ.anzsco !== "—" ? `ANZSCO ${occ.anzsco}` : null,
         levelLabel,
-        labelMetric(occ.metrica),
+        occ.metricas.map(labelMetric).join(" · "),
         occ.codigoStatus.includes("abs_exact_title") ? "Title matched exactly to the ABS ANZSCO 2022 reference" :
+          occ.codigoStatus.includes("curated_title_alias") ? "Includes a documented federal title link to this ANZSCO occupation" :
           occ.codigoStatus.includes("source") ? "Code published by the official source" : "Code not published by the source",
         `${occ.records} ${occ.records === 1 ? "published result" : "published results"}`,
         `${occ.rounds} ${occ.rounds === 1 ? "official round" : "official rounds"}`,
@@ -2555,18 +2688,19 @@
 
       const filteredRows = occ.rows.filter((r) => chartEstados.has(r.jurisdicao));
       const detailRows = chartDateFilter ? filteredRows.filter((r) => monthKey(r.data_round) === chartDateFilter) : filteredRows;
-      const scores = detailRows.map((r) => num(r.valor)).filter((n) => n != null);
+      const primaryDetailRows = detailRows.filter((r) => r.metrica === occ.metrica);
+      const scores = primaryDetailRows.map((r) => num(r.valor)).filter((n) => n != null);
 
       renderEstadoBar(occ);
       $("kMin").textContent = scores.length ? Math.min(...scores) : "—";
-      const lastRow = [...detailRows].sort((a, b) => String(b.data_round).localeCompare(String(a.data_round)))[0];
+      const lastRow = [...primaryDetailRows].sort((a, b) => String(b.data_round).localeCompare(String(a.data_round)))[0];
       $("kLast").textContent = lastRow ? lastRow.valor : "—";
       $("kLastDate").textContent = lastRow ? String(lastRow.data_round).slice(0, 7) : "—";
-      $("kRounds").textContent = distinctRoundCount(detailRows);
+      $("kRounds").textContent = distinctRoundCount(primaryDetailRows);
 
       const rowsAsc = [...detailRows].sort((a, b) => String(a.data_round).localeCompare(String(b.data_round)));
       const contextualRows = chartDateFilter ? scoreRows.filter((r) =>
-        r.identidade_ocupacional === occ.identity && r.metrica === occ.metrica &&
+        r.identidade_ocupacional === occ.identity && occ.metricas.includes(r.metrica) &&
         selectedStates.has(r.jurisdicao) && chartEstados.has(r.jurisdicao) &&
         scoreMatchesVisaContext(r, selectedValues($("fVisto")))
       ) : filteredRows;
@@ -2618,6 +2752,7 @@
           const components = occupationSignal?.components || {};
           $("occupationIasPopover").innerHTML = `<strong>Occupation Invitation Activity Score</strong>
             <span class="tip-row"><b>IAS:</b> ${occupationIas ?? "—"}/100 · ${occupationSignal?.evidence || "Low"} evidence</span>
+            <span class="tip-row"><b>Scope:</b> active filters · ${escapeHtml([...selectedStates].sort().join(" + ") || "No jurisdiction")}</span>
             <span class="tip-row"><b>Rounds:</b> ${occupationSignal?.dates ?? "—"} observed of ${occupationSignal?.comparableRounds ?? "—"} comparable</span>
             <span class="tip-row"><b>Evidence confidence:</b> ${occupationSignal?.confidence ?? "—"}%</span>
             <span class="tip-row"><b>Observed activity:</b> ${occupationSignal?.rawScore ?? "—"}/100 before evidence adjustment</span>
@@ -2654,14 +2789,37 @@
       $("lowerViewNote").textContent = note;
     }
 
+    function historyDisplayRows(rows) {
+      const output = [];
+      const grouped = new Map();
+      rows.forEach((row) => {
+        const location = String(extraFields(row.unidade_extra).location || "").toLowerCase();
+        if (row.jurisdicao !== "FEDERAL" || !["onshore", "offshore"].includes(location)) {
+          output.push({ row, score:row.valor, onshore:null, offshore:null, context:publishedContext(row), sources:[row.fonte_url].filter(Boolean) });
+          return;
+        }
+        const key = [row.data_round, row.jurisdicao, row.visto, row.metrica].join("|");
+        let item = grouped.get(key);
+        if (!item) {
+          item = { row, score:null, onshore:null, offshore:null, context:"—", sources:[] };
+          grouped.set(key, item);
+          output.push(item);
+        }
+        item[location] = row.valor;
+        if (row.fonte_url && !item.sources.includes(row.fonte_url)) item.sources.push(row.fonte_url);
+      });
+      return output;
+    }
+
     function renderLowerView(occ = selected) {
       $("lowerViewTabs").querySelectorAll("[data-lower-view]").forEach((button) => button.classList.toggle("active", button.dataset.lowerView === lowerView));
       if (lowerView === "history") {
-        const html = currentHistoryRows.map((r) => `<tr class="${chartDateFilter && monthKey(r.data_round) !== chartDateFilter ? "date-dim" : chartDateFilter ? "date-active" : ""}" data-round-month="${escapeAttr(monthKey(r.data_round))}" title="Filter by this date">
+        const displayedHistory = historyDisplayRows(currentHistoryRows);
+        const html = displayedHistory.map(({ row:r, score, onshore, offshore, context, sources }) => `<tr class="${chartDateFilter && monthKey(r.data_round) !== chartDateFilter ? "date-dim" : chartDateFilter ? "date-active" : ""}" data-round-month="${escapeAttr(monthKey(r.data_round))}" title="Filter by this date">
           <td>${escapeHtml(r.data_round || "—")}</td><td><span class="badge">${escapeHtml(r.jurisdicao || "—")}</span></td><td>${displayedVisa(r)}</td>
-          <td class="score">${escapeHtml(String(r.valor ?? "—"))}</td><td>${escapeHtml(labelMetric(r.metrica) || "—")}</td>
-          <td>${r.fonte_url ? `<a class="fonte" href="${r.fonte_url}" target="_blank" rel="noopener">official</a>` : "—"}</td></tr>`).join("");
-        setDetailTable([{label:"Date"},{label:"State"},{label:"Visa"},{label:"Score",numeric:true},{label:"Metric"},{label:"Source"}], html, occ ? `${currentHistoryRows.length} published score records` : "");
+          <td class="score">${escapeHtml(String(score ?? "—"))}</td><td class="score">${escapeHtml(String(onshore ?? "—"))}</td><td class="score">${escapeHtml(String(offshore ?? "—"))}</td><td>${escapeHtml(labelMetric(r.metrica) || "—")}</td><td>${escapeHtml(context)}</td>
+          <td>${sources.length ? sources.map((url, index) => `<a class="fonte" href="${url}" target="_blank" rel="noopener">${index ? `official ${index + 1}` : "official"}</a>`).join(" · ") : "—"}</td></tr>`).join("");
+        setDetailTable([{label:"Date"},{label:"State"},{label:"Visa"},{label:"Score",numeric:true},{label:"Onshore",numeric:true},{label:"Offshore",numeric:true},{label:"Metric"},{label:"Context"},{label:"Source"}], html, occ ? `${currentHistoryRows.length} published score records · ${displayedHistory.length} displayed rows` : "");
         $("histBody").querySelectorAll("tr[data-round-month]").forEach((tr) => tr.addEventListener("click", (event) => {
           if (event.target.closest("a")) return;
           chartDateFilter = chartDateFilter === tr.dataset.roundMonth ? null : tr.dataset.roundMonth;
@@ -2982,14 +3140,15 @@
           const eoi = extra.eoi_submission_date ? ` · EOI ${fullRoundLabel(extra.eoi_submission_date)}` : "";
           return {
             colorKey: `WA|${extra.stream || "other"}`,
-            legendLabel: label,
-            detailName: `${label} · ${residenceLabel(extra.residence)}${eoi}`,
+            legendLabel: `WA · ${label}`,
+            detailName: `WA · ${label} · ${residenceLabel(extra.residence)}${eoi}`,
           };
         }
+        const location = String(extra.location || "").toLowerCase();
         const qualifier = extra.applicant === "canberra_resident" ? "Canberra resident"
           : extra.applicant === "overseas" ? "Overseas"
-          : extra.location === "ONSHORE" ? "Onshore"
-          : extra.location === "OFFSHORE" ? "Offshore"
+          : location === "onshore" ? "Onshore"
+          : location === "offshore" ? "Offshore"
           : "";
         const short = [r.jurisdicao, r.visto && r.visto !== "n/a" ? r.visto : "", qualifier].filter(Boolean).join(" · ");
         return {
@@ -3018,7 +3177,24 @@
         ["WA|WASMOL1", 0], ["WA|WASMOL2", 1],
         ["WA|graduate_he", 2], ["WA|graduate_vet", 3],
       ]);
-      const colorFor = new Map(colorKeys.map((key, index) => [key, COLORS[(preferredColorIndex.get(key) ?? index) % COLORS.length]]));
+      const colorFor = new Map();
+      const usedColourIndexes = new Set();
+      colorKeys.forEach((key) => {
+        const preferred = preferredColorIndex.get(key);
+        if (preferred != null) {
+          colorFor.set(key, COLORS[preferred % COLORS.length]);
+          usedColourIndexes.add(preferred % COLORS.length);
+        }
+      });
+      let nextColourIndex = 0;
+      colorKeys.forEach((key) => {
+        if (colorFor.has(key)) return;
+        while (nextColourIndex < COLORS.length && usedColourIndexes.has(nextColourIndex)) nextColourIndex += 1;
+        const index = nextColourIndex < COLORS.length ? nextColourIndex : colorFor.size % COLORS.length;
+        colorFor.set(key, COLORS[index]);
+        usedColourIndexes.add(index);
+        nextColourIndex += 1;
+      });
       const series = [...seriesMap.values()].map((item) => ({
         name: item.detailName,
         legendLabel: item.legendLabel,
@@ -3026,7 +3202,7 @@
         points: months.map((d) => (item.points.has(d) ? item.points.get(d) : null)),
       }));
 
-      const legendOrder = new Map([["Schedule 1", 0], ["Schedule 2", 1], ["Graduate · Higher Ed", 2], ["Graduate · VET", 3]]);
+      const legendOrder = new Map([["WA · Schedule 1", 0], ["WA · Schedule 2", 1], ["WA · Graduate · Higher Ed", 2], ["WA · Graduate · VET", 3]]);
       const legendItems = [...new Map(series.map((s) => [`${s.legendLabel}|${s.color}`, s])).values()]
         .sort((a, b) => (legendOrder.get(a.legendLabel) ?? 99) - (legendOrder.get(b.legendLabel) ?? 99));
       $("legend").innerHTML = legendItems
@@ -3453,7 +3629,7 @@
         refresh();
       }));
 
-      $("topMeta").textContent = `${occupations.length} occupation series · ${rows.length} official score rows`;
+      $("topMeta").textContent = `${occupations.length} occupations · ${rows.length} official score rows`;
       const defaultFederalRows = scoreRows.filter((r) =>
         r.jurisdicao === "FEDERAL" && r.visto === "189" && r.metrica === "pontos_minimos"
       );
