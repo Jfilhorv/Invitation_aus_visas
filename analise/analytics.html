@@ -6,7 +6,7 @@
   <title>Migration invitation analytics</title>
   <link rel="icon" href="./logo-ias.png?v=2" type="image/png">
   <link rel="stylesheet" href="./site-tokens.css">
-  <link rel="stylesheet" href="./analytics.css?v=20260906-5">
+  <link rel="stylesheet" href="./analytics.css?v=20260906-13">
 </head>
 <body class="bt-body">
   <header class="top">
@@ -67,9 +67,20 @@
 
     <section aria-labelledby="overviewTitle"><div class="section-head"><div><span class="eyebrow">Overview</span><h2 id="overviewTitle">What is actually available</h2></div><p>Latest result, evidence level, metric and source are derived from the archive.</p></div><div class="overview-grid" id="overviewGrid"></div></section>
     <section aria-labelledby="trendTitle"><div class="section-head"><div><span class="eyebrow">Comparable movement</span><h2 id="trendTitle">Trends stay in their lane</h2></div><p>Previous comparable round is primary. Missing months are never interpolated.</p></div><div class="trend-grid" id="trendGrid"></div></section>
+    <section id="occupationTimeline" aria-labelledby="timelineTitle">
+      <div class="section-head"><div><span class="eyebrow">Another way to read the same evidence</span><h2 id="timelineTitle">Occupation publication timeline</h2></div><p>Every occupation-level official publication date is shown. A missing score explicitly marks a valid round with no invitation published for the selected occupation. Published visa and onshore/offshore contexts remain separate, rather than being merged into an average.</p></div>
+      <article class="card timeline-explorer">
+        <div class="timeline-toolbar">
+          <label class="timeline-picker"><span>Occupation</span><select id="timelineOccupation" aria-label="Choose an occupation for the publication timeline"></select></label>
+          <div class="timeline-stats" id="timelineStats" aria-live="polite"></div>
+        </div>
+        <div class="timeline-legend"><span><i class="published"></i>Published invitation score</span><span><i class="not-listed"></i>Valid round · no invitation published for this occupation</span><span>Months without an official round are omitted.</span><span>Jurisdictions and metrics remain separate.</span></div>
+        <div class="timeline-scroll" id="timelineScroll" tabindex="0" aria-label="Occupation publication timeline">
+          <div class="occupation-timeline-track" id="occupationTimelineTrack"></div>
+        </div>
+      </article>
+    </section>
     <section aria-labelledby="storyTitle"><div class="section-head"><div><span class="eyebrow">Publication shape</span><h2 id="storyTitle">What each source describes</h2></div><p>Every value below counts published result rows—not invitation volumes.</p></div><div class="story-grid" id="storyGrid"></div></section>
-    <section aria-labelledby="drillTitle"><div class="section-head"><div><span class="eyebrow">Official ANZSCO hierarchy</span><h2 id="drillTitle">Major → Sub-major tree</h2></div><p>All major groups remain visible. Expand or collapse each branch; this delivery intentionally stops at sub-major.</p></div><article class="card drill-card"><p class="tree-note" id="treeNote"></p><div class="drill-tree" id="drillTree"></div></article></section>
-
     <section class="docs" aria-labelledby="docsTitle"><div class="section-head"><div><span class="eyebrow">Reading guide</span><h2 id="docsTitle">Why some states are not shown</h2></div></div>
       <div class="docs-grid">
         <article class="card"><h3>Publication coverage</h3><p>NSW, VIC, QLD and NT do not publish occupation-level invitation results. TAS publishes totals only. SA publishes invitation counts by ANZSCO sub-major group, not scores, so it is outside this score workspace.</p></article>
@@ -78,27 +89,17 @@
       </div>
     </section>
 
-    <section id="outlook"><div class="section-head"><h2>Next activity watchlist</h2><p>Official dates are separated from analytical watch dates. “Awaiting” means the jurisdiction has not published a defensible next-round date.</p></div><article class="card"><div class="watchlist">
-      <a class="watch-row" href="https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/invitation-rounds" target="_blank" rel="noopener"><span class="watch-state">Federal</span><span class="watch-visas">189</span><span class="watch-date">By 30 Sep 2026</span><span class="watch-status official">Official</span></a>
-      <div class="watch-row"><span class="watch-state">WA</span><span class="watch-visas">190 · 491</span><span class="watch-date">By 30 Dec 2026</span><span class="watch-status estimate">Watch estimate</span></div>
-      <div class="watch-row"><span class="watch-state">TAS</span><span class="watch-visas">190 · 491</span><span class="watch-date">Program active · next date not stated</span><span class="watch-status awaiting">Awaiting</span></div>
-      <div class="watch-row"><span class="watch-state">ACT</span><span class="watch-visas">190 · 491</span><span class="watch-date">Waiting for 2026–27 allocation</span><span class="watch-status awaiting">Awaiting</span></div>
-      <div class="watch-row"><span class="watch-state">NSW</span><span class="watch-visas">190 · 491</span><span class="watch-date">Waiting for program-year settings</span><span class="watch-status awaiting">Awaiting</span></div>
-      <div class="watch-row"><span class="watch-state">VIC</span><span class="watch-visas">190 · 491</span><span class="watch-date">2026–27 program not open</span><span class="watch-status awaiting">Awaiting</span></div>
-      <div class="watch-row"><span class="watch-state">QLD</span><span class="watch-visas">190 · 491</span><span class="watch-date">Waiting for 2026–27 program / QSOL</span><span class="watch-status awaiting">Awaiting</span></div>
-      <div class="watch-row"><span class="watch-state">SA</span><span class="watch-visas">190 · 491</span><span class="watch-date">Waiting for 2026–27 program</span><span class="watch-status awaiting">Awaiting</span></div>
-      <div class="watch-row"><span class="watch-state">NT</span><span class="watch-visas">190 · 491</span><span class="watch-date">Next round not announced</span><span class="watch-status awaiting">Awaiting</span></div>
-    </div><div class="callout"><b>Forecast rule:</b> WA’s 30 December date is a monitoring horizon inferred from its irregular historical publication cadence. It is not an announced invitation date. No estimated date is shown where the archive does not support a useful window.</div></article></section>
-
-    <section id="coverage"><div class="section-head"><h2>What each jurisdiction actually publishes</h2><p>Teal cards contain usable invitation outcomes. Pink cards provide allocations, eligibility or context only.</p></div><div class="card"><div class="coverage" id="coverageGrid"></div></div></section>
+    <section id="coverage"><div class="section-head"><h2>What each jurisdiction actually publishes</h2><p>Active cards contain usable score outcomes and their next activity. Dimmed cards have no score data in this workspace.</p></div><div class="card"><div class="coverage" id="coverageGrid"></div><div class="callout"><b>Forecast rule:</b> WA’s 30 December date is a monitoring horizon inferred from its irregular historical publication cadence. It is not an announced invitation date. “Awaiting” means no defensible next-round date has been published.</div></div></section>
     <section><div class="section-head"><h2>Published invitation volume</h2><p>Aggregate counts only. Coverage periods differ, so these totals describe the archive and must not be used as a state ranking.</p></div><div class="grid-2"><article class="card"><h3>By jurisdiction</h3><p class="card-sub">Sum of aggregate period records represented in the archive</p><div class="bars" id="volumeState"></div></article><article class="card"><h3>By visa</h3><p class="card-sub">189, 190 and 491 within each source’s available published periods</p><div class="bars" id="volumeVisa"></div></article></div></section>
     <section><div class="section-head"><h2>Where published occupation evidence concentrates</h2><p>Share of distinct occupation or ANZSCO-group results, not share of people invited.</p></div><article class="card"><h3>Top ANZSCO sub-major groups</h3><p class="card-sub">Derived from official occupation codes and published result rows</p><div class="bars" id="groups"></div></article></section>
     <section id="wa"><div class="section-head"><h2>Western Australia · deeper lenses</h2><p>WA’s last-invited EOI publications preserve context that most jurisdictions do not publish.</p></div><div class="wa-grid"><article class="card"><h3>Residence context</h3><p class="card-sub">Published WA last-invited EOI rows</p><div class="bars" id="waResidence"></div></article><article class="card"><h3>Nomination stream</h3><p class="card-sub">General and graduate streams</p><div class="bars" id="waStream"></div></article><article class="card"><h3>Observed score bands</h3><p class="card-sub">Last invited EOI points, not eligibility thresholds</p><div class="bars" id="waScore"></div></article></div><div class="callout" id="waAge"><b>EOI queue age:</b> calculating…</div></section>
+
+    <section aria-labelledby="drillTitle"><div class="section-head"><div><span class="eyebrow">Official ANZSCO hierarchy</span><h2 id="drillTitle">Major → Sub-major tree</h2></div><p>All major groups remain visible. Branches start collapsed and can be expanded individually; this view intentionally stops at sub-major.</p></div><article class="card drill-card"><p class="tree-note" id="treeNote"></p><div class="drill-tree" id="drillTree"></div></article></section>
 
     <p class="source-note">Built from locally archived official Australian Government and state/territory publications. Reporting methods differ by jurisdiction; comparisons are descriptive only.</p>
   </main>
   <script src="./anzsco-hierarchy.js?v=20260906-2"></script>
   <script src="./data.js?v=20260906-wa-march-trades"></script>
-  <script src="./analytics.js?v=20260906-3"></script>
+  <script src="./analytics.js?v=20260906-21"></script>
 </body>
 </html>

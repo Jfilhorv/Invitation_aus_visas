@@ -1,12 +1,15 @@
 (()=>{
   "use strict";
-  const rows=(window.CONVITES_DATA||[]).filter(row=>String(row.validado)==="true");
+  // Keep the same source rows as the Home Scores chart.  Validation status is
+  // provenance metadata; it must not silently make a score disappear here.
+  const rows=window.CONVITES_DATA||[];
   const nodes=window.ANZSCO_HIERARCHY?.nodes||{};
   const scopes=["FEDERAL","WA","ACT"];
   const metrics={FEDERAL:"pontos_minimos",WA:"ultimo_eoi_pontos",ACT:"matrix_score"};
   const metricLabels={pontos_minimos:"Minimum points",ultimo_eoi_pontos:"Last invited EOI points",matrix_score:"Canberra Matrix score"};
   const levelLabels={FEDERAL:"Occupation",WA:"Occupation",ACT:"Unit group"};
-  let scope="ALL";
+  const requestedScope=new URLSearchParams(window.location.search).get("scope");
+  let scope=scopes.includes(requestedScope)?requestedScope:"ALL";
   const $=id=>document.getElementById(id);
   const extra=value=>Object.fromEntries(String(value||"").split(";").map(part=>part.split("=",2).map(item=>item.trim())).filter(pair=>pair.length===2));
   const validDate=value=>/^\d{4}-\d{2}(?:-\d{2})?$/.test(String(value||""));
@@ -150,7 +153,7 @@
       const subMajors=Object.entries(nodes).filter(([subCode,subNode])=>subCode.length===2&&subNode.level==="sub_major"&&subCode.startsWith(code)).sort(([a],[b])=>a.localeCompare(b));
       const subCounts=subMajors.map(([subCode])=>coverageCount(subCode));
       const maxSub=Math.max(1,...subCounts);
-      return `<details class="major-branch" open><summary class="major-summary"><span class="tree-code">${code}</span><span class="tree-name">${esc(node.name)}</span><span class="tree-track"><span class="tree-fill" style="width:${100*majorCounts[index]/maxMajor}%"></span></span><span class="tree-count">${fmt(majorCounts[index])} rows</span></summary><div class="sub-tree">${subMajors.map(([subCode,subNode],subIndex)=>`<div class="sub-row${subCounts[subIndex]?"":" zero"}"><span class="tree-code">${subCode}</span><span class="tree-name">${esc(subNode.name)}</span><span class="tree-track"><span class="tree-fill" style="width:${100*subCounts[subIndex]/maxSub}%"></span></span><span class="tree-count">${fmt(subCounts[subIndex])} rows</span></div>`).join("")}</div></details>`;
+      return `<details class="major-branch"><summary class="major-summary"><span class="tree-code">${code}</span><span class="tree-name">${esc(node.name)}</span><span class="tree-track"><span class="tree-fill" style="width:${100*majorCounts[index]/maxMajor}%"></span></span><span class="tree-count">${fmt(majorCounts[index])} rows</span></summary><div class="sub-tree">${subMajors.map(([subCode,subNode],subIndex)=>`<div class="sub-row${subCounts[subIndex]?"":" zero"}"><span class="tree-code">${subCode}</span><span class="tree-name">${esc(subNode.name)}</span><span class="tree-track"><span class="tree-fill" style="width:${100*subCounts[subIndex]/maxSub}%"></span></span><span class="tree-count">${fmt(subCounts[subIndex])} rows</span></div>`).join("")}</div></details>`;
     }).join("");
   }
 
@@ -161,8 +164,15 @@
     $("kDates").textContent=fmt(new Set(rows.filter(isResult).map(row=>row.data_round).filter(Boolean)).size);
     $("kSources").textContent=fmt(new Set(rows.map(row=>row.fonte_url).filter(Boolean)).size);
     $("topMeta").textContent=`${new Set(resultRows.map(identity)).size} occupations · ${resultRows.length} official score rows`;
-    const coverage={FEDERAL:["live","Occupation scores + invitation totals"],ACT:["live","Matrix cut-offs by ANZSCO group"],WA:["live","Last invited EOI + aggregate totals"],SA:["live","Invitation counts by ANZSCO group"],NSW:["context","Skills lists + allocations"],VIC:["context","Priorities + allocations"],QLD:["context","Occupation lists + allocations"],TAS:["context","ROI and allocation totals"],NT:["context","Program context; no results table"]};
-    $("coverageGrid").innerHTML=Object.entries(coverage).map(([key,value])=>`<div class="state ${value[0]}"><div class="state-code">${key}<span class="dot"></span></div><p>${value[1]}</p><b>${value[0]==="live"?"Analytical data":"Context only"}</b></div>`).join("");
+    const coverage={FEDERAL:["live","Occupation scores + invitation totals"],ACT:["live","Matrix cut-offs by ANZSCO group"],WA:["live","Last invited EOI + aggregate totals"],SA:["off","Invitation counts by ANZSCO group"],NSW:["off","Skills lists + allocations"],VIC:["off","Priorities + allocations"],QLD:["off","Occupation lists + allocations"],TAS:["off","ROI and allocation totals"],NT:["off","Program context; no results table"]};
+    const watch={
+      FEDERAL:["189","By 30 Sep 2026","official","Official","https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/invitation-rounds","13 occupation rounds on file"],
+      WA:["190 · 491","By 30 Dec 2026","estimate","Watch estimate"],TAS:["190 · 491","Next date not stated","awaiting","Awaiting"],ACT:["190 · 491","Waiting for 2026–27 allocation","awaiting","Awaiting"],NSW:["190 · 491","Waiting for program-year settings","awaiting","Awaiting"],VIC:["190 · 491","2026–27 program not open","awaiting","Awaiting"],QLD:["190 · 491","Waiting for 2026–27 program / QSOL","awaiting","Awaiting"],SA:["190 · 491","Waiting for 2026–27 program","awaiting","Awaiting"],NT:["190 · 491","Next round not announced","awaiting","Awaiting"]
+    };
+    $("coverageGrid").innerHTML=Object.entries(coverage).map(([key,value])=>{
+      const activity=watch[key],history=activity[5]?` · ${activity[5]}`:"",content=`<div class="state-code">${key}<span class="dot"></span></div><p>${value[1]}</p><b>${value[0]==="live"?"Analytical data":"No score data"}</b><div class="state-watch"><span>Next activity</span><strong>${activity[1]}</strong><small>${activity[0]} · ${activity[3]}${history}</small></div>`;
+      return activity[4]?`<a class="state ${value[0]}" href="${activity[4]}" target="_blank" rel="noopener">${content}</a>`:`<div class="state ${value[0]}">${content}</div>`;
+    }).join("");
     const aggregate=rows.filter(row=>["convites_emitidos","eois_convidados"].includes(row.metrica)&&String(row.ocupacao).toLowerCase()==="agregado"&&num(row.valor)!=null);
     const sumBy=(source,key)=>Object.entries(source.reduce((output,row)=>(output[key(row)]=(output[key(row)]||0)+num(row.valor),output),{})).sort((a,b)=>b[1]-a[1]);
     $("volumeState").innerHTML=barsMarkup(sumBy(aggregate,row=>row.jurisdicao));
@@ -184,7 +194,111 @@
     $("waAge").innerHTML=`<b>EOI queue age:</b> the median published last-invited EOI was approximately <b>${ageMedian==null?"not available":`${fmt(ageMedian)} days old`}</b> at the represented WA round. Month-only round dates make this an estimate, not an exact waiting time.`;
   }
 
-  function render(){renderOverview();renderTrends();renderStories();renderTree()}
+  const timelineOccupations=()=>{
+    const occupations=new Map();
+    resultRows.forEach(row=>{
+      const key=identity(row);
+      const current=occupations.get(key);
+      const label=row.ocupacao==="Painting Trades Worker"?"Painter":row.ocupacao||row.anzsco||key;
+      if(!current||label.length<current.label.length)occupations.set(key,{key,label,anzsco:row.anzsco||""});
+    });
+    return [...occupations.values()].sort((a,b)=>a.label.localeCompare(b.label,"en-AU",{sensitivity:"base"}));
+  };
+  let timelineIdentity="";
+  // Official dates are the jurisdiction's occupation-level publication
+  // calendar. A missing selected occupation is deliberate evidence, not an
+  // omitted month: it shows a valid round with no published invitation for it.
+  const officialDatesFor=jurisdiction=>{
+    const source=resultRows.filter(row=>row.jurisdicao===jurisdiction);
+    const baseline=jurisdiction==="FEDERAL"?source.filter(row=>row.nivel_ocupacional==="occupation"):source;
+    return [...new Set(baseline.map(row=>row.data_round))].sort();
+  };
+  const scopeName=jurisdiction=>jurisdiction==="FEDERAL"?"FED":jurisdiction;
+  // Mirrors Home's Scores-series identity: visa plus the published
+  // onshore/offshore qualifier (or the equivalent WA/ACT context).
+  const timelineSeriesLabel=row=>{
+    const fields=extra(row.unidade_extra);
+    if(row.jurisdicao==="WA"){
+      const stream=pretty(fields.stream||"published_stream");
+      const residence=pretty(fields.residence||"");
+      return ["WA",stream,residence].filter(Boolean).join(" · ");
+    }
+    if(row.jurisdicao==="ACT"){
+      const applicant=pretty(fields.applicant||fields.applicant_location||fields.residence||"");
+      return ["ACT",row.visto!=="n/a"?row.visto:"",applicant].filter(Boolean).join(" · ");
+    }
+    const location=String(fields.location||fields.applicant_location||"").toLowerCase();
+    return ["FED",row.visto!=="n/a"?row.visto:"",location?pretty(location):""].filter(Boolean).join(" · ");
+  };
+  const timelineSeriesKey=row=>`${row.jurisdicao}|${row.visto||""}|${row.metrica||""}|${row.unidade_extra||""}`;
+  function initTimelineOccupation(){
+    const occupations=timelineOccupations();
+    $("timelineOccupation").innerHTML=occupations.map(item=>`<option value="${esc(item.key)}">${esc(item.label)}${item.anzsco?` · ${esc(item.anzsco)}`:""}</option>`).join("");
+    const carpenter=occupations.find(item=>item.label==="Carpenter");
+    timelineIdentity=carpenter?.key||occupations[0]?.key||"";
+    $("timelineOccupation").value=timelineIdentity;
+    $("timelineOccupation").addEventListener("change",event=>{timelineIdentity=event.target.value;renderTimeline()});
+  }
+  function renderTimeline(){
+    const selectedOption=$("timelineOccupation").selectedOptions[0];
+    const ownRows=resultRows.filter(row=>identity(row)===timelineIdentity&&selectedScopes().includes(row.jurisdicao));
+    const jurisdictions=selectedScopes().filter(jurisdiction=>ownRows.some(row=>row.jurisdicao===jurisdiction));
+    const track=$("occupationTimelineTrack");
+    if(!jurisdictions.length){
+      track.removeAttribute("data-lanes");
+      track.innerHTML=`<div class="empty">This occupation has no published score evidence in ${scope==="FEDERAL"?"FED":scope}.</div>`;
+      $("timelineStats").innerHTML="<span><b>0</b> published scores</span><span><b>—</b> no matching jurisdiction</span>";
+      return;
+    }
+    const published=[],notListed=[];
+    let publishedRows=0;
+    track.dataset.lanes=String(jurisdictions.length);
+    track.innerHTML=jurisdictions.map(jurisdiction=>{
+      const dates=officialDatesFor(jurisdiction);
+      const jurisdictionRows=resultRows.filter(row=>row.jurisdicao===jurisdiction);
+      const years=new Map();
+      dates.forEach(date=>{
+        const matches=ownRows.filter(row=>row.jurisdicao===jurisdiction&&row.data_round===date);
+        // Never merge contexts into a median. A 189/offshore result and a
+        // 491-family/offshore result are separate published series in Home,
+        // so they must remain separate here as well.
+        const series=new Map();
+        matches.forEach(row=>{
+          const value=num(row.valor);
+          if(value==null)return;
+          const key=timelineSeriesKey(row);
+          const existing=series.get(key);
+          if(!existing||value<existing.value)series.set(key,{key,label:timelineSeriesLabel(row),value});
+        });
+        const contexts=[...series.values()].sort((a,b)=>a.label.localeCompare(b.label,"en-AU"));
+        const values=contexts.map(item=>item.value);
+        const score=values.length?Math.min(...values):null;
+        let card;
+        if(score!=null){
+          publishedRows+=contexts.length;
+          contexts.forEach(context=>published.push({jurisdiction,date,score:context.value,label:context.label}));
+          const contextLines=contexts.map(context=>`<span class="timeline-context"><b>${esc(context.label)}</b><strong>${fmt(context.value)}</strong></span>`).join("");
+          card=`<article class="vertical-branch has-result" data-jurisdiction="${jurisdiction}"><div><time datetime="${esc(date)}">${esc(dateLabel(date))}</time><div class="timeline-contexts">${contextLines}</div>${contexts.length>1?`<span>${contexts.length} separate published contexts</span>`:""}</div></article>`;
+        }else{
+          const hasOccupationPublication=jurisdictionRows.some(row=>row.data_round===date&&row.nivel_ocupacional==="occupation");
+          const label=hasOccupationPublication?"No invitation published for this occupation in this round":"Occupation-level invitation results not published for this round";
+          notListed.push({jurisdiction,date});
+          card=`<article class="vertical-branch not-listed" data-jurisdiction="${jurisdiction}"><div><time datetime="${esc(date)}">${esc(dateLabel(date))}</time><strong>${label}</strong></div></article>`;
+        }
+        const year=date.slice(0,4);
+        if(!years.has(year))years.set(year,[]);
+        years.get(year).push(`<div class="vertical-month${score==null?" is-missing":""}"><time class="vertical-month-label" datetime="${esc(date)}">${esc(dateLabel(date))}</time><span class="vertical-month-node" aria-hidden="true"></span><div class="vertical-branches">${card}</div></div>`);
+      });
+      const yearMarkup=[...years].map(([year,rows])=>`<section class="timeline-year" aria-label="${scopeName(jurisdiction)} ${year}"><header><span>${year}</span><b>${rows.length} official ${rows.length===1?"date":"dates"}</b></header><div class="timeline-year-body">${rows.join("")}</div></section>`).join("");
+      return `<article class="timeline-jurisdiction-lane" data-jurisdiction="${jurisdiction}"><header><span>${scopeName(jurisdiction)}</span><b>${dates.length} official ${dates.length===1?"date":"dates"}</b></header><div class="timeline-lane-spine">${yearMarkup}</div></article>`;
+    }).join("");
+    const latest=[...published].sort((a,b)=>a.date.localeCompare(b.date)||scopes.indexOf(a.jurisdiction)-scopes.indexOf(b.jurisdiction)).at(-1);
+    $("timelineStats").innerHTML=`<span><b>${fmt(publishedRows)}</b> published score rows</span><span><b>${fmt(notListed.length)}</b> rounds without a published invitation</span><span><b>${jurisdictions.map(scopeName).join(" · ")}</b> relevant jurisdictions</span><span><b>${latest?`${fmt(latest.score)} · ${dateLabel(latest.date)}`:"—"}</b> latest published context</span>`;
+    $("timelineScroll").setAttribute("aria-label",`${selectedOption?.textContent||"Selected occupation"} timeline across ${jurisdictions.map(scopeName).join(" and ")}: ${publishedRows} published score rows and ${notListed.length} valid official rounds without a published invitation for this occupation`);
+    $("timelineScroll").scrollTop=0;
+  }
+
+  function render(){renderOverview();renderTrends();renderStories();renderTree();renderTimeline()}
   function setScope(next){
     scope=scopes.includes(next)?next:"ALL";
     document.querySelectorAll("[data-scope]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.scope===scope)));
@@ -210,6 +324,7 @@
   let saved="light";try{saved=localStorage.getItem("convites-theme")||localStorage.getItem("invitation-theme")||"light"}catch(_){}
   applyTheme(saved);
   renderLegacy();
+  initTimelineOccupation();
   render();
 
   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");

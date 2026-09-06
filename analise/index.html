@@ -212,7 +212,9 @@
       z-index: 30;
       top: calc(100% + 7px);
       right: 0;
-      width: 252px;
+      width: max-content;
+      min-width: 126px;
+      max-width: 190px;
       padding: 9px 10px 8px;
       border: 1px solid var(--bt-divider);
       border-radius: var(--bt-r-surface);
@@ -244,9 +246,10 @@
     }
     .ias-tip-summary {
       display: block;
-      margin-top: 2px;
+      margin-top: 7px;
       color: var(--bt-text-secondary);
       font-size: 9px;
+      text-align: center;
     }
     .ias-tip-section {
       display: block;
@@ -1759,7 +1762,7 @@
         <div class="top-meta" id="topMeta">…</div>
         <nav class="shortcut-nav" aria-label="Main navigation">
           <a class="shortcut-tile current" href="./index.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg><span>Home</span></a>
-          <a class="shortcut-tile" href="./analytics.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg><span>Analytics</span></a>
+          <a class="shortcut-tile" id="analyticsShortcut" href="./analytics.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg><span>Analytics</span></a>
           <a class="social-profile" href="https://www.linkedin.com/in/ejoseit/" target="_blank" rel="noopener noreferrer" aria-label="Open the project author's LinkedIn profile"><span class="social-layers" aria-hidden="true"><span></span><span></span><span></span><span></span><svg viewBox="0 0 24 24"><path d="M6.5 8.3H3.2V19h3.3V8.3ZM4.85 3A1.92 1.92 0 1 0 4.86 6.84 1.92 1.92 0 0 0 4.85 3ZM19.8 12.87c0-3.22-1.72-4.72-4.02-4.72a3.48 3.48 0 0 0-3.16 1.74V8.3H9.3V19h3.32v-5.3c0-1.4.27-2.76 2.01-2.76 1.72 0 1.74 1.61 1.74 2.85V19h3.32l.11-6.13Z"/></svg></span><span class="social-card" role="tooltip"><strong>Project author</strong><small>Open LinkedIn profile</small></span></a>
         </nav>
         <div class="theme-toggle" role="group" aria-label="Theme">
@@ -2266,9 +2269,16 @@
       const scores = new Map();
       for (const [identity, items] of byOccupation) {
         const contexts = new Set(items.map(roundContext));
-        const comparableRoundIds = [...new Set([...contexts].flatMap((context) =>
-          [...(roundsByContext.get(context) || new Set())].map((date) => `${context.split("|", 1)[0]}|${date}`)
-        ))].sort((a, b) => a.split("|").at(-1).localeCompare(b.split("|").at(-1)) || a.localeCompare(b));
+        const jurisdictions = new Set(items.map((row) => row.jurisdicao));
+        // A current streak is measured against every comparable official
+        // result date in the jurisdiction — not merely dates where this
+        // occupation already appeared. Otherwise a missing WA result (such
+        // as Carpenter in Mar 2025) could never break the displayed streak.
+        const comparableRoundIds = [...new Set(windowRows
+          .filter((row) => jurisdictions.has(row.jurisdicao))
+          .map(roundId)
+          .filter(Boolean))]
+          .sort((a, b) => a.split("|").at(-1).localeCompare(b.split("|").at(-1)) || a.localeCompare(b));
         const appeared = new Set(items.map(roundId).filter(Boolean));
         const recentRounds = comparableRoundIds.slice(-8);
         const lastAppearanceIndex = comparableRoundIds.reduce((found, id, index) => appeared.has(id) ? index : found, -1);
@@ -2420,23 +2430,15 @@
         return `<span class="ias-list-dot" tabindex="0"><span class="ias-list-dot-value">—</span><span class="ias-tip">Insufficient comparable official data for an IAS calculation.</span></span>`;
       }
       const jurisdictions = activity.jurisdictionScores || [];
-      const visas = activity.visaScores || [];
       const colour = activityColor(activity.score);
-      const summary = jurisdictions.length > 1
-        ? `Combined from ${jurisdictions.length} jurisdictions · ${activity.activePathways} active pathways`
-        : "";
       const jurisdictionBlock = jurisdictions.length
-        ? `<span class="ias-tip-section">Jurisdictions</span>${iasTipItemsHtml(jurisdictions, (item) => item.jurisdiction === "FEDERAL" ? "FED" : item.jurisdiction)}`
-        : "";
-      const visaBlock = visas.length
-        ? `<span class="ias-tip-section">Visas</span>${iasTipItemsHtml(visas, (item) => item.visto)}`
+        ? iasTipItemsHtml(jurisdictions.slice(0, 2), (item) => item.jurisdiction === "FEDERAL" ? "FED" : item.jurisdiction)
         : "";
       const ariaParts = [
         `IAS ${activity.score} out of 100, ${activityBand(activity.score)}`,
         ...jurisdictions.map((item) => `${item.jurisdiction === "FEDERAL" ? "FED" : item.jurisdiction} ${item.score}`),
-        ...visas.map((item) => `visa ${item.visto} ${item.score}`),
       ];
-      return `<span class="ias-list-dot" tabindex="0" style="--ias:${activity.score};--ias-colour:${colour}" aria-label="${escapeAttr(ariaParts.join(", "))}"><span class="ias-list-dot-value">${activity.score}</span><span class="ias-tip" role="tooltip"><span class="ias-tip-kicker">IAS ${activity.score}/100 · ${activityBand(activity.score)}</span>${summary ? `<span class="ias-tip-summary">${escapeHtml(summary)}</span>` : ""}${jurisdictionBlock}${visaBlock}<span class="ias-tip-foot">Evidence: ${activity.evidence} · ${activity.dates} of ${activity.comparableRounds} comparable rounds<br>Round-based historical activity signal — not an invitation probability.</span></span></span>`;
+      return `<span class="ias-list-dot" tabindex="0" style="--ias:${activity.score};--ias-colour:${colour}" aria-label="${escapeAttr(ariaParts.join(", "))}"><span class="ias-list-dot-value">${activity.score}</span><span class="ias-tip" role="tooltip">${jurisdictionBlock}${jurisdictions.length > 1 ? `<span class="ias-tip-summary">Combined IAS · ${activity.score}</span>` : ""}</span></span>`;
     }
 
     function occupationStreakHtml(activity) {
@@ -4112,6 +4114,7 @@
       document.querySelectorAll("[data-scope]").forEach((button) => {
         button.setAttribute("aria-pressed", String(button.dataset.scope === scope));
       });
+      $("analyticsShortcut").href = scope === "ALL" ? "./analytics.html" : `./analytics.html?scope=${encodeURIComponent(scope)}`;
     }
     renderGlobalStateFilter();
 
