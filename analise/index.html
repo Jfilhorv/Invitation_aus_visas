@@ -1944,7 +1944,7 @@
     let colSort = { key: "streak", dir: "desc" };
     let chartBarsSnapshot = [];
     let chartAnimationFrame = null;
-    let chartMode = "groups";
+    let chartMode = "scores";
     let chartStyle = "bar";
     let groupMetric = "inv";
     let chartStartDate = "";
@@ -2826,8 +2826,8 @@
           <button type="button" class="estado-chip chart-toggle${groupMetric === "ias" ? " on" : ""}" data-group-metric="ias" data-measure-info="IAS is a 0–100 signal calculated from comparable official rounds: all-round participation, recency, last-8 participation, recent continuity and comparable score. Context breadth is evidence only. It is not an invitation probability.">IAS</button>
         </span>` +
         `<span class="chart-switch" aria-label="Chart view">
-          <button type="button" class="estado-chip chart-toggle${chartMode === "groups" ? " on" : ""}" data-chart-mode="groups">Occupation groups</button>
           <button type="button" class="estado-chip chart-toggle${chartMode === "scores" ? " on" : ""}" data-chart-mode="scores">Scores</button>
+          <button type="button" class="estado-chip chart-toggle${chartMode === "groups" ? " on" : ""}" data-chart-mode="groups">Occupation groups</button>
           <button type="button" class="estado-chip chart-toggle${chartMode === "invitations" ? " on" : ""}" data-chart-mode="invitations">Invitation events</button>
           <button type="button" class="estado-chip chart-toggle${chartMode === "occupations" ? " on" : ""}" data-chart-mode="occupations">Published coverage</button>
         </span>
@@ -4180,7 +4180,7 @@
         chartMode = "groups";
         lowerView = "states";
       } else {
-        chartMode = "groups";
+        chartMode = "scores";
         lowerView = "history";
       }
       renderGlobalStateFilter();
@@ -4219,7 +4219,7 @@
       $("fBusca").value = "";
       $("btnSearchClear").hidden = true;
       chartDateFilter = null;
-      chartMode = "groups";
+      chartMode = "scores";
       groupMetric = "inv";
       chartStartDate = "";
       lowerView = "history";
