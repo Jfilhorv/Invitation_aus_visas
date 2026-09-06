@@ -1658,6 +1658,7 @@
       <span class="filter-label">Sort</span>
       <select id="fSort" aria-label="Sort">
         <option value="ias" selected>Highest IAS</option>
+        <option value="streak">Longest current streak</option>
         <option value="nome">Name A–Z</option>
         <option value="baixa">Lowest published score</option>
         <option value="frequente">Most published records</option>
@@ -1699,7 +1700,7 @@
                 <th class="numh sortable published-stat" data-col="avg" title="Historical average of published numeric scores">Average <span class="sort-ind" aria-hidden="true"></span></th>
                 <th class="numh sortable published-stat" data-col="freq" title="Number of published numeric records">Records <span class="sort-ind" aria-hidden="true"></span></th>
                 <th class="rankh sortable" data-col="ias">IAS <span class="sort-ind" aria-hidden="true"></span><span class="info-wrap ias-header-info"><button class="info-trigger" type="button" aria-label="About the Invitation Activity Score" aria-expanded="false">i</button><span class="info-popover" role="tooltip">IAS is a 0–100 round-based historical activity signal: 35% participation across all comparable rounds + 30% round recency + 20% participation in the last 8 comparable rounds + 10% recent continuity + 5% comparable score. Context breadth is shown as evidence, not scored. Pink indicates lower activity, teal higher activity, and grey insufficient evidence. It is not an invitation probability or guarantee.</span></span></th>
-                <th class="numh" title="Consecutive comparable rounds ending at the occupation's latest appearance">Streak</th>
+                <th class="numh sortable" data-col="streak" title="Consecutive appearances ending at the latest comparable official round">Streak <span class="sort-ind" aria-hidden="true"></span></th>
               </tr>
             </thead>
             <tbody id="rankBody"></tbody>
@@ -2290,6 +2291,9 @@
           cmp = (a.avg ?? 999) - (b.avg ?? 999);
         } else if (key === "ias") {
           cmp = (a.activity?.score ?? -1) - (b.activity?.score ?? -1);
+        } else if (key === "streak") {
+          cmp = (a.activity?.streak ?? 0) - (b.activity?.streak ?? 0);
+          if (cmp === 0) cmp = (a.activity?.score ?? -1) - (b.activity?.score ?? -1);
         } else if (key === "freq") {
           cmp = (a.rounds ?? 0) - (b.rounds ?? 0);
         } else {
@@ -2305,13 +2309,13 @@
     }
 
     function defaultDirForCol(col) {
-      if (col === "ias" || col === "freq") return "desc";
+      if (col === "ias" || col === "freq" || col === "streak") return "desc";
       if (col === "last" || col === "avg") return "asc";
       return "asc";
     }
 
     function syncSortControls() {
-      const map = { nome: "nome", last: "baixa", avg: "media", freq: "frequente", ias: "ias" };
+      const map = { nome: "nome", last: "baixa", avg: "media", freq: "frequente", ias: "ias", streak: "streak" };
       const opt = map[colSort.key];
       if (opt && $("fSort")) $("fSort").value = opt;
 
@@ -2337,6 +2341,7 @@
     function applySortFromSelect() {
       const v = $("fSort").value || "nome";
       if (v === "ias") colSort = { key: "ias", dir: "desc" };
+      else if (v === "streak") colSort = { key: "streak", dir: "desc" };
       else if (v === "baixa") colSort = { key: "last", dir: "asc" };
       else if (v === "frequente") colSort = { key: "freq", dir: "desc" };
       else if (v === "media") colSort = { key: "avg", dir: "asc" };
