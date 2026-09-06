@@ -483,6 +483,40 @@
       border-color: color-mix(in srgb, var(--bt-primary) 38%, var(--bt-paper));
       background: var(--bt-menu-selected);
     }
+    .scope-segment {
+      display:inline-flex;
+      align-items:center;
+      gap:2px;
+      padding:3px;
+      border-radius:var(--bt-r-segment-track);
+      background:var(--bt-segment-track);
+      flex:0 0 auto;
+    }
+    .scope-chip {
+      min-width:43px;
+      height:25px;
+      padding:0 10px;
+      border:1px solid transparent;
+      border-radius:var(--bt-r-surface);
+      background:transparent;
+      color:var(--bt-text-secondary);
+      font:var(--bt-fw-semibold) .6875rem/1 var(--bt-font);
+      cursor:pointer;
+      transition:color var(--bt-dur-button) var(--bt-ease),background var(--bt-dur-button) var(--bt-ease),border-color var(--bt-dur-button) var(--bt-ease),box-shadow var(--bt-dur-button) var(--bt-ease);
+    }
+    .scope-chip:hover {
+      color:#e23084;
+      border-color:color-mix(in srgb,#e23084 42%,var(--bt-divider));
+      background:color-mix(in srgb,#e23084 7%,var(--bt-paper));
+      box-shadow:0 4px 11px color-mix(in srgb,var(--bt-text) 8%,transparent);
+    }
+    .scope-chip[aria-pressed="true"] {
+      color:#e23084;
+      border-color:color-mix(in srgb,#e23084 34%,var(--bt-divider));
+      background:color-mix(in srgb,#e23084 10%,var(--bt-paper));
+      box-shadow:var(--bt-shadow-2);
+    }
+    .scope-chip:focus-visible { outline:none; box-shadow:var(--bt-focus-ring); }
     .filter-label { color:var(--bt-text-secondary);font-size:.625rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase; }
     .filter-spacer { flex:1 1 auto;min-width:4px; }
     #filterSummary { display:flex; flex:0 0 auto; align-items:center; justify-content:flex-end; gap:4px; min-width:max-content; white-space:nowrap; }
@@ -490,9 +524,9 @@
     .active-filter-chip { height:25px; padding:0 7px; border:1px solid color-mix(in srgb, var(--bt-primary) 30%, var(--bt-divider)); border-radius:999px; background:color-mix(in srgb, var(--bt-primary) 8%, var(--bt-paper)); color:var(--bt-text); font:500 .625rem/1 var(--bt-font); cursor:pointer; }
     .active-filter-chip .x { margin-left:4px; color:var(--bt-primary); font-size:.78rem; }
     #fVisto { width:92px; }
+    #fRound { width:132px; }
     #fAnzsco { width:220px; }
     #fSkill { width:82px; }
-    #fMetrica { width:142px; }
     #fSort { width:132px; }
 
     .body {
@@ -968,7 +1002,7 @@
       z-index:40;
       left:50%;
       bottom:calc(100% + 9px);
-      width:220px;
+      width:280px;
       padding:8px 10px;
       border:1px solid color-mix(in srgb, #e23084 38%, var(--bt-divider));
       border-radius:10px;
@@ -1162,12 +1196,50 @@
     .latest-delta.positive { color:#d62c72; }
     .latest-delta.negative { color:#008f80; }
     .latest-delta.neutral { color:var(--bt-text-secondary); }
-    .streak-cell { white-space:nowrap; }
-    .streak-value { font:750 10px/1 var(--bt-font-mono); color:var(--bt-text); }
+    .streak-cell { position:relative; overflow:visible; white-space:nowrap; }
+    .streak-value { position:relative; display:inline-flex; align-items:center; font:750 10px/1 var(--bt-font-mono); color:var(--bt-text); cursor:help; }
     .streak-dots { display:inline-flex; gap:2px; margin-left:4px; vertical-align:middle; }
     .streak-dots i { width:4px; height:4px; border-radius:50%; background:var(--bt-divider); }
     .streak-dots i.hit { background:color-mix(in srgb,#00a691 42%,var(--bt-paper)); }
     .streak-dots i.latest-run { background:#00a691; }
+    .streak-tip {
+      position:absolute;
+      z-index:30;
+      top:calc(100% + 7px);
+      right:0;
+      width:220px;
+      padding:9px 10px;
+      border:1px solid color-mix(in srgb,#e23084 40%,#08b9aa 20%,var(--bt-divider));
+      border-radius:15px;
+      background:color-mix(in srgb,var(--bt-paper) 97%,transparent);
+      backdrop-filter:blur(12px);
+      box-shadow:inset 1px 1px 0 color-mix(in srgb,#fff 32%,transparent),0 10px 26px color-mix(in srgb,var(--bt-text) 18%,transparent),0 3px 10px color-mix(in srgb,#e23084 12%,transparent);
+      color:var(--bt-text);
+      font:500 9px/1.4 var(--bt-font);
+      text-align:left;
+      white-space:normal;
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transform:translateY(-3px);
+      transition:opacity .12s ease,transform .12s ease,visibility .12s;
+    }
+    .streak-value:is(:hover,:focus-visible) .streak-tip { opacity:1; visibility:visible; transform:translateY(0); }
+    .streak-tip strong { display:block; margin-bottom:2px; font-size:11px; }
+    .streak-tip-summary { display:block; color:var(--bt-text-secondary); }
+    .streak-tip-sources { display:grid; gap:7px; margin-top:8px; }
+    .streak-tip-source { display:block; padding-top:7px; border-top:1px solid var(--bt-divider); }
+    .streak-tip-source:first-child { padding-top:0; border-top:0; }
+    .streak-tip-source-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:4px; }
+    .streak-tip-source-name { color:#008f80; font-weight:800; letter-spacing:.04em; }
+    .streak-tip-source-count { color:var(--bt-text); font:750 9px/1 var(--bt-font-mono); }
+    .streak-tip-source.is-largest .streak-tip-source-count::after { content:" largest"; margin-left:3px; color:var(--bt-text-secondary); font:700 7px/1 var(--bt-font); letter-spacing:.04em; text-transform:uppercase; }
+    .streak-tip-dates { display:flex; flex-wrap:wrap; gap:3px; }
+    .streak-tip-dates i { padding:2px 5px; border:1px solid var(--bt-divider); border-radius:999px; color:var(--bt-text-secondary); font:600 8px/1.2 var(--bt-font-mono); font-style:normal; }
+    .streak-tip-dates i.is-latest { border-color:color-mix(in srgb,#e23084 58%,var(--bt-divider)); background:color-mix(in srgb,#e23084 9%,var(--bt-paper)); color:#d62c72; font-weight:800; }
+    .streak-tip-dates i small { margin-left:3px; color:inherit; font:800 6px/1 var(--bt-font); letter-spacing:.06em; text-transform:uppercase; }
+    .occ-table tbody tr:hover .streak-cell,
+    .occ-table tbody .streak-cell:focus-within { z-index:8; }
     .badge {
       display: inline-block;
       border: 0;
@@ -1707,18 +1779,23 @@
     </div>
 
     <div class="filters-compact" aria-label="Filters">
-      <span class="filter-label">State</span>
-      <select id="fEstado" aria-label="State"></select>
+      <span class="filter-label">Scope</span>
+      <div class="scope-segment" id="scopeSegment" role="group" aria-label="Jurisdiction scope">
+        <button type="button" class="scope-chip" data-scope="ALL" aria-pressed="true">ALL</button>
+        <button type="button" class="scope-chip" data-scope="FEDERAL" aria-pressed="false">FED</button>
+        <button type="button" class="scope-chip" data-scope="WA" aria-pressed="false">WA</button>
+        <button type="button" class="scope-chip" data-scope="ACT" aria-pressed="false">ACT</button>
+      </div>
       <span class="filter-label">Visa</span>
       <select id="fVisto" aria-label="Visa"></select>
       <span class="filter-label">Year</span>
       <select id="fYear" aria-label="Year"></select>
+      <span class="filter-label">Round</span>
+      <select id="fRound" aria-label="Exact official round or publication month" title="Exact official round. Date range in the chart remains a separate window control."></select>
       <span class="filter-label">ANZSCO</span>
       <select id="fAnzsco" aria-label="ANZSCO hierarchy"></select>
       <span class="filter-label">Skill</span>
       <select id="fSkill" aria-label="Predominant ANZSCO skill level"></select>
-      <span class="filter-label">Metric</span>
-      <select id="fMetrica" aria-label="Metric"></select>
       <span class="filter-label">Sort</span>
       <select id="fSort" aria-label="Sort">
         <option value="ias">Highest IAS</option>
@@ -1735,7 +1812,7 @@
     </div>
 
     <section class="global-kpis" aria-label="Latest federal invitation round snapshot">
-      <div class="global-kpi round-linked"><div class="k"><span id="gRoundLabel">Latest federal round</span><span class="info-wrap"><button class="info-trigger" type="button" aria-label="About the latest federal round" aria-expanded="false">i</button><span class="info-popover" role="tooltip">Most recent federal SkillSelect invitation round represented in the current data. Federal rounds cover subclass 189 and subclass 491 Family Sponsored. State nomination rounds are separate events.</span></span></div><div class="v" id="gLatestRound">—</div><div class="s">SkillSelect · 189 / 491 family</div></div>
+      <div class="global-kpi round-linked"><div class="k"><span id="gRoundLabel">Latest federal round</span><span class="info-wrap"><button class="info-trigger" type="button" aria-label="About the latest federal round" aria-expanded="false">i</button><span class="info-popover" role="tooltip">Most recent matching official score publication. Federal, WA and ACT rounds are separate events with different metrics and must not be combined into one score series.</span></span></div><div class="v" id="gLatestRound">—</div><div class="s" id="gRoundScope">FED · minimum points</div></div>
       <div class="global-kpi round-linked"><div class="k"><span>Occupation results published</span><span class="info-wrap"><button class="info-trigger" type="button" aria-label="About published occupation results" aria-expanded="false">i</button><span class="info-popover" role="tooltip">Distinct occupations or occupational groups with a numeric result in the latest matching round. This is not the number of people invited, and publication levels can differ between jurisdictions.</span></span></div><div class="v" id="gOccupationResults">—</div><div class="s" id="gOccupationDelta">published score results</div></div>
       <div class="global-kpi round-linked"><div class="k"><span id="gInvitationLabel">Federal visa invitations</span><span class="info-wrap"><button class="info-trigger" type="button" aria-label="About the invitation total" aria-expanded="false">i</button><span class="info-popover" id="gInvitationInfo" role="tooltip">Total EOIs officially invited by Home Affairs in the matching federal round. The total covers the visa subclass and must not be attributed to individual occupations.</span></span></div><div class="v" id="gInvitations">—</div><div class="s" id="gInvitationScope">subclass 189</div><div class="s" id="gInvitationDelta"></div></div>
       <div class="global-kpi" data-next-outlook role="link" tabindex="0" aria-label="Open the next activity watchlist"><div class="k"><span>Next announced federal round</span><span class="info-wrap"><button class="info-trigger" type="button" aria-label="About the expected next federal round" aria-expanded="false">i</button><span class="info-popover" role="tooltip">The federal date is published by the Australian Department of Home Affairs. State and territory dates are managed separately. Open this card to see the complete watchlist, including estimates and jurisdictions awaiting an announcement.</span></span></div><div class="v" id="gNextRound">By 30 Sep 2026</div><div class="s" id="nextRoundOfficial"><span class="kpi-status">Official</span></div><div class="s" id="nextRoundCoverage">1 official date · 1 watch estimate</div></div>
@@ -1820,7 +1897,7 @@
   </div>
 
   <script src="./anzsco-hierarchy.js?v=20260902"></script>
-  <script src="./data.js?v=20260903-wa-history"></script>
+  <script src="./data.js?v=20260906-wa-march-trades"></script>
   <script>
     const SCORE = new Set(["pontos_minimos", "ultimo_eoi_pontos", "matrix_score"]);
     const COLORS = ["#00a691", "#e23084", "#2bc4ae", "#f05aa0", "#007f70", "#b51f69", "#67d9c8", "#f48abb"];
@@ -1873,6 +1950,7 @@
     let chartStartDate = "";
     let timeSliderFrame = null;
     let chartDateFilter = null;
+    let selectedRound = "";
     let lowerView = "history";
     let currentHistoryRows = [];
     let allHistoryRows = [];
@@ -1881,7 +1959,9 @@
     const publishedInvitationScopes = new Set(raw.filter((r) =>
       ["eois_convidados", "convites_emitidos"].includes(r.metrica) && r.jurisdicao && r.visto
     ).map((r) => `${r.jurisdicao}|${r.visto}`));
-    const filterStates = uniq([...scoreRows, ...programRows].map((r) => r.jurisdicao));
+    const SCORE_SCOPE_STATES = ["FEDERAL", "WA", "ACT"];
+    const METRIC_BY_JURISDICTION = { FEDERAL:"pontos_minimos", WA:"ultimo_eoi_pontos", ACT:"matrix_score" };
+    const filterStates = SCORE_SCOPE_STATES.filter((state) => scoreRows.some((r) => r.jurisdicao === state));
     let selectedStates = new Set(filterStates);
     const totalListedOccupations = new Set(scoreRows.map((r) => r.identidade_ocupacional).filter(Boolean)).size;
 
@@ -1931,6 +2011,7 @@
 
     function scoreMatchesVisaContext(row, visas) {
       if (!visas.length || visas.includes(row.visto)) return true;
+      if (row.jurisdicao === "WA" && row.visto === "n/a" && visas.includes("190/491*")) return true;
       // Some state sources publish the invitation total by subclass, but their
       // occupation score table does not assign a subclass to each row.
       return row.visto === "n/a" && visas.some((visa) => publishedInvitationScopes.has(`${row.jurisdicao}|${visa}`));
@@ -2053,20 +2134,20 @@
       return nums.reduce((a, b) => a + b, 0) / nums.length;
     }
 
-    function activeFilterRows({ ignoreGroup = false, ignoreSearch = false } = {}) {
+    function activeFilterRows({ ignoreGroup = false, ignoreSearch = false, ignoreRound = false } = {}) {
       const vistos = selectedValues($("fVisto"));
       const years = selectedValues($("fYear"));
-      const metricas = selectedValues($("fMetrica"));
       const hierarchy = selectedAnzscoCode();
       const categoria = $("fCategoria").value;
       const busca = ($("fBusca").value || "").trim().toLowerCase();
 
       return scoreRows.filter((r) => {
         if (!selectedStates.has(r.jurisdicao)) return false;
+        if (r.metrica !== METRIC_BY_JURISDICTION[r.jurisdicao]) return false;
+        if (!ignoreRound && selectedRound && roundDate(r) !== selectedRound) return false;
         if (chartDateFilter && monthKey(r.data_round) !== chartDateFilter) return false;
         if (!scoreMatchesVisaContext(r, vistos)) return false;
         if (years.length && !years.includes(calendarYear(r.data_round))) return false;
-        if (metricas.length && !metricas.includes(r.metrica)) return false;
         if (!ignoreGroup && hierarchy && !anzscoMatches(r, hierarchy)) return false;
         if (!skillMatches(r)) return false;
         if (categoria && r.categoria !== categoria) return false;
@@ -2078,29 +2159,38 @@
     function scoreAxisContextRows() {
       const vistos = selectedValues($("fVisto"));
       const years = selectedValues($("fYear"));
-      const metricas = selectedValues($("fMetrica"));
       const categoria = $("fCategoria").value;
       return scoreRows.filter((r) => {
         const relevantStates = chartEstados.size ? chartEstados : selectedStates;
         if (!relevantStates.has(r.jurisdicao)) return false;
+        if (r.metrica !== METRIC_BY_JURISDICTION[r.jurisdicao]) return false;
+        if (selectedRound && roundDate(r) !== selectedRound) return false;
         if (selected?.metricas?.length && !selected.metricas.includes(r.metrica)) return false;
         if (!scoreMatchesVisaContext(r, vistos)) return false;
         if (years.length && !years.includes(calendarYear(r.data_round))) return false;
-        if (metricas.length && !metricas.includes(r.metrica)) return false;
         if (categoria && r.categoria !== categoria) return false;
         if (!skillMatches(r)) return false;
         return true;
       });
     }
 
-    function groupInvitationRows({ ignoreGroup = false, ignoreSearch = false } = {}) {
+    function groupInvitationRows({ ignoreGroup = false, ignoreSearch = false, ignoreRound = false } = {}) {
       const vistos = selectedValues($("fVisto"));
       const years = selectedValues($("fYear"));
       const hierarchy = selectedAnzscoCode();
       const busca = ($("fBusca").value || "").trim().toLowerCase();
+      const allScopeSelected = selectedStates.size === filterStates.length &&
+        filterStates.every((state) => selectedStates.has(state));
+      // SA is the only archived jurisdiction that publishes invitation counts
+      // explicitly attributed to ANZSCO groups. Keep it available in ALL + INV
+      // without presenting SA as an occupation-score scope.
+      const invitationStates = allScopeSelected
+        ? new Set([...selectedStates, "SA"])
+        : selectedStates;
       const candidates = raw.filter((r) => {
         if (r.metrica !== "convites_emitidos" || !r.ocupacao || r.ocupacao === "agregado" || num(r.valor) == null) return false;
-        if (!anzscoSubMajorCode(r) || !selectedStates.has(r.jurisdicao)) return false;
+        if (!anzscoSubMajorCode(r) || !invitationStates.has(r.jurisdicao)) return false;
+        if (!ignoreRound && selectedRound && roundDate(r) !== selectedRound) return false;
         if (vistos.length && !vistos.includes(r.visto)) return false;
         if (years.length && !years.includes(calendarYear(r.data_round))) return false;
         if (!ignoreGroup && hierarchy && !anzscoMatches(r, hierarchy)) return false;
@@ -2188,6 +2278,9 @@
         // Do not report an older run as if it were still active.
         let streak = 0;
         for (let index = comparableRoundIds.length - 1; index >= 0 && appeared.has(comparableRoundIds[index]); index--) streak += 1;
+        const streakDates = streak
+          ? comparableRoundIds.slice(-streak).map((id) => id.split("|").at(-1))
+          : [];
         const recentPattern = recentRounds.map((id) => appeared.has(id));
         const totalParticipation = comparableRoundIds.length ? comparableRoundIds.filter((id) => appeared.has(id)).length / comparableRoundIds.length : 0;
         const recency = Math.max(0, 1 - roundsSinceLast / 5);
@@ -2218,7 +2311,7 @@
         const score = Math.round(50 + (rawScore - 50) * confidence);
         const evidence = observedRounds >= 8 && comparableRoundIds.length >= 8 ? "High" : observedRounds >= 3 ? "Medium" : "Low";
         scores.set(identity, {
-          score, rawScore:Math.round(rawScore), confidence:Math.round(confidence*100), evidence, dates:observedRounds, contexts:contexts.size, comparableRounds:comparableRoundIds.length, roundsSinceLast, streak, recentPattern,
+          score, rawScore:Math.round(rawScore), confidence:Math.round(confidence*100), evidence, dates:observedRounds, contexts:contexts.size, comparableRounds:comparableRoundIds.length, roundsSinceLast, streak, streakDates, recentPattern,
           components: {
             totalParticipation:Math.round(totalParticipation*100), recency:Math.round(recency*100), frequency:Math.round(frequency*100),
             consistency:Math.round(consistency*100), coverage:Math.round(coverage*100),
@@ -2252,6 +2345,8 @@
           score: item.activity.score,
           evidence: item.activity.evidence,
           streak: item.activity.streak,
+          streakDates: item.activity.streakDates,
+          recentPattern: item.activity.recentPattern,
           roundsSinceLast: item.activity.roundsSinceLast,
           dates: item.activity.dates,
           comparableRounds: item.activity.comparableRounds,
@@ -2280,6 +2375,18 @@
         activity.jurisdictionScores = jurisdictionScores;
         activity.visaScores = visaScores;
         activity.activePathways = jurisdictionScores.filter((item) => item.roundsSinceLast === 0).length;
+        const streakSource = [...jurisdictionScores].sort((a, b) =>
+          b.streak - a.streak || b.score - a.score || a.jurisdiction.localeCompare(b.jurisdiction)
+        )[0] || null;
+        if (streakSource) {
+          activity.streak = streakSource.streak;
+          activity.streakDates = streakSource.streakDates;
+          activity.recentPattern = streakSource.recentPattern;
+          activity.streakJurisdiction = streakSource.jurisdiction;
+        }
+        activity.streakSources = [...jurisdictionScores].sort((a, b) =>
+          b.streak - a.streak || b.score - a.score || a.jurisdiction.localeCompare(b.jurisdiction)
+        );
       }
       return combined;
     }
@@ -2337,8 +2444,21 @@
       const pattern = activity.recentPattern || [];
       const lastHit = pattern.lastIndexOf(true);
       const dots = pattern.map((hit, index) => `<i class="${hit ? `hit${index > lastHit - activity.streak ? " latest-run" : ""}` : ""}"></i>`).join("");
-      const label = `${activity.streak} consecutive comparable ${activity.streak === 1 ? "round" : "rounds"} in the current run · latest 8: ${pattern.map((hit) => hit ? "published" : "not published").join(", ")}`;
-      return `<span class="streak-value" title="${escapeAttr(label)}" aria-label="${escapeAttr(label)}">${activity.streak}×<span class="streak-dots" aria-hidden="true">${dots}</span></span>`;
+      const sources = activity.streakSources || [];
+      const sourceRows = sources.map((item, index) => {
+        const source = item.jurisdiction === "FEDERAL" ? "FED" : item.jurisdiction;
+        const dateChips = item.streakDates?.length
+          ? item.streakDates.map((date, dateIndex, dates) => `<i${dateIndex === dates.length - 1 ? ` class="is-latest"` : ""}>${escapeHtml(compactResultDate(date))}${dateIndex === dates.length - 1 ? `<small>Latest</small>` : ""}</i>`).join("")
+          : `<i>No current streak</i>`;
+        return `<span class="streak-tip-source${index === 0 ? " is-largest" : ""}"><span class="streak-tip-source-head"><span class="streak-tip-source-name">${escapeHtml(source)}</span><span class="streak-tip-source-count">${item.streak}×</span></span><span class="streak-tip-dates">${dateChips}</span></span>`;
+      }).join("");
+      const sourceLabels = sources.map((item) => {
+        const source = item.jurisdiction === "FEDERAL" ? "FED" : item.jurisdiction;
+        const dates = item.streakDates?.length ? item.streakDates.map(compactResultDate).join(", ") : "no current streak";
+        return `${source} ${item.streak} times: ${dates}`;
+      });
+      const label = `${activity.streak} consecutive rounds, the largest individual jurisdiction streak. ${sourceLabels.join(". ")}`;
+      return `<span class="streak-value" tabindex="0" aria-label="${escapeAttr(label)}">${activity.streak}×<span class="streak-dots" aria-hidden="true">${dots}</span><span class="streak-tip" role="tooltip"><strong>${activity.streak}× largest current streak</strong><span class="streak-tip-summary">Individual jurisdiction streaks and actual dates</span><span class="streak-tip-sources">${sourceRows}</span></span></span>`;
     }
 
     function updateOccupationActivity() {
@@ -2558,7 +2678,7 @@
 
       const body = $("rankBody");
       if (!list.length) {
-        body.innerHTML = `<tr><td colspan="8" style="padding:1.5rem;color:var(--bt-text-secondary);text-align:center;">No occupations for these filters.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="8" style="padding:1.5rem;color:var(--bt-text-secondary);text-align:center;"><strong>Not available for this scope.</strong><br><span class="bt-hint">No official ${[...selectedStates].map((s) => s === "FEDERAL" ? "FED" : s).join(" + ")} score publication matches the current filters.</span></td></tr>`;
         return;
       }
 
@@ -2623,6 +2743,7 @@
       }
       selected = occ;
       chartEstados = new Set(occ.juris);
+      rebuildRoundOptions();
       renderRank();
       renderHistory(occ);
     }
@@ -2834,7 +2955,11 @@
         .filter(Boolean)
         .join(" · ");
 
-      const filteredRows = occ.rows.filter((r) => chartEstados.has(r.jurisdicao));
+      const filteredRows = occ.rows.filter((r) =>
+        chartEstados.has(r.jurisdicao) &&
+        r.metrica === METRIC_BY_JURISDICTION[r.jurisdicao] &&
+        (!selectedRound || roundDate(r) === selectedRound)
+      );
       const detailRows = chartDateFilter ? filteredRows.filter((r) => monthKey(r.data_round) === chartDateFilter) : filteredRows;
       const primaryDetailRows = detailRows.filter((r) => r.metrica === occ.metrica);
       const scores = primaryDetailRows.map((r) => num(r.valor)).filter((n) => n != null);
@@ -3086,7 +3211,11 @@
       const groups = [...summaries.values()].filter((group) => group.value != null && (groupMetric !== "inv" || group.invitations > 0)).sort((a, b) => a.code.localeCompare(b.code));
       const metricLabel = groupMetric === "inv" ? "Attributed invitations" : groupMetric === "ias" ? "Invitation Activity Score (IAS)" : "Occupations with published results";
       $("legend").innerHTML = `<span><i style="width:42px;background:#00a691"></i>Series · Teal</span><span>${metricLabel}</span><span title="IAS is not an invitation probability">IAS colour scale is shown in the hover score · 35% all-round participation + 30% recency + 20% last-8 participation + 10% continuity + 5% comparable score</span>`;
-      $("chartAxisLabel").textContent = "ANZSCO group overview";
+      const allScopeSelected = selectedStates.size === filterStates.length &&
+        filterStates.every((state) => selectedStates.has(state));
+      $("chartAxisLabel").textContent = groupMetric === "inv" && allScopeSelected
+        ? "ANZSCO group overview · SA attributed invitations"
+        : "ANZSCO group overview";
       let tooltip = box.querySelector(".chart-tooltip");
       if (!tooltip) {
         tooltip = document.createElement("div");
@@ -3097,7 +3226,14 @@
         ctx.fillStyle = chartToken("--bt-text-secondary", "#777");
         ctx.font = `500 13px ${chartToken("--bt-font", "Inter, system-ui, sans-serif")}`;
         ctx.textAlign = "center";
-        ctx.fillText("No official ANZSCO groups for the selected filters", w / 2, h / 2);
+        const selectedScopeLabel = [...selectedStates].map((state) => state === "FEDERAL" ? "FED" : state).join(" + ");
+        ctx.fillText(
+          groupMetric === "inv"
+            ? `No occupation-group invitation totals are published for ${selectedScopeLabel}`
+            : "No official ANZSCO groups for the selected filters",
+          w / 2,
+          h / 2
+        );
         canvas.onmousemove = null; canvas.onmouseleave = null; canvas.onclick = null;
         return;
       }
@@ -3719,20 +3855,23 @@
     }
 
     function refresh() {
+      updateContextualControls();
+      rebuildRoundOptions();
       const rows = activeFilterRows();
       occupations = buildOccupations(applyChartWindow(rows));
       updateOccupationActivity();
 
       const vistos = selectedValues($("fVisto"));
       const years = selectedValues($("fYear"));
-      const metricas = selectedValues($("fMetrica"));
       const hierarchy = selectedAnzscoCode();
       const skill = $("fSkill").value;
       const dateStateRows = scoreRows.filter((r) =>
         selectedStates.has(r.jurisdicao) && (!chartDateFilter || monthKey(r.data_round) === chartDateFilter)
       );
       const programStateRows = programRows.filter((r) => selectedStates.has(r.jurisdicao));
-      const availableVisas = new Set([...dateStateRows, ...programStateRows].map((r) => r.visto));
+      const availableVisas = new Set([...dateStateRows, ...programStateRows].map((r) =>
+        r.jurisdicao === "WA" && r.visto === "n/a" ? "190/491*" : r.visto
+      ));
       [...$("fVisto").options].forEach((option) => {
         option.disabled = Boolean(option.value) && !availableVisas.has(option.value) && !option.selected;
       });
@@ -3741,16 +3880,11 @@
       [...$("fYear").options].forEach((option) => {
         option.disabled = Boolean(option.value) && !availableYears.has(option.value) && !option.selected;
       });
-      const metricContextRows = visaContextRows.filter((r) => !years.length || years.includes(calendarYear(r.data_round)));
-      const availableMetrics = new Set(metricContextRows.map((r) => r.metrica));
-      [...$("fMetrica").options].forEach((option) => {
-        option.disabled = Boolean(option.value) && !availableMetrics.has(option.value) && !option.selected;
-      });
       const activeChips = [];
       if (selectedStates.size !== filterStates.length) activeChips.push({ key:"state", label:`State: ${[...selectedStates].join(", ") || "none"}` });
       if (vistos.length) activeChips.push({ key:"visa", label:`Visa: ${vistos.join(", ")}` });
       if (years.length) activeChips.push({ key:"year", label:`Year: ${years.join(", ")}` });
-      if (metricas.length) activeChips.push({ key:"metric", label:`Metric: ${metricas.map(labelMetric).join(", ")}` });
+      if (selectedRound) activeChips.push({ key:"round", label:`Round: ${compactResultDate(selectedRound)}` });
       if (hierarchy) {
         const hierarchyLabel = hierarchy === "__aggregate"
           ? "Aggregate / not attributable"
@@ -3769,7 +3903,7 @@
         if (key === "state") { selectedStates = new Set(filterStates); renderGlobalStateFilter(); }
         if (key === "visa") $("fVisto").value = "";
         if (key === "year") $("fYear").value = "";
-        if (key === "metric") $("fMetrica").value = "";
+        if (key === "round") selectedRound = "";
         if (key === "anzsco") $("fAnzsco").value = "";
         if (key === "skill") $("fSkill").value = "";
         if (key === "search") $("fBusca").value = "";
@@ -3781,10 +3915,11 @@
       const defaultFederalRows = scoreRows.filter((r) =>
         r.jurisdicao === "FEDERAL" && r.visto === "189" && r.metrica === "pontos_minimos"
       );
-      const filtersActive = selectedStates.size !== filterStates.length || vistos.length || years.length || metricas.length || hierarchy || skill || chartDateFilter || ($("fBusca").value || "").trim();
+      const filtersActive = selectedStates.size !== filterStates.length || vistos.length || years.length || selectedRound || hierarchy || skill || chartDateFilter || ($("fBusca").value || "").trim();
       const matchingInvitationRows = raw.filter((r) =>
         selectedStates.has(r.jurisdicao) && ["eois_convidados", "convites_emitidos"].includes(r.metrica) &&
         /^\d{4}-\d{2}(?:-\d{2})?$/.test(r.data_round || "") &&
+        (!selectedRound || roundDate(r) === selectedRound) &&
         (!vistos.length || vistos.includes(r.visto)) &&
         (!years.length || years.includes(calendarYear(r.data_round))) &&
         anzscoMatches(r, hierarchy) && skillMatches(r, skill)
@@ -3820,6 +3955,10 @@
       $("gLatestRound").textContent = latestFederalDate
         ? formatRoundDate(latestFederalDate)
         : "—";
+      const latestScopeLabels = [...latestJurisdictions].sort().map((jurisdiction) =>
+        `${jurisdiction === "FEDERAL" ? "FED" : jurisdiction} · ${labelMetric(METRIC_BY_JURISDICTION[jurisdiction] || "")}`
+      );
+      $("gRoundScope").textContent = latestScopeLabels.join(" · ") || "Not available for this scope";
       $("gInvitations").textContent = latestInvitationValue != null
         ? latestInvitationValue.toLocaleString("en-AU") : "Not published";
       $("gInvitationScope").textContent = latestInvitationVisas.size
@@ -3925,10 +4064,10 @@
       return escapeHtml(s).replaceAll("'", "&#39;");
     }
 
-    function fillAnzscoHierarchySelect() {
+    function fillAnzscoHierarchySelect(sourceRows = scoreRows) {
       const current = $("fAnzsco").value;
       const represented = new Set();
-      raw.map(rowAnzscoCode).filter(Boolean).forEach((code) => {
+      sourceRows.map(rowAnzscoCode).filter(Boolean).forEach((code) => {
         [1, 2, 3, 4, 6].filter((length) => length <= code.length).forEach((length) => {
           const ancestor = code.slice(0, length);
           if (ANZSCO_NODES[ancestor]) represented.add(ancestor);
@@ -3950,7 +4089,7 @@
       aggregate.textContent = "Aggregate / not attributable";
       aggregate.title = "Official totals that cannot be attributed to an ANZSCO code";
       select.appendChild(aggregate);
-      select.value = current;
+      select.value = represented.has(current) || !current ? current : "";
     }
 
     function fillSkillSelect() {
@@ -3960,26 +4099,79 @@
         '<option value="__unclassified">Not classified</option>';
     }
 
-    fillSelect($("fVisto"), uniq(scoreRows.map((r) => r.visto)), false);
+    fillSelect($("fVisto"), uniq(scoreRows.map((r) => r.jurisdicao === "WA" && r.visto === "n/a" ? "190/491*" : r.visto)), false);
     fillSelect($("fYear"), uniq(scoreRows.map((r) => calendarYear(r.data_round)).filter(Boolean)), false);
+    fillSelect($("fRound"), [], false);
     fillAnzscoHierarchySelect();
     fillSkillSelect();
-    fillSelect($("fMetrica"), uniq(scoreRows.map((r) => r.metrica)), false, labelMetric);
     fillSelect($("fCategoria"), uniq(raw.map((r) => r.categoria)), false, labelCategory);
     $("fCategoria").value = "visto_de_convite";
 
     function renderGlobalStateFilter() {
-      const current = selectedStates.size === 1 ? [...selectedStates][0] : "";
-      fillSelect($("fEstado"), filterStates, false);
-      $("fEstado").value = current;
+      const scope = selectedStates.size === 1 ? [...selectedStates][0] : "ALL";
+      document.querySelectorAll("[data-scope]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.scope === scope));
+      });
     }
     renderGlobalStateFilter();
 
-    $("fEstado").addEventListener("change", () => {
-      const state = $("fEstado").value;
+    function contextualScoreRows() {
+      return scoreRows.filter((row) =>
+        selectedStates.has(row.jurisdicao) &&
+        row.metrica === METRIC_BY_JURISDICTION[row.jurisdicao]
+      );
+    }
+
+    function updateContextualControls() {
+      const contextRows = contextualScoreRows();
+      const currentVisa = $("fVisto").value;
+      const visas = uniq(contextRows.map((row) => row.jurisdicao === "WA" && row.visto === "n/a" ? "190/491*" : row.visto));
+      fillSelect($("fVisto"), visas, false, (visa) => visa === "190/491*" ? "190 / 491*" : visa);
+      $("fVisto").value = visas.includes(currentVisa) ? currentVisa : "";
+
+      const visaRows = contextRows.filter((row) => scoreMatchesVisaContext(row, selectedValues($("fVisto"))));
+      const currentYear = $("fYear").value;
+      const years = uniq(visaRows.map((row) => calendarYear(row.data_round)).filter(Boolean));
+      fillSelect($("fYear"), years, false);
+      $("fYear").value = years.includes(currentYear) ? currentYear : "";
+
+      fillAnzscoHierarchySelect(visaRows);
+      const actUnitScope = selectedStates.size === 1 && selectedStates.has("ACT");
+      if (actUnitScope) $("fSkill").value = "";
+      $("fSkill").disabled = actUnitScope;
+      $("fSkill").title = actUnitScope
+        ? "ACT publishes unit-group results, not six-digit occupations or occupation skill-level results."
+        : "Predominant ANZSCO skill level";
+    }
+
+    function rebuildRoundOptions() {
+      let roundRows = activeFilterRows({ ignoreRound:true });
+      if (chartMode === "scores" && selected?.identity) {
+        roundRows = roundRows.filter((row) =>
+          (row.identidade_ocupacional || `UNCLASSIFIED:${row.ocupacao}`) === selected.identity
+        );
+      }
+      const available = uniq(roundRows.map(roundDate).filter(Boolean)).sort().reverse();
+      const previous = selectedRound;
+      const select = $("fRound");
+      select.innerHTML = '<option value="">All rounds</option>';
+      available.forEach((date) => {
+        const option = document.createElement("option");
+        option.value = date;
+        option.textContent = compactResultDate(date);
+        option.title = /^\d{4}-\d{2}$/.test(date) ? "Official publication identifies the month only" : "Official exact round date";
+        select.appendChild(option);
+      });
+      selectedRound = available.includes(previous) ? previous : "";
+      select.value = selectedRound;
+    }
+
+    document.querySelectorAll("[data-scope]").forEach((button) => button.addEventListener("click", () => {
+      const state = button.dataset.scope === "ALL" ? "" : button.dataset.scope;
       selectedStates = state ? new Set([state]) : new Set(filterStates);
       selected = null;
       chartDateFilter = null;
+      selectedRound = "";
       chartStartDate = "";
       if (state && scoreRows.some((r) => r.jurisdicao === state)) {
         chartMode = "scores";
@@ -3991,17 +4183,34 @@
         chartMode = "groups";
         lowerView = "history";
       }
+      renderGlobalStateFilter();
       refresh();
+    }));
+    $("scopeSegment").addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      const buttons = [...document.querySelectorAll("[data-scope]")];
+      const current = buttons.indexOf(document.activeElement);
+      if (current < 0) return;
+      event.preventDefault();
+      const next = event.key === "Home" ? 0 : event.key === "End" ? buttons.length - 1 :
+        (current + (event.key === "ArrowRight" ? 1 : -1) + buttons.length) % buttons.length;
+      buttons[next].focus();
+      buttons[next].click();
     });
-    ["fVisto", "fYear", "fAnzsco", "fSkill", "fMetrica"].forEach((id) => $(id).addEventListener("change", () => {
+    ["fVisto", "fYear", "fAnzsco", "fSkill"].forEach((id) => $(id).addEventListener("change", () => {
       selected = null;
       refresh();
     }));
+    $("fRound").addEventListener("change", () => {
+      selectedRound = $("fRound").value;
+      chartDateFilter = null;
+      refresh();
+    });
 
     $("btnClear").addEventListener("click", () => {
       [...$("fVisto").options].forEach((o) => (o.selected = false));
       [...$("fYear").options].forEach((o) => (o.selected = false));
-      [...$("fMetrica").options].forEach((o) => (o.selected = false));
+      selectedRound = "";
       $("fAnzsco").value = "";
       $("fSkill").value = "";
       selectedStates = new Set(filterStates);
