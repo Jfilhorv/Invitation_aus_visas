@@ -1,6 +1,6 @@
 # Log de extracao - vistos de convite
 
-Gerado em 2026-09-03 19:46:39.
+Gerado em 2026-09-06 09:10:52.
 
 Somente fontes oficiais `.gov.au` ja baixadas em `dados/` foram usadas.
 Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
@@ -11,14 +11,14 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 |---|---|
 | FEDERAL | 3509 |
 | ACT | 2712 |
-| WA | 1388 |
+| WA | 1407 |
 | SA | 276 |
 | NSW | 5 |
 | VIC | 5 |
 | QLD | 5 |
 | TAS | 5 |
 | NT | 5 |
-| **Total** | **7910** |
+| **Total** | **7929** |
 
 ## Notas de parse
 
@@ -65,9 +65,10 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 - WA PDF SNMP - Priority Invite Round - October 2025.pdf: 19 linhas ultimo_eoi_pontos
 - WA PDF SNMP Invite Round - December 2025.pdf: 139 linhas ultimo_eoi_pontos
 - WA PDF SNMP Invite Round - January 2026.pdf: 27 linhas ultimo_eoi_pontos
+- WA PDF TRADE - SNMP Invite Round - Last Invited By Occupation - March 2026.pdf: 19 linhas ultimo_eoi_pontos
 - WA PDF v.1OTHER priority occupations - SNMP Invite round - March 2026.pdf: 115 linhas ultimo_eoi_pontos
 - WA PDF Last invited expression of interest - Priority trade occupations - May 2026.pdf: 18 linhas ultimo_eoi_pontos
-- WA PDFs last-invited: 1259 linhas
+- WA PDFs last-invited: 1278 linhas
 - WA PDFs: stream, residencia e data de submissao preservados; totais mensais permanecem em metrica separada.
 - WA HTML: 125 linhas
 - SA invitations-issued-late-may-2026.html: 36 linhas
@@ -82,10 +83,10 @@ Nenhum download de sites nao-governamentais. Nenhum numero extraoficial.
 - QLD: 1 linha publicacao=NOT_PUBLISHED
 - NT: 1 linha publicacao=NOT_PUBLISHED
 - TAS: 1 NOT_PUBLISHED; totais 2025-26 nao duplicados como convites
-- Normalizacao ANZSCO 2022 (ABS): abs_exact_title=3215, missing=411, source=4284
-- CSV escrito: C:\Users\efilh\Documents\Codex\2026-09-01\github-plugin-github-openai-curated-remote\Invitation_aus_visas\dados\agregado\vistos-de-convites.csv (7910 linhas)
-- JSON escrito: C:\Users\efilh\Documents\Codex\2026-09-01\github-plugin-github-openai-curated-remote\Invitation_aus_visas\dados\agregado\vistos-de-convites.json
-- Dashboard escrito: C:\Users\efilh\Documents\Codex\2026-09-01\github-plugin-github-openai-curated-remote\Invitation_aus_visas\analise\data.js
+- Normalizacao ANZSCO 2022 (ABS): abs_exact_title=3215, missing=411, source=4303
+- CSV escrito: C:\Users\efilh\Invitation_aus_visa\dados\agregado\vistos-de-convites.csv (7929 linhas)
+- JSON escrito: C:\Users\efilh\Invitation_aus_visa\dados\agregado\vistos-de-convites.json
+- Dashboard escrito: C:\Users\efilh\Invitation_aus_visa\analise\data.js
 
 ## Erros / avisos
 

@@ -44,7 +44,9 @@ Regra de validade: HTTP 200 + host final `.gov.au` + PDF `%PDF-` ou HTML com tit
 - fevereiro, marco, maio, junho, outubro e dezembro de 2025;
 - janeiro, marco e maio de 2026.
 
-No total, a extracao representa 15 rodadas/periodos ocupacionais de WA. Os PDFs preservam ANZSCO, stream, residencia, EOI points score e data de submissao. Eles nao publicam a quantidade de convites por profissao.
+Marco de 2026 possui dois documentos complementares no dominio oficial: [trades prioritarias](https://migration.wa.gov.au/sites/default/files/2026-03/TRADE%20-%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20-%20March%202026.pdf) e [outras ocupacoes prioritarias](https://migration.wa.gov.au/sites/default/files/2026-03/v.1OTHER%20priority%20occupations%20-%20SNMP%20Invite%20round%20-%20March%202026.pdf). Ambos continuam acessiveis no servidor oficial, embora nao estejam ligados na navegacao corrente.
+
+No total, a extracao representa 16 documentos em 15 rodadas/periodos ocupacionais de WA. Os PDFs preservam ANZSCO, stream, residencia, EOI points score e data de submissao. Eles nao publicam a quantidade de convites por profissao.
 
 As abas HTML tambem fornecem:
 
@@ -117,7 +119,7 @@ Tentativas oficiais:
 |---|---|---|---|
 | Federal | Invitation rounds (4 Jun 2026) + previous rounds | HTML | Sim (pagina previous-rounds) |
 | ACT | 2025-26 Invitation round rankings | PDF | Nao listados (so o ano vigente) |
-| WA | 15 last-invited EOI rounds/periods, May 2023–May 2026 | PDF + HTML | Sim: PDFs ocupacionais e tabelas HTML agregadas |
+| WA | 16 documentos em 15 last-invited EOI rounds/periods, May 2023–May 2026 | PDF + HTML | Sim: PDFs ocupacionais e tabelas HTML agregadas |
 | SA | News "Invitations issued" (Late May 2026 + meses 2025-26) | HTML | Indice atual lista Dec 2025–Late May 2026 |
 | NSW | **NOT_PUBLISHED** | — | — |
 | VIC | **NOT_PUBLISHED** | — | — |

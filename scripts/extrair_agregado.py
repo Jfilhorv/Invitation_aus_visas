@@ -1103,11 +1103,15 @@ def parse_wa_pdf(manifesto: dict) -> list[dict]:
         ("dados/estados/wa/SNMP - Priority Invite Round - October 2025.pdf", "2025-10", "priority=trades"),
         ("dados/estados/wa/SNMP Invite Round - December 2025.pdf", "2025-12", "priority=all_published"),
         ("dados/estados/wa/SNMP Invite Round - January 2026.pdf", "2026-01", "priority=trades"),
-        # The local March trades PDF is intentionally excluded until its exact
-        # official URL can be verified again. Do not merge unverifiable provenance.
+        ("dados/estados/wa/TRADE - SNMP Invite Round - Last Invited By Occupation - March 2026.pdf", "2026-03", "priority=trades"),
         ("dados/estados/wa/v.1OTHER priority occupations - SNMP Invite round - March 2026.pdf", "2026-03", "priority=other"),
         ("dados/estados/wa/Last invited expression of interest - Priority trade occupations - May 2026.pdf", "2026-05-20", "priority=trades"),
     ]
+    # This PDF's text layer emits its Schedule 2 table before the Schedule 2
+    # heading. Keep the historical Schedule 1 fallback for every other source.
+    prefix_stream_overrides = {
+        "dados/estados/wa/TRADE - SNMP Invite Round - Last Invited By Occupation - March 2026.pdf": "WASMOL2",
+    }
     markers = [
         (r"General stream\s*[-–—]\s*WASMOL Schedule 1", "WASMOL1"),
         (r"General stream\s*[-–—]\s*WASMOL Schedule 2", "WASMOL2"),
@@ -1135,8 +1139,9 @@ def parse_wa_pdf(manifesto: dict) -> list[dict]:
             spans = [(0, "published_stream")]
         elif spans[0][0] > 0:
             # Some WA PDFs render the first WASMOL table before its heading in extracted text.
-            # Treat only the prefix as Schedule 1; later sections still use their own headings.
-            spans.insert(0, (0, "WASMOL1"))
+            # A verified per-document override handles the March 2026 PDF whose
+            # prefix is Schedule 2; older documents retain the Schedule 1 rule.
+            spans.insert(0, (0, prefix_stream_overrides.get(rel, "WASMOL1")))
         source_count = 0
         for i, (start, stream) in enumerate(spans):
             end = spans[i + 1][0] if i + 1 < len(spans) else len(flat)

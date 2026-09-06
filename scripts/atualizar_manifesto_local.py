@@ -53,6 +53,12 @@ official_abs = [
     ),
     (
         "WA Migration Services invitation results",
+        "https://migration.wa.gov.au/sites/default/files/2026-03/TRADE%20-%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20-%20March%202026.pdf",
+        "dados/estados/wa/TRADE - SNMP Invite Round - Last Invited By Occupation - March 2026.pdf",
+        "Resultados oficiais de trades prioritarias do round de marco de 2026; arquivo preservado no dominio oficial embora nao esteja ligado na pagina atual do programa.",
+    ),
+    (
+        "WA Migration Services invitation results",
         "https://migration.wa.gov.au/sites/default/files/2026-03/v.1OTHER%20priority%20occupations%20-%20SNMP%20Invite%20round%20-%20March%202026.pdf",
         "dados/estados/wa/v.1OTHER priority occupations - SNMP Invite round - March 2026.pdf",
         "Resultados oficiais de outras ocupacoes prioritarias do round de marco de 2026.",
