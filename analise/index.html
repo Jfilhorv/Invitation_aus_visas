@@ -182,8 +182,9 @@
       --ias: 0;
       --ias-colour: var(--bt-text-secondary);
       position: relative;
-      display: inline-grid;
-      place-items: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       width: 27px;
       height: 27px;
       border: 0;
@@ -198,14 +199,21 @@
       line-height: 1;
       cursor: help;
     }
-    .ias-list-dot::after {
-      content: attr(data-tip);
+    .ias-list-dot-value { position: relative; z-index: 1; }
+    .ias-list-dot--mini {
+      width: 26px;
+      height: 26px;
+      font-size: 8px;
+      cursor: default;
+      box-shadow: 0 1px 5px color-mix(in srgb, var(--ias-colour) 16%, transparent);
+    }
+    .ias-tip {
       position: absolute;
       z-index: 30;
       top: calc(100% + 7px);
-      left: 50%;
-      width: 245px;
-      padding: 8px 10px;
+      right: 0;
+      width: 252px;
+      padding: 9px 10px 8px;
       border: 1px solid var(--bt-divider);
       border-radius: var(--bt-r-surface);
       background: var(--bt-paper);
@@ -213,21 +221,77 @@
       color: var(--bt-text);
       font-size: 10px;
       font-weight: var(--bt-fw-regular);
-      line-height: 1.45;
+      line-height: 1.4;
       text-align: left;
-      white-space: pre-line;
+      white-space: normal;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transform: translate(-50%, -3px);
+      transform: translateY(-3px);
       transition: opacity .12s ease, transform .12s ease, visibility .12s;
     }
-    .ias-list-dot:hover::after,
-    .ias-list-dot:focus-visible::after {
+    .ias-list-dot:hover .ias-tip,
+    .ias-list-dot:focus-visible .ias-tip {
       opacity: 1;
       visibility: visible;
-      transform: translate(-50%, 0);
+      transform: translateY(0);
     }
+    .ias-tip-kicker {
+      display: block;
+      color: var(--bt-text);
+      font-size: 11px;
+      font-weight: 750;
+    }
+    .ias-tip-summary {
+      display: block;
+      margin-top: 2px;
+      color: var(--bt-text-secondary);
+      font-size: 9px;
+    }
+    .ias-tip-section {
+      display: block;
+      margin: 8px 0 4px;
+      color: var(--bt-text-secondary);
+      font-size: 8px;
+      font-weight: 750;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .ias-tip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+    }
+    .ias-tip-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      min-width: 44px;
+    }
+    .ias-tip-name {
+      color: var(--bt-text);
+      font-size: 9px;
+      font-weight: 750;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .ias-tip-meta {
+      color: var(--bt-text-secondary);
+      font-size: 8px;
+    }
+    .ias-tip-foot {
+      display: block;
+      margin-top: 8px;
+      padding-top: 7px;
+      border-top: 1px solid var(--bt-divider);
+      color: var(--bt-text-secondary);
+      font-size: 9px;
+      line-height: 1.4;
+    }
+    .occ-table tbody td.rank { position: relative; overflow: visible; }
+    .occ-table tbody tr:hover td.rank,
+    .occ-table tbody td.rank:focus-within { z-index: 8; }
     .ias-header-info { margin-left: 3px; vertical-align: middle; }
     .ias-header-info .info-popover {
       top: calc(100% + 7px);
@@ -1256,7 +1320,7 @@
         0 10px 26px color-mix(in srgb, var(--bt-text) 18%, transparent),
         0 3px 10px color-mix(in srgb, #e23084 12%, transparent);
     }
-    .ias-list-dot::after,
+    .ias-tip,
     .group-measure-switch [data-measure-info]::after {
       border-color: color-mix(in srgb, #e23084 40%, #08b9aa 20%, var(--bt-divider));
       border-radius: 15px;
@@ -1657,8 +1721,8 @@
       <select id="fMetrica" aria-label="Metric"></select>
       <span class="filter-label">Sort</span>
       <select id="fSort" aria-label="Sort">
-        <option value="ias" selected>Highest IAS</option>
-        <option value="streak">Longest current streak</option>
+        <option value="ias">Highest IAS</option>
+        <option value="streak" selected>Longest current streak</option>
         <option value="nome">Name A–Z</option>
         <option value="baixa">Lowest published score</option>
         <option value="frequente">Most published records</option>
@@ -1800,7 +1864,7 @@
     let selected = null;
     let occupations = [];
     let chartEstados = new Set();
-    let colSort = { key: "ias", dir: "desc" };
+    let colSort = { key: "streak", dir: "desc" };
     let chartBarsSnapshot = [];
     let chartAnimationFrame = null;
     let chartMode = "groups";
@@ -2165,6 +2229,61 @@
       return scores;
     }
 
+    function visaActivityKey(row) {
+      if (row.jurisdicao === "WA" && (row.visto === "n/a" || !row.visto)) return "190/491*";
+      return row.visto;
+    }
+
+    function activityScoreMaps(rows, keyFn, skipValues = new Set()) {
+      const values = [...new Set(rows.map(keyFn).filter((value) => value && !skipValues.has(value)))];
+      return new Map(values.map((value) => [
+        value,
+        activityScores(rows.filter((row) => keyFn(row) === value))
+      ]));
+    }
+
+    function activityBreakdown(maps, identity, labelKey) {
+      return [...maps]
+        .map(([label, scores]) => ({ [labelKey]: label, activity: scores.get(identity) }))
+        .filter((item) => item.activity)
+        .sort((a, b) => b.activity.score - a.activity.score || String(a[labelKey]).localeCompare(String(b[labelKey])))
+        .map((item) => ({
+          [labelKey]: item[labelKey],
+          score: item.activity.score,
+          evidence: item.activity.evidence,
+          streak: item.activity.streak,
+          roundsSinceLast: item.activity.roundsSinceLast,
+          dates: item.activity.dates,
+          comparableRounds: item.activity.comparableRounds,
+        }));
+    }
+
+    function combinedActivityScores(rows) {
+      const combined = activityScores(rows);
+      const jurisdictionMaps = activityScoreMaps(rows, (row) => row.jurisdicao);
+      const visaMaps = activityScoreMaps(rows, visaActivityKey, new Set(["n/a", "all visas"]));
+
+      for (const [identity, activity] of combined) {
+        const jurisdictionScores = activityBreakdown(jurisdictionMaps, identity, "jurisdiction");
+        const visaScores = activityBreakdown(visaMaps, identity, "visto");
+        const best = jurisdictionScores[0]?.score ?? activity.score;
+        const second = jurisdictionScores[1]?.score ?? null;
+        // A second independent jurisdiction creates another pathway, but it
+        // only fills part of the best score's remaining headroom. This avoids
+        // presenting breadth as a doubled invitation probability and ensures
+        // that only a genuinely perfect base signal can reach 100.
+        const score = second == null
+          ? best
+          : Math.round(best + (100 - best) * .5 * (second / 100));
+        activity.baseScore = activity.score;
+        activity.score = score;
+        activity.jurisdictionScores = jurisdictionScores;
+        activity.visaScores = visaScores;
+        activity.activePathways = jurisdictionScores.filter((item) => item.roundsSinceLast === 0).length;
+      }
+      return combined;
+    }
+
     function activityColor(score) {
       const t = Math.max(0, Math.min(1, Number(score) / 100));
       const from = [226, 48, 132], to = [0, 166, 145];
@@ -2179,14 +2298,38 @@
       return "Lower activity";
     }
 
+    function iasMiniGaugeHtml(score) {
+      const colour = activityColor(score);
+      return `<span class="ias-list-dot ias-list-dot--mini" style="--ias:${score ?? 0};--ias-colour:${colour}">${score ?? "—"}</span>`;
+    }
+
+    function iasTipItemsHtml(items, labelFn) {
+      if (!items.length) return "";
+      return `<span class="ias-tip-row">${items.map((item) => `<span class="ias-tip-item">${iasMiniGaugeHtml(item.score)}<span class="ias-tip-name">${escapeHtml(labelFn(item))}</span><span class="ias-tip-meta">${item.streak}× streak</span></span>`).join("")}</span>`;
+    }
+
     function occupationIasHtml(activity) {
       if (!activity) {
-        return `<span class="ias-list-dot" tabindex="0" data-tip="Insufficient comparable official data for an IAS calculation.">—</span>`;
+        return `<span class="ias-list-dot" tabindex="0"><span class="ias-list-dot-value">—</span><span class="ias-tip">Insufficient comparable official data for an IAS calculation.</span></span>`;
       }
-      const c = activity.components;
-      const scope = [...selectedStates].sort().join(" + ") || "No jurisdiction";
-      const tip = `IAS ${activity.score}/100 · ${activityBand(activity.score)}\nScope: active filters · ${scope}\nEvidence: ${activity.evidence} (${activity.dates} observed of ${activity.comparableRounds} comparable rounds; ${activity.confidence}% confidence)\nObserved activity before evidence adjustment: ${activity.rawScore}/100\n35% All-round participation: ${c.totalParticipation}/100\n30% Round recency: ${c.recency}/100\n20% Last-8 participation: ${c.frequency}/100\n10% Recent continuity: ${c.consistency}/100\n5% Comparable score: ${c.comparableScore}/100\nContext breadth: ${c.coverage}/100 (evidence only)\nRound-based historical activity signal — not an invitation probability or guarantee.`;
-      return `<span class="ias-list-dot" tabindex="0" style="--ias:${activity.score};--ias-colour:${activityColor(activity.score)}" data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(`IAS ${activity.score} out of 100, ${activityBand(activity.score)}`)}">${activity.score}</span>`;
+      const jurisdictions = activity.jurisdictionScores || [];
+      const visas = activity.visaScores || [];
+      const colour = activityColor(activity.score);
+      const summary = jurisdictions.length > 1
+        ? `Combined from ${jurisdictions.length} jurisdictions · ${activity.activePathways} active pathways`
+        : "";
+      const jurisdictionBlock = jurisdictions.length
+        ? `<span class="ias-tip-section">Jurisdictions</span>${iasTipItemsHtml(jurisdictions, (item) => item.jurisdiction === "FEDERAL" ? "FED" : item.jurisdiction)}`
+        : "";
+      const visaBlock = visas.length
+        ? `<span class="ias-tip-section">Visas</span>${iasTipItemsHtml(visas, (item) => item.visto)}`
+        : "";
+      const ariaParts = [
+        `IAS ${activity.score} out of 100, ${activityBand(activity.score)}`,
+        ...jurisdictions.map((item) => `${item.jurisdiction === "FEDERAL" ? "FED" : item.jurisdiction} ${item.score}`),
+        ...visas.map((item) => `visa ${item.visto} ${item.score}`),
+      ];
+      return `<span class="ias-list-dot" tabindex="0" style="--ias:${activity.score};--ias-colour:${colour}" aria-label="${escapeAttr(ariaParts.join(", "))}"><span class="ias-list-dot-value">${activity.score}</span><span class="ias-tip" role="tooltip"><span class="ias-tip-kicker">IAS ${activity.score}/100 · ${activityBand(activity.score)}</span>${summary ? `<span class="ias-tip-summary">${escapeHtml(summary)}</span>` : ""}${jurisdictionBlock}${visaBlock}<span class="ias-tip-foot">Evidence: ${activity.evidence} · ${activity.dates} of ${activity.comparableRounds} comparable rounds<br>Round-based historical activity signal — not an invitation probability.</span></span></span>`;
     }
 
     function occupationStreakHtml(activity) {
@@ -2199,7 +2342,7 @@
     }
 
     function updateOccupationActivity() {
-      const occupationActivity = activityScores(activeFilterRows({ ignoreGroup:true, ignoreSearch:true }));
+      const occupationActivity = combinedActivityScores(activeFilterRows({ ignoreGroup:true, ignoreSearch:true }));
       occupations.forEach((occupation) => { occupation.activity = occupationActivity.get(occupation.identity) || null; });
     }
 
@@ -3871,8 +4014,8 @@
       groupMetric = "inv";
       chartStartDate = "";
       lowerView = "history";
-      $("fSort").value = "ias";
-      colSort = { key: "ias", dir: "desc" };
+      $("fSort").value = "streak";
+      colSort = { key: "streak", dir: "desc" };
       mode = "baixa";
       document.querySelectorAll(".tab[data-mode]").forEach((t) => t.classList.toggle("active", t.dataset.mode === "baixa"));
       selected = null;
