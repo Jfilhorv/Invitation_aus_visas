@@ -233,11 +233,21 @@
   const timelineSeriesKey=row=>`${row.jurisdicao}|${row.visto||""}|${row.metrica||""}|${row.unidade_extra||""}`;
   function initTimelineOccupation(){
     const occupations=timelineOccupations();
-    $("timelineOccupation").innerHTML=occupations.map(item=>`<option value="${esc(item.key)}">${esc(item.label)}${item.anzsco?` · ${esc(item.anzsco)}`:""}</option>`).join("");
+    const select=$("timelineOccupation"),search=$("timelineOccupationSearch");
     const carpenter=occupations.find(item=>item.label==="Carpenter");
     timelineIdentity=carpenter?.key||occupations[0]?.key||"";
-    $("timelineOccupation").value=timelineIdentity;
-    $("timelineOccupation").addEventListener("change",event=>{timelineIdentity=event.target.value;renderTimeline()});
+    const populate=query=>{
+      const needle=String(query||"").trim().toLowerCase();
+      const filtered=occupations.filter(item=>!needle||`${item.label} ${item.anzsco}`.toLowerCase().includes(needle));
+      select.innerHTML=filtered.length
+        ?filtered.map(item=>`<option value="${esc(item.key)}">${esc(item.label)}${item.anzsco?` · ${esc(item.anzsco)}`:""}</option>`).join("")
+        :'<option value="">No matching occupation</option>';
+      if(!filtered.some(item=>item.key===timelineIdentity))timelineIdentity=filtered[0]?.key||"";
+      select.value=timelineIdentity;
+    };
+    populate("");
+    search.addEventListener("input",event=>{populate(event.target.value);renderTimeline()});
+    select.addEventListener("change",event=>{timelineIdentity=event.target.value;renderTimeline()});
   }
   function renderTimeline(){
     const selectedOption=$("timelineOccupation").selectedOptions[0];

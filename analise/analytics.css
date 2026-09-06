@@ -70,8 +70,10 @@ section{margin-top:62px;scroll-margin-top:86px}.scope-bar{margin-top:18px}.secti
 .timeline-toolbar{display:flex;align-items:end;justify-content:space-between;gap:14px;padding:14px 16px 12px;border-bottom:1px solid var(--bt-divider);background:linear-gradient(110deg,color-mix(in srgb,var(--pink) 5%,var(--bt-paper)),var(--bt-paper) 48%,color-mix(in srgb,var(--teal) 5%,var(--bt-paper)))}
 .timeline-picker{display:grid;gap:5px;min-width:min(430px,100%)}
 .timeline-picker>span{color:var(--teal-dark);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-.timeline-picker select{width:100%;height:36px;padding:0 36px 0 12px;border:1px solid color-mix(in srgb,var(--pink) 42%,var(--bt-divider));border-radius:11px;background:var(--bt-paper);color:var(--bt-text);font:700 12px var(--bt-font);box-shadow:var(--bt-shadow-1);cursor:pointer}
-.timeline-picker select:is(:hover,:focus){outline:none;border-color:var(--pink);box-shadow:0 0 0 3px color-mix(in srgb,var(--pink) 12%,transparent)}
+.timeline-picker select,.timeline-picker input{width:100%;height:36px;padding:0 36px 0 12px;border:1px solid color-mix(in srgb,var(--pink) 42%,var(--bt-divider));border-radius:11px;background:var(--bt-paper);color:var(--bt-text);font:700 12px var(--bt-font);box-shadow:var(--bt-shadow-1)}
+.timeline-picker input{height:30px;padding-right:12px;font-size:10px;font-weight:600}
+.timeline-picker select{cursor:pointer}
+.timeline-picker select:is(:hover,:focus),.timeline-picker input:is(:hover,:focus){outline:none;border-color:var(--pink);box-shadow:0 0 0 3px color-mix(in srgb,var(--pink) 12%,transparent)}
 .timeline-stats{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
 .timeline-stats span{display:grid;gap:1px;min-width:104px;padding:6px 8px;border:1px solid var(--bt-divider);border-radius:9px;background:color-mix(in srgb,var(--bt-paper) 90%,transparent);color:var(--bt-text-secondary);font-size:8px;text-transform:uppercase}
 .timeline-stats b{color:var(--bt-text);font:800 11px/1.2 var(--bt-font);text-transform:none}

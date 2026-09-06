@@ -6,7 +6,7 @@
   <title>Migration invitation analytics</title>
   <link rel="icon" href="./logo-ias.png?v=2" type="image/png">
   <link rel="stylesheet" href="./site-tokens.css">
-  <link rel="stylesheet" href="./analytics.css?v=20260906-13">
+  <link rel="stylesheet" href="./analytics.css?v=20260906-14">
 </head>
 <body class="bt-body">
   <header class="top">
@@ -71,7 +71,7 @@
       <div class="section-head"><div><span class="eyebrow">Another way to read the same evidence</span><h2 id="timelineTitle">Occupation publication timeline</h2></div><p>Every occupation-level official publication date is shown. A missing score explicitly marks a valid round with no invitation published for the selected occupation. Published visa and onshore/offshore contexts remain separate, rather than being merged into an average.</p></div>
       <article class="card timeline-explorer">
         <div class="timeline-toolbar">
-          <label class="timeline-picker"><span>Occupation</span><select id="timelineOccupation" aria-label="Choose an occupation for the publication timeline"></select></label>
+          <label class="timeline-picker"><span>Occupation</span><input id="timelineOccupationSearch" type="search" autocomplete="off" placeholder="Search occupation or ANZSCO code…" aria-label="Search occupation or ANZSCO code"><select id="timelineOccupation" aria-label="Choose an occupation for the publication timeline"></select></label>
           <div class="timeline-stats" id="timelineStats" aria-live="polite"></div>
         </div>
         <div class="timeline-legend"><span><i class="published"></i>Published invitation score</span><span><i class="not-listed"></i>Valid round · no invitation published for this occupation</span><span>Months without an official round are omitted.</span><span>Jurisdictions and metrics remain separate.</span></div>
@@ -100,6 +100,6 @@
   </main>
   <script src="./anzsco-hierarchy.js?v=20260906-2"></script>
   <script src="./data.js?v=20260906-wa-march-trades"></script>
-  <script src="./analytics.js?v=20260906-21"></script>
+  <script src="./analytics.js?v=20260906-22"></script>
 </body>
 </html>
