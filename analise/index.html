@@ -4398,14 +4398,16 @@
             counter.textContent = String(data.count);
             counter.closest(".visit-counter")?.setAttribute("aria-label", `${data.count} total views`);
           } else {
-            counter.textContent = "0";
-            counter.closest(".visit-counter")?.setAttribute("aria-label", "0 total views");
+            if (counter.textContent === "—") counter.textContent = "0";
           }
         })
-        .catch(() => { counter.textContent = "0"; });
+        .catch(() => {
+          if (counter.textContent === "—") counter.textContent = "0";
+        });
 
       loadCount();
-      window.setTimeout(loadCount, 1800);
+      window.setTimeout(loadCount, 1500);
+      window.setInterval(loadCount, 10000);
     })();
   </script>
 </body>
