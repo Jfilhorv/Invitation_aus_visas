@@ -166,7 +166,7 @@
     $("topMeta").textContent=`${new Set(resultRows.map(identity)).size} occupations · ${resultRows.length} official score rows`;
     const coverage={FEDERAL:["live","Occupation scores + invitation totals"],ACT:["live","Matrix cut-offs by ANZSCO group"],WA:["live","Last invited EOI + aggregate totals"],SA:["off","Invitation counts by ANZSCO group"],NSW:["off","Skills lists + allocations"],VIC:["off","Priorities + allocations"],QLD:["off","Occupation lists + allocations"],TAS:["off","ROI and allocation totals"],NT:["off","Program context; no results table"]};
     const watch={
-      FEDERAL:["189","By 30 Sep 2026","official","Official","https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/invitation-rounds","13 occupation rounds on file"],
+      FEDERAL:["189","Next date not stated","awaiting","Awaiting","https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/invitation-rounds","14 occupation rounds on file"],
       WA:["190 · 491","By 30 Dec 2026","estimate","Watch estimate"],TAS:["190 · 491","Next date not stated","awaiting","Awaiting"],ACT:["190 · 491","Waiting for 2026–27 allocation","awaiting","Awaiting"],NSW:["190 · 491","Waiting for program-year settings","awaiting","Awaiting"],VIC:["190 · 491","2026–27 program not open","awaiting","Awaiting"],QLD:["190 · 491","Waiting for 2026–27 program / QSOL","awaiting","Awaiting"],SA:["190 · 491","Waiting for 2026–27 program","awaiting","Awaiting"],NT:["190 · 491","Next round not announced","awaiting","Awaiting"]
     };
     $("coverageGrid").innerHTML=Object.entries(coverage).map(([key,value])=>{

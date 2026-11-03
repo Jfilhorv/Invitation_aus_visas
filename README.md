@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <strong>7,910 normalized records · 488 occupational identities · 9 jurisdictions · 33 official source URLs · January 2021–June 2026 score history</strong>
+  <strong>8,955 normalized records · 491 occupational identities · 9 jurisdictions · 47 official source URLs · August 2020–October 2026 score history</strong>
 </p>
 
 > [!IMPORTANT]
@@ -133,7 +133,7 @@ The lower views provide program-level context and the documentary trail behind t
 | **Rounds** | Number of distinct comparable official rounds represented | Publication frequency and occupational detail vary between governments |
 | **IAS** | A 0–100 historical activity signal | It is not an invitation probability, eligibility score or government measure |
 
-The federal figure of **10,000 invitations** refers to the entire subclass **189** round of 4 June 2026. Home Affairs does not publish how those 10,000 invitations were distributed among individual occupations.
+The federal figure of **20,000 invitations** refers to the entire subclass **189** round of 15 October 2026. Home Affairs does not publish how those 20,000 invitations were distributed among individual occupations.
 
 ### Invitation Activity Score (IAS)
 
@@ -177,7 +177,7 @@ Filtering WA by 190 or 491 therefore keeps relevant WA occupation criteria visib
 
 ## Chart methodology
 
-The chart always retains the complete available official-result boundary, currently **January 2021 to June 2026** for numeric score data. A date enters this axis only when the collected source publishes a numeric occupational result for that event. Monthly program summaries, financial-year allocations and administrative updates do not create score-round dates.
+The chart always retains the complete available official-result boundary, currently **August 2020 to October 2026** for numeric score data. A date enters this axis only when the collected source publishes a numeric occupational result for that event. Monthly program summaries, financial-year allocations and administrative updates do not create score-round dates.
 
 The default **Occupation groups** view uses official ANZSCO Sub-major groups. Its Date Range control is available only in this view because it recalculates the group comparison, occupation list and supporting table over the selected historical window. `All` represents the complete available range. Other chart tabs retain stable control positions but do not display Date Range where it has no meaningful role.
 
@@ -205,7 +205,7 @@ Only official Australian government sources ending in **`.gov.au`** are accepted
 | **ACT** | Invitation-round rankings and published totals | ANZSCO unit-group detail where published |
 | **WA** | Last-invited EOI criteria and state invitation totals | Yes, but 190/491 is not separated per occupation |
 | **SA** | Invitations-issued publications | ANZSCO sub-major groups and subclass totals |
-| **TAS** | Published 190/491 totals | No occupation-level result in the collected source |
+| **TAS** | ROI invitations, minimum ROI scores, queue and available places by subclass | No occupation-level result in the collected source; ROI points are a Tasmania-specific scale |
 | **NSW, VIC, QLD, NT** | Program information and available official totals | No equivalent published occupation-result history found |
 
 Every collected record retains its official source URL. Source files are checked for a successful response, official final host and valid PDF or HTML content, and are fingerprinted with SHA-256.
@@ -263,19 +263,22 @@ These are the original government links from which the source material was colle
 | **Federal** | [Home Affairs — state and territory nomination allocations](https://immi.homeaffairs.gov.au/what-we-do/state-and-territory-nomination-allocations) | HTML | Annual 190 and 491 allocations by jurisdiction |
 | **ACT** | [ACT — guidelines and invitations library](https://www.act.gov.au/migration/resources/library-guidelines-and-invitations) | HTML | Official document index |
 | **ACT** | [ACT — Canberra Matrix invitation round](https://www.act.gov.au/migration/resources/canberra-matrix-invitation-round) | HTML | Round context and methodology |
+| **ACT** | [ACT — 2026–27 invitation-round rankings](https://www.act.gov.au/__data/assets/pdf_file/0020/3140480/2026-27-Invitation-round-rankings.pdf) | PDF | Current rankings, occupations and score criteria |
 | **ACT** | [ACT — 2025–26 invitation-round rankings](https://www.act.gov.au/__data/assets/pdf_file/0009/2920554/2025-26-Invitation-round-rankings.pdf) | PDF | Rankings, occupations and score criteria |
 | **WA** | [WA — State Nominated Migration Program](https://migration.wa.gov.au/our-services-support/state-nominated-migration-program) | HTML | Program information, visa totals and historical round tables |
 | **WA** | [WA — May 2025 occupation results](https://migration.wa.gov.au/sites/default/files/2025-05/SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20May%202025.pdf) | PDF | Last invited EOI by occupation |
-| **WA** | [WA — historical occupation rounds, May 2023–June 2025](https://migration.wa.gov.au/sites/default/files/2025-06/SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation.pdf) | PDF collection | Nine additional official rounds with occupation, residence, stream, EOI score and submission date |
+| **WA** | [WA — historical occupation rounds, May 2023–June 2025](https://migration.wa.gov.au/sites/default/files/2025-06/SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation.pdf) | PDF collection | Twelve additional official rounds with occupation, residence, stream, EOI score and submission date; includes recovered [October 2023](https://migration.wa.gov.au/sites/default/files/2023-10/Last%20invited%20expression%20of%20interest%20by%20occupation%20-%20October%20invitation%20round%202023_0.pdf), [November 2023](https://migration.wa.gov.au/sites/default/files/2023-11/Last%20invited%20expression%20of%20interest%20by%20occupation%20-%20November%20invitation%20round%202023.pdf) and [November 2024](https://migration.wa.gov.au/sites/default/files/2024-11/November%202024%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Priority%20Occupation.pdf) files |
 | **WA** | [WA — October 2025 priority round](https://migration.wa.gov.au/sites/default/files/2025-10/SNMP%20-%20Priority%20Invite%20Round%20-%20October%202025.pdf) | PDF | Occupation-level round results |
 | **WA** | [WA — December 2025 invitation round](https://migration.wa.gov.au/sites/default/files/2025-12/SNMP%20Invite%20Round%20-%20December%202025.pdf) | PDF | Occupation-level round results |
 | **WA** | [WA — January 2026 invitation round](https://migration.wa.gov.au/sites/default/files/2026-01/SNMP%20Invite%20Round%20-%20January%202026.pdf) | PDF | Occupation-level round results |
 | **WA** | [WA — March 2026 priority-trade results](https://migration.wa.gov.au/sites/default/files/2026-03/TRADE%20-%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20-%20March%202026.pdf) | PDF | Occupation-level round results |
 | **WA** | [WA — March 2026 other-priority results](https://migration.wa.gov.au/sites/default/files/2026-03/v.1OTHER%20priority%20occupations%20-%20SNMP%20Invite%20round%20-%20March%202026.pdf) | PDF | Occupation-level round results |
-| **WA** | [WA — May 2026 priority-trade results](https://migration.wa.gov.au/sites/default/files/2026-05/Last%20invited%20expression%20of%20interest%20-%20Priority%20trade%20occupations%20-%20May%202026.pdf) | PDF | Latest invited EOI scores by priority-trade occupation |
+| **WA** | [WA — May 2026 priority-trade results](https://migration.wa.gov.au/sites/default/files/2026-05/Last%20invited%20expression%20of%20interest%20-%20Priority%20trade%20occupations%20-%20May%202026.pdf) | PDF | Historical invited EOI scores by priority-trade occupation |
+| **WA** | [WA — October 2026 construction-trade results](https://migration.wa.gov.au/sites/default/files/2026-10/Oct%202026.BC%20-%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20B%26C%20Trade%20Occupations.pdf) | PDF | Last invited EOI by construction-trade occupation |
+| **WA** | [WA — October 2026 other-priority results](https://migration.wa.gov.au/sites/default/files/2026-10/Oct%202026%20-%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20in%20other%20priority%20occupation.pdf) | PDF | Last invited EOI by other priority occupation |
 | **SA** | [SA — invitations-issued index](https://migration.sa.gov.au/news?category=invitations-issued) | HTML | Official index of all collected SA publications |
 | **SA** | [SA — December 2025](https://migration.sa.gov.au/news/invitations-issued-dec-2025) · [January 2026](https://migration.sa.gov.au/news/invitations-issued-jan-2026) · [February 2026](https://migration.sa.gov.au/news/invitations-issued-feb-2026) · [March 2026](https://migration.sa.gov.au/news/invitations-issued-march-2026) · [April 2026](https://migration.sa.gov.au/news/invitations-issued-april-2026) · [May 2026](https://migration.sa.gov.au/news/invitations-issued-may-2026) · [Late May 2026](https://migration.sa.gov.au/news/invitations-issued-late-may-2026) | HTML | Invitation totals by ANZSCO group and visa subclass |
-| **TAS** | [Tasmania — processing times and allocation usage](https://www.migration.tas.gov.au/news/processing_times_and_allocation_usage) | HTML | Published 190 and 491 program totals |
+| **TAS** | [Tasmania — processing times and invitations issued](https://www.migration.tas.gov.au/news/processing_times_and_allocation_usage) | HTML | Current ROI invitation counts, Tasmania ROI scores, queue and available places |
 | **TAS** | [Tasmania — document library](https://www.migration.tas.gov.au/skilled_migration/document_library) | HTML | Program documentation context |
 | **NSW** | [NSW — Skilled Nominated visa subclass 190](https://www.nsw.gov.au/visas-and-migration/skilled-visas/skilled-nominated-visa-subclass-190) | HTML | Official process; confirms occupation results are not published there |
 | **VIC** | [Victoria — Registration of Interest](https://liveinmelbourne.vic.gov.au/migrate/skilled-migration-visas/registration-of-interest-for-victorian-state-visa-nomination) | HTML | Official process; no occupation-result table |
@@ -328,6 +331,7 @@ The repository retains the official HTML and PDF material used to make the analy
 <details>
 <summary><strong>ACT — 3 downloads</strong></summary>
 
+- [Download 2026–27 invitation-round rankings PDF](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/act/2026-27-Invitation-round-rankings.pdf)
 - [Download 2025–26 invitation-round rankings PDF](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/act/2025-26-Invitation-round-rankings.pdf)
 - [Download Canberra Matrix invitation-round page](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/act/canberra-matrix-invitation-round.html)
 - [Download ACT guidelines and invitations page](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/act/library-guidelines-and-invitations.html)
@@ -335,19 +339,24 @@ The repository retains the official HTML and PDF material used to make the analy
 </details>
 
 <details>
-<summary><strong>Western Australia — 9 downloads</strong></summary>
+<summary><strong>Western Australia — 23 downloads</strong></summary>
 
 - [Download 2025–26 WA SNMP criteria](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/2025-26%20WA%20SNMP%20Criteria%20-%20July%202025.pdf)
 - [Download May 2023 occupation results](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/Last%20invited%20EOI%20by%20occupation%20-%20May%202023.pdf)
 - [Download August 2023 occupation results](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/Last%20invited%20EOI%20by%20occupation%20-%20August%202023.pdf)
+- [Download October 2023 occupation results](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/Last%20invited%20EOI%20by%20occupation%20-%20October%202023.pdf)
+- [Download November 2023 occupation results](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/Last%20invited%20EOI%20by%20occupation%20-%20November%202023.pdf)
 - [Download August 2024 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20August%202024.pdf)
 - [Download September 2024 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20September%202024.pdf)
 - [Download October 2024 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20October%202024.pdf)
+- [Download November 2024 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20November%202024.pdf)
 - [Download December 2024 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20December%202024.pdf)
 - [Download February 2025 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20February%202025.pdf)
 - [Download March 2025 non-priority round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20March%202025%20Non%20Priority.pdf)
 - [Download June 2025 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20June%202025.pdf)
 - [Download May 2026 priority-trade results](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/Last%20invited%20expression%20of%20interest%20-%20Priority%20trade%20occupations%20-%20May%202026.pdf)
+- [Download October 2026 construction-trade results](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/Oct%202026%20BC%20-%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20Trade%20Occupations.pdf)
+- [Download October 2026 other-priority results](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/Oct%202026%20-%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20Other%20Priority%20Occupations.pdf)
 - [Download October 2025 priority round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20-%20Priority%20Invite%20Round%20-%20October%202025.pdf)
 - [Download December 2025 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20December%202025.pdf)
 - [Download January 2026 invitation round](https://raw.githubusercontent.com/Jfilhorv/Invitation_aus_visas/master/dados/estados/wa/SNMP%20Invite%20Round%20-%20January%202026.pdf)

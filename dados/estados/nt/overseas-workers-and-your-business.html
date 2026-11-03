@@ -74,11 +74,9 @@
      
 
 
-
 <link rel="apple-touch-icon" sizes="180x180" href="https://nt.gov.au/_design/latest/images/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://nt.gov.au/_design/latest/images/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="https://nt.gov.au/_design/latest/images/favicon-16x16.png">
-
 
 <!-- Lato webfont -->
 <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,900" rel="stylesheet">
@@ -102,6 +100,8 @@
 <!-- lightbox2.css -->
 <link href="https://nt.gov.au/_design/css/lightbox2.css" rel="stylesheet" type="text/css">
 
+<!-- city, town region based color tokens -->
+<link href="https://nt.gov.au/__data/assets/css_file/0007/1635775/region-colors.tokens.css" rel="stylesheet" type="text/css">
 <!-- styles.css -->
 <link href="https://nt.gov.au/_design/latest/css/ntg-styles.css" rel="stylesheet" type="text/css">
 
@@ -169,7 +169,7 @@
   Running Squiz Matrix
   Developed by Squiz - http://www.squiz.net
   Squiz, Squiz Matrix, MySource, MySource Matrix and Squiz.net are registered Trademarks of Squiz Pty Ltd
-  Page generated: 12 August 2026 11:44:42
+  Page generated: 03 November 2026 17:00:47
 -->
 
 
@@ -482,14 +482,19 @@ $(document).ready(function(){
 <!-- Display the last published date on content pages in the parks section only -->
 <!-- -->
 
- <!-- Jira ticket: OS-163783 -->
-<p class="updated">
-    <a href='https://nt.gov.au/contacts/feedback/feedback' 
-       title='Provide feedback about this page' 
-       id='trigger-feedback'>
-       Give feedback about this page.
-    </a>
-</p>
+<!-- for NT.GOV.AU -->
+
+    <!-- Jira ticket: OS-163783 -->
+    
+    <p class="updated">
+        <a href='https://nt.gov.au/contacts/feedback/feedback'
+           title='Provide feedback about this page'
+           id='trigger-feedback'>
+           Give feedback about this page.
+        </a>
+    </p>
+    
+<!-- for Agency sites -->
  <!-- Last updated -->
                 <style>
    ul.ntg-social-share {
@@ -857,7 +862,7 @@ $(document).ready(function(){
 </footer>
 
 <!-- <div class="container pt-3 d-none d-print-block">URL: https://nt.gov.au/_design/latest/global-elements/footer/footer-nt.gov.au-esi-content </br>
-12 August 2026, 11:39 am
+3 November 2026, 4:36 pm
 </div>   -->  
 
 
@@ -886,7 +891,7 @@ $(document).ready(function(){
 
 
 <!-- Form validation -->
-<script src="https://nt.gov.au/_design/js/forms_validation.js?v=0.10.0"></script>
+<script src="https://nt.gov.au/_design/js/forms_validation.js?v=0.11.0"></script>
 
 <!-- components.js -->
 <script src="https://nt.gov.au/_design/latest/js/components.js"></script> 
@@ -905,7 +910,9 @@ $(document).ready(function(){
 
 <!-- Additional footer resources -->
 
-    
+
+<!-- Google Analytics - OS-174200 -->
+<script src="https://nt.gov.au/__data/assets/js_file/0006/1632345/footer-analytics.js"></script>    
     
         
     <!-- Go to www.addthis.com/dashboard to customize your tools --> 

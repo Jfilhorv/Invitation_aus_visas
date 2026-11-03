@@ -22,11 +22,37 @@ for item in rows:
     local = ROOT / item["arquivo_local"]
     if item["arquivo_local"].startswith("dados/estados/wa/"):
         item["jurisdicao"] = "WA"
+    elif item["arquivo_local"].startswith("dados/estados/act/"):
+        item["jurisdicao"] = "ACT"
     if local.is_file():
         item["sha256"] = digest(local)
         item["content_length"] = str(local.stat().st_size)
 
 official_abs = [
+    (
+        "ACT Migration",
+        "https://www.act.gov.au/__data/assets/pdf_file/0020/3140480/2026-27-Invitation-round-rankings.pdf",
+        "dados/estados/act/2026-27-Invitation-round-rankings.pdf",
+        "Documento canonico 2026-27; rankings da rodada ACT de 12 de outubro de 2026.",
+    ),
+    (
+        "WA Migration Services invitation results",
+        "https://migration.wa.gov.au/sites/default/files/2023-10/Last%20invited%20expression%20of%20interest%20by%20occupation%20-%20October%20invitation%20round%202023_0.pdf",
+        "dados/estados/wa/Last invited EOI by occupation - October 2023.pdf",
+        "Resultados oficiais por ocupacao do round de outubro de 2023.",
+    ),
+    (
+        "WA Migration Services invitation results",
+        "https://migration.wa.gov.au/sites/default/files/2023-11/Last%20invited%20expression%20of%20interest%20by%20occupation%20-%20November%20invitation%20round%202023.pdf",
+        "dados/estados/wa/Last invited EOI by occupation - November 2023.pdf",
+        "Resultados oficiais por ocupacao do round de novembro de 2023.",
+    ),
+    (
+        "WA Migration Services invitation results",
+        "https://migration.wa.gov.au/sites/default/files/2024-11/November%202024%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Priority%20Occupation.pdf",
+        "dados/estados/wa/SNMP Invite Round - November 2024.pdf",
+        "Resultados oficiais por ocupacao do round de novembro de 2024.",
+    ),
     (
         "WA Migration Services invitation results",
         "https://migration.wa.gov.au/sites/default/files/2025-05/SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20May%202025.pdf",
@@ -64,6 +90,18 @@ official_abs = [
         "Resultados oficiais de outras ocupacoes prioritarias do round de marco de 2026.",
     ),
     (
+        "WA Migration Services invitation results",
+        "https://migration.wa.gov.au/sites/default/files/2026-10/Oct%202026.BC%20-%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20B%26C%20Trade%20Occupations.pdf",
+        "dados/estados/wa/Oct 2026 BC - SNMP Invite Round - Last Invited By Occupation Trade Occupations.pdf",
+        "Resultados oficiais por ocupacao das trades de construcao do round de 14 de outubro de 2026.",
+    ),
+    (
+        "WA Migration Services invitation results",
+        "https://migration.wa.gov.au/sites/default/files/2026-10/Oct%202026%20-%20SNMP%20Invite%20Round%20-%20Last%20Invited%20By%20Occupation%20in%20other%20priority%20occupation.pdf",
+        "dados/estados/wa/Oct 2026 - SNMP Invite Round - Last Invited By Occupation Other Priority Occupations.pdf",
+        "Resultados oficiais por ocupacao das demais ocupacoes prioritarias do round de 14 de outubro de 2026.",
+    ),
+    (
         "Home Affairs state nomination allocations",
         "https://immi.homeaffairs.gov.au/what-we-do/state-and-territory-nomination-allocations",
         "dados/federal/state-and-territory-nomination-allocations.html",
@@ -89,7 +127,11 @@ for source, url, rel, note in official_abs:
     local = ROOT / rel
     rows.append({
         "fonte": source,
-        "jurisdicao": "WA" if rel.startswith("dados/estados/wa/") else "federal",
+        "jurisdicao": (
+            "WA" if rel.startswith("dados/estados/wa/")
+            else "ACT" if rel.startswith("dados/estados/act/")
+            else "federal"
+        ),
         "url": url,
         "arquivo_local": rel,
         "status_http": "200",

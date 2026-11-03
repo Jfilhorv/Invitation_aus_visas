@@ -10,6 +10,7 @@ import re
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import unquote, urljoin
 
 from bs4 import BeautifulSoup
 try:
@@ -432,6 +433,11 @@ def parse_federal_occupation_table(table, round_date: str, meta, federal=True) -
             anzsco = mcode.group(1)
             occ = mcode.group(2) or occ
         for i, val in enumerate(cells[1:], start=1):
+            header_label = " ".join(
+                h[i] for h in (header0, header1 or []) if i < len(h)
+            ).lower()
+            if "tie break" in header_label or "date" in header_label:
+                continue
             cleaned = clean_value(val)
             if cleaned is None:
                 continue
@@ -887,8 +893,7 @@ def merge_tokens_on_lines(words, y_tol=2.5, x_gap=14.0):
     return merged
 
 
-def parse_act(manifesto: dict) -> list[dict]:
-    rel = "dados/estados/act/2025-26-Invitation-round-rankings.pdf"
+def parse_act_pdf(manifesto: dict, rel: str, include_summary: bool = False) -> list[dict]:
     meta = source_meta(manifesto, rel)
     path = ROOT / rel
     reader = PdfReader(str(path))
@@ -1033,6 +1038,7 @@ def parse_act(manifesto: dict) -> list[dict]:
         ocupacao = re.sub(r"Minimum Matrix score ranked", "", ocupacao, flags=re.I).strip()
         ocupacao = re.sub(r"N/A = Matrix submissions were not considered\.?", "", ocupacao, flags=re.I).strip()
         ocupacao = re.sub(r"\bUnit group\b", "", ocupacao, flags=re.I).strip()
+        ocupacao = re.sub(r"^group\s+", "", ocupacao, flags=re.I).strip()
         ocupacao = re.sub(r"\s+\(\d{0,2}/?\s*$", "", ocupacao).strip()
         round_iso = rounds[ri]["iso"]
         for j, (visto, applicant) in enumerate(COL_META):
@@ -1042,6 +1048,8 @@ def parse_act(manifesto: dict) -> list[dict]:
             if not scores:
                 continue
             valor = scores[0]
+            if valor in {"190", "491"}:
+                valor = "N/A"
             tie = parse_act_date_tokens(col_dates[j]) if col_dates[j] else ""
             extras = [applicant]
             if tie:
@@ -1066,25 +1074,26 @@ def parse_act(manifesto: dict) -> list[dict]:
     for k, n in per_round.items():
         log("ACT round %s: %s linhas matrix_score" % (k, n))
 
-    # The official round page publishes aggregate invitations by pathway.
-    # Sum the mutually exclusive pathway counts, keeping them separate from scores.
-    summary_rel = "dados/estados/act/canberra-matrix-invitation-round.html"
-    summary_meta = source_meta(manifesto, summary_rel)
-    summary_text = norm(soup_file(ROOT / summary_rel).get_text(" ", strip=True))
-    section = summary_text.split("2025-2026 Allocation", 1)[0]
-    round_match = re.search(r"Canberra Matrix Invitation Round:\s*([^\.]+?20\d{2})", section, re.I)
-    summary_date = parse_english_date(round_match.group(1)) if round_match else ""
-    for visa in ("190", "491"):
-        counts = [int(x) for x in re.findall(rf"{visa}\s+nominations:\s*(\d+)\s+invitation", section, re.I)]
-        if summary_date and counts:
-            out.append(row(
-                nivel="estadual", jurisdicao="ACT", visto=visa,
-                data_round=summary_date, ocupacao="agregado", anzsco="",
-                metrica="convites_emitidos", valor=str(sum(counts)),
-                unidade_extra=extra_join("round_total=true", "pathways_summed=true"),
-                **_meta_kw(summary_meta),
-            ))
-            log(f"ACT round {summary_date}: {sum(counts)} convites subclass {visa}")
+    if include_summary:
+        # The official round page publishes aggregate invitations by pathway.
+        # Sum the mutually exclusive pathway counts, keeping them separate from scores.
+        summary_rel = "dados/estados/act/canberra-matrix-invitation-round.html"
+        summary_meta = source_meta(manifesto, summary_rel)
+        summary_text = norm(soup_file(ROOT / summary_rel).get_text(" ", strip=True))
+        section = summary_text.split("2025-2026 Allocation", 1)[0]
+        round_match = re.search(r"Canberra Matrix Invitation Round:\s*([^\.]+?20\d{2})", section, re.I)
+        summary_date = parse_english_date(round_match.group(1)) if round_match else ""
+        for visa in ("190", "491"):
+            counts = [int(x) for x in re.findall(rf"{visa}\s+nominations:\s*(\d+)\s+invitation", section, re.I)]
+            if summary_date and counts:
+                out.append(row(
+                    nivel="estadual", jurisdicao="ACT", visto=visa,
+                    data_round=summary_date, ocupacao="agregado", anzsco="",
+                    metrica="convites_emitidos", valor=str(sum(counts)),
+                    unidade_extra=extra_join("round_total=true", "pathways_summed=true"),
+                    **_meta_kw(summary_meta),
+                ))
+                log(f"ACT round {summary_date}: {sum(counts)} convites subclass {visa}")
     return out
 
 
@@ -1092,9 +1101,12 @@ def parse_wa_pdf(manifesto: dict) -> list[dict]:
     sources = [
         ("dados/estados/wa/Last invited EOI by occupation - May 2023.pdf", "2023-05", "priority=published_round"),
         ("dados/estados/wa/Last invited EOI by occupation - August 2023.pdf", "2023-08", "priority=published_round"),
+        ("dados/estados/wa/Last invited EOI by occupation - October 2023.pdf", "2023-10", "priority=published_round"),
+        ("dados/estados/wa/Last invited EOI by occupation - November 2023.pdf", "2023-11", "priority=published_round"),
         ("dados/estados/wa/SNMP Invite Round - August 2024.pdf", "2024-08", "priority=published_round"),
         ("dados/estados/wa/SNMP Invite Round - September 2024.pdf", "2024-09", "priority=published_round"),
         ("dados/estados/wa/SNMP Invite Round - October 2024.pdf", "2024-10", "priority=published_round"),
+        ("dados/estados/wa/SNMP Invite Round - November 2024.pdf", "2024-11", "priority=published_round"),
         ("dados/estados/wa/SNMP Invite Round - December 2024.pdf", "2024-12", "priority=published_round"),
         ("dados/estados/wa/SNMP Invite Round - February 2025.pdf", "2025-02", "priority=published_round"),
         ("dados/estados/wa/SNMP Invite Round - March 2025 Non Priority.pdf", "2025-03", "priority=non_priority"),
@@ -1106,6 +1118,8 @@ def parse_wa_pdf(manifesto: dict) -> list[dict]:
         ("dados/estados/wa/TRADE - SNMP Invite Round - Last Invited By Occupation - March 2026.pdf", "2026-03", "priority=trades"),
         ("dados/estados/wa/v.1OTHER priority occupations - SNMP Invite round - March 2026.pdf", "2026-03", "priority=other"),
         ("dados/estados/wa/Last invited expression of interest - Priority trade occupations - May 2026.pdf", "2026-05-20", "priority=trades"),
+        ("dados/estados/wa/Oct 2026 BC - SNMP Invite Round - Last Invited By Occupation Trade Occupations.pdf", "2026-10-14", "priority=trades"),
+        ("dados/estados/wa/Oct 2026 - SNMP Invite Round - Last Invited By Occupation Other Priority Occupations.pdf", "2026-10-14", "priority=other"),
     ]
     # This PDF's text layer emits its Schedule 2 table before the Schedule 2
     # heading. Keep the historical Schedule 1 fallback for every other source.
@@ -1120,7 +1134,10 @@ def parse_wa_pdf(manifesto: dict) -> list[dict]:
     ]
     out = []
     occ_re = re.compile(
-        r"([A-Za-z][A-Za-z0-9 &'()/.,\-]+?)\s*\((\d{6})\)\s+"
+        # Two rows in the official October 2026 PDF omit the closing parenthesis
+        # after ANZSCO 241213 in the PDF text layer. Accept that documented
+        # source defect without weakening the six-digit code requirement.
+        r"([A-Za-z][A-Za-z0-9 &'()/.,\-]+?)\s*\((\d{6})\)?\s+"
         r"(WA|Western Australia|Overseas|Another Australian State or Territory)\s+"
         r"(\d{2,3})\s+(\d{1,2}/\d{1,2}/20\d{2})",
         re.I,
@@ -1200,13 +1217,19 @@ def parse_wa_html(manifesto: dict) -> list[dict]:
     tables = soup.find_all("table")
     out = []
 
-    # Current May 2026 totals — table whose header has WASMOL schedule and visa subclass
+    # Current round totals — table whose header has WASMOL schedule and visa subclass.
+    # The archived page is a changing official source, so this date must move with
+    # the page snapshot rather than being inferred from EOI submission dates.
+    current_round_date = "2026-10-14"
     for table in tables:
         raw = table_rows(table)
         if len(raw) < 3:
             continue
         head = " ".join(raw[0]).lower()
-        if "intending visa subclass" in head and "wasmol" in head:
+        # The program-year monthly table below carries the same current-round
+        # totals and preserves their program-year context. Do not duplicate them
+        # from the current-round summary table.
+        if False and "intending visa subclass" in head and "wasmol" in head:
             streams = []
             for c in raw[0][1:]:
                 streams.append(wa_stream_from_label(c) or norm(c))
@@ -1227,21 +1250,23 @@ def parse_wa_html(manifesto: dict) -> list[dict]:
                             nivel="estadual",
                             jurisdicao="WA",
                             visto=visto,
-                            data_round="2026-05-20",
+                            data_round=current_round_date,
                             ocupacao="agregado",
                             anzsco="",
                             metrica="convites_emitidos",
                             valor=cleaned,
                             unidade_extra=extra_join(
                                 f"stream={stream}" if stream else "",
-                                "round=current_may_2026_priority_trades",
+                                "round=current_october_2026",
                             ),
                             **_meta_kw(meta),
                         )
                     )
 
         # last invited profile tables (aggregate, not by occupation)
-        if "eoi points" in head or (len(raw) > 1 and "eoi points" in " ".join(raw[1]).lower()):
+        # October's two official occupation PDFs supersede these aggregate
+        # profile tables. Parsing both would duplicate the same score profiles.
+        if False and ("eoi points" in head or (len(raw) > 1 and "eoi points" in " ".join(raw[1]).lower())):
             hdr = raw[1] if len(raw) > 1 and "visa subclass" in " ".join(raw[1]).lower() else raw[0]
             # identify columns
             hdr_l = [c.lower() for c in hdr]
@@ -1294,7 +1319,7 @@ def parse_wa_html(manifesto: dict) -> list[dict]:
                         nivel="estadual",
                         jurisdicao="WA",
                         visto=visto,
-                        data_round="2026-05-20",
+                        data_round=current_round_date,
                         ocupacao="agregado",
                         anzsco="",
                         metrica="ultimo_eoi_pontos",
@@ -1350,6 +1375,8 @@ def parse_wa_html(manifesto: dict) -> list[dict]:
                     month_iso = program_year_month(h, py)
                     if not month_iso:
                         continue
+                    if py == "2026-27" and month_iso == "2026-10":
+                        month_iso = current_round_date
                     out.append(
                         row(
                             nivel="estadual",
@@ -1370,6 +1397,168 @@ def parse_wa_html(manifesto: dict) -> list[dict]:
                     )
     log(f"WA HTML: {len(out)} linhas")
     return out
+
+
+def audit_wa_freshness(rows: list[dict], manifesto: dict) -> None:
+    """Detect a newer WA round or linked occupation PDF not yet archived."""
+    wa_rows = [r for r in rows if r["jurisdicao"] == "WA"]
+    invitation_dates = sorted({
+        r["data_round"] for r in wa_rows
+        if r["metrica"] == "convites_emitidos" and re.fullmatch(r"\d{4}-\d{2}(?:-\d{2})?", r["data_round"] or "")
+    })
+    occupation_dates = sorted({
+        r["data_round"] for r in wa_rows
+        if r["metrica"] == "ultimo_eoi_pontos"
+        and re.fullmatch(r"\d{4}-\d{2}(?:-\d{2})?", r["data_round"] or "")
+    })
+    latest_invitation = invitation_dates[-1] if invitation_dates else ""
+    latest_occupation = occupation_dates[-1] if occupation_dates else ""
+    log(
+        "WA freshness: ultimo total oficial="
+        f"{latest_invitation or 'ausente'}; ultimo PDF ocupacional={latest_occupation or 'ausente'}"
+    )
+    if latest_invitation and (not latest_occupation or latest_invitation[:7] > latest_occupation[:7]):
+        err(
+            "WA FRESHNESS: a tabela oficial possui um mes mais novo que os PDFs ocupacionais arquivados "
+            f"(totais={latest_invitation}; ocupacoes={latest_occupation or 'ausente'})."
+        )
+
+    rel = "dados/estados/wa/state-nominated-migration-program.html"
+    soup = soup_file(ROOT / rel)
+    archived_urls = {(item.get("url") or "").strip() for item in manifesto.values()}
+    linked_results = set()
+    for anchor in soup.find_all("a", href=True):
+        href = urljoin("https://migration.wa.gov.au/", anchor["href"])
+        label = norm(anchor.get_text(" ", strip=True)).lower()
+        decoded = unquote(href).lower()
+        if href.lower().endswith(".pdf") and (
+            "last invited" in label
+            or "last invited by occupation" in decoded
+            or "last invited expression of interest" in decoded
+        ):
+            linked_results.add(href)
+    missing = sorted(url for url in linked_results if url not in archived_urls)
+    if missing:
+        for url in missing:
+            err(f"WA FRESHNESS: PDF ocupacional oficial ligado na pagina ainda nao arquivado: {url}")
+    else:
+        log(f"WA freshness: {len(linked_results)} PDF(s) ocupacional(is) ligado(s) na pagina estao no manifesto")
+
+    # A monthly invitation total does not imply that an occupation-level file
+    # was published or remains downloadable. Keep this distinction explicit so
+    # historical gaps cannot silently look like complete occupation coverage.
+    invitation_months = {d[:7] for d in invitation_dates}
+    occupation_months = {d[:7] for d in occupation_dates}
+    missing_occupation_months = sorted(invitation_months - occupation_months)
+    documented_gaps = {
+        "2026-02": "official occupation PDFs were indexed, but both official URLs now return 404",
+        "2026-04": "one aggregate invitation is published; no official occupation PDF was located",
+        "2026-09": "aggregate totals are published; no official occupation PDF was located",
+    }
+    unexpected = [m for m in missing_occupation_months if m not in documented_gaps]
+    for month in missing_occupation_months:
+        reason = documented_gaps.get(month, "not documented")
+        log(f"WA HISTORY GAP: {month} has aggregate invitations without archived occupation rows ({reason})")
+    for month in unexpected:
+        err(f"WA HISTORY: undocumented month with invitation totals but no occupation source: {month}")
+    log(
+        "WA history coverage: "
+        f"{len(occupation_months)} occupation month(s); "
+        f"{len(missing_occupation_months)} documented aggregate-only/unavailable month(s)"
+    )
+
+
+def latest_metric_date(rows: list[dict], jurisdiction: str, metrics: set[str]) -> str:
+    dates = {
+        r["data_round"] for r in rows
+        if r["jurisdicao"] == jurisdiction and r["metrica"] in metrics
+        and re.fullmatch(r"\d{4}-\d{2}(?:-\d{2})?", r["data_round"] or "")
+    }
+    return max(dates) if dates else ""
+
+
+def audit_all_freshness(rows: list[dict], manifesto: dict) -> None:
+    """Cross-check every monitored official landing page against extracted data."""
+    # Every valid archived source must still exist locally and match its manifest hash.
+    checked = 0
+    for rel, item in manifesto.items():
+        if (item.get("valido") or "").lower() != "true":
+            continue
+        path = ROOT / rel
+        if not path.is_file():
+            err(f"SOURCE FRESHNESS: fonte validada ausente localmente: {rel}")
+            continue
+        expected = (item.get("sha256") or "").strip().lower()
+        actual = sha256_file(path).lower()
+        if expected and expected != actual:
+            err(f"SOURCE FRESHNESS: SHA256 diverge para {rel}")
+        checked += 1
+    log(f"Source freshness: {checked} arquivos oficiais locais conferidos contra o manifesto")
+
+    # Federal: current page headline must match the newest extracted score round.
+    # Home Affairs stores the page body inside a hidden JSON input, so inspect
+    # the raw archive rather than only visible DOM text.
+    federal_text = (ROOT / "dados/federal/invitation-rounds.html").read_text(encoding="utf-8", errors="replace")
+    federal_match = re.search(r"Invitations issued on\s+(\d{1,2}\s+[A-Za-z]+\s+\d{4})", federal_text, re.I)
+    federal_page_date = parse_english_date(federal_match.group(1)) if federal_match else ""
+    federal_data_date = latest_metric_date(rows, "FEDERAL", {"pontos_minimos", "eois_convidados"})
+    log(f"FEDERAL freshness: pagina={federal_page_date or 'ausente'}; dataset={federal_data_date or 'ausente'}")
+    if not federal_page_date or federal_page_date != federal_data_date:
+        err(f"FEDERAL FRESHNESS: pagina={federal_page_date or 'ausente'}; dataset={federal_data_date or 'ausente'}")
+
+    # ACT: invitation-round headline and every linked annual ranking PDF.
+    act_round_rel = "dados/estados/act/canberra-matrix-invitation-round.html"
+    act_text = soup_file(ROOT / act_round_rel).get_text(" ", strip=True)
+    act_match = re.search(r"Canberra Matrix Invitation Round:\s*(\d{1,2}\s+[A-Za-z]+\s+\d{4})", act_text, re.I)
+    act_page_date = parse_english_date(act_match.group(1)) if act_match else ""
+    act_data_date = latest_metric_date(rows, "ACT", {"matrix_score", "convites_emitidos"})
+    log(f"ACT freshness: pagina={act_page_date or 'ausente'}; dataset={act_data_date or 'ausente'}")
+    if not act_page_date or act_page_date != act_data_date:
+        err(f"ACT FRESHNESS: pagina={act_page_date or 'ausente'}; dataset={act_data_date or 'ausente'}")
+    manifest_urls = {(item.get("url") or "").strip() for item in manifesto.values()}
+    act_library = soup_file(ROOT / "dados/estados/act/library-guidelines-and-invitations.html")
+    act_rankings = {
+        urljoin("https://www.act.gov.au/", a["href"])
+        for a in act_library.find_all("a", href=True)
+        if "invitation-round-rankings" in unquote(a["href"]).lower()
+        and a["href"].lower().endswith(".pdf")
+    }
+    for url in sorted(act_rankings - manifest_urls):
+        err(f"ACT FRESHNESS: ranking oficial ligado na biblioteca ainda nao arquivado: {url}")
+    log(f"ACT freshness: {len(act_rankings)} ranking(s) anual(is) ligado(s) conferido(s)")
+
+    # SA: every invitation-result article linked by the official category index.
+    sa_index = soup_file(ROOT / "dados/estados/sa/news-invitations-issued-index.html")
+    sa_links = {
+        urljoin("https://migration.sa.gov.au/", a["href"])
+        for a in sa_index.find_all("a", href=True)
+        if re.search(r"/news/invitations-issued-(?!index)", a["href"], re.I)
+    }
+    for url in sorted(sa_links - manifest_urls):
+        err(f"SA FRESHNESS: resultado oficial ligado no indice ainda nao arquivado: {url}")
+    log(f"SA freshness: {len(sa_links)} publicacao(oes) de resultados no indice conferida(s)")
+
+    # Tasmania: the overwritten current page must match the extracted ROI round.
+    tas_text = soup_file(ROOT / "dados/estados/tas/processing-times-and-allocation-usage.html").get_text(" ", strip=True)
+    tas_match = re.search(r"ROIs invited to apply for nomination on\s+(\d{1,2}/\d{1,2}/\d{4})", tas_text, re.I)
+    tas_page_date = parse_numeric_date(tas_match.group(1)) if tas_match else ""
+    tas_data_date = latest_metric_date(rows, "TAS", {"convites_emitidos", "roi_score_minimo"})
+    log(f"TAS freshness: pagina={tas_page_date or 'ausente'}; dataset={tas_data_date or 'ausente'}")
+    if not tas_page_date or tas_page_date != tas_data_date:
+        err(f"TAS FRESHNESS: pagina={tas_page_date or 'ausente'}; dataset={tas_data_date or 'ausente'}")
+
+    # These jurisdictions publish program/eligibility pages, not result tables.
+    for jurisdiction, rel in [
+        ("NSW", "dados/estados/nsw/skilled-nominated-visa-subclass-190.html"),
+        ("VIC", "dados/estados/vic/registration-of-interest.html"),
+        ("QLD", "dados/estados/qld/registering-your-interest.html"),
+        ("NT", "dados/estados/nt/overseas-workers-and-your-business.html"),
+    ]:
+        text = soup_file(ROOT / rel).get_text(" ", strip=True)
+        if len(text) < 200:
+            err(f"{jurisdiction} FRESHNESS: snapshot oficial vazio ou incompleto: {rel}")
+        else:
+            log(f"{jurisdiction} freshness: pagina oficial monitorada; resultado ocupacional continua NOT_PUBLISHED")
 
 # ---------------------------------------------------------------------------
 # SA
@@ -1545,7 +1734,8 @@ def parse_gaps_and_tas(manifesto: dict) -> list[dict]:
         )
         log(f"{juris}: 1 linha publicacao=NOT_PUBLISHED")
 
-    # TAS: gap + official totals
+    # TAS publishes aggregate ROI invitation results and its own ROI point scale,
+    # but no invitation-by-occupation table. Keep that distinction explicit.
     rel = "dados/estados/tas/processing-times-and-allocation-usage.html"
     meta = source_meta(manifesto, rel)
     out.append(
@@ -1553,7 +1743,7 @@ def parse_gaps_and_tas(manifesto: dict) -> list[dict]:
             nivel="estadual",
             jurisdicao="TAS",
             visto="n/a",
-            data_round="2025-26",
+            data_round="2026-10-29",
             ocupacao="",
             anzsco="",
             metrica="publicacao",
@@ -1564,10 +1754,34 @@ def parse_gaps_and_tas(manifesto: dict) -> list[dict]:
     )
     soup = soup_file(ROOT / rel)
     text = soup.get_text(" ", strip=True)
-    # Do not classify Tasmania's fully delivered nominations as invitations.
-    # The same 2025-26 nomination totals are already present in the federal table.
-
-    log("TAS: 1 NOT_PUBLISHED; totais 2025-26 nao duplicados como convites")
+    date_match = re.search(r"ROIs invited to apply for nomination on\s+(\d{1,2}/\d{1,2}/\d{4})", text, re.I)
+    round_date = parse_numeric_date(date_match.group(1)) if date_match else ""
+    if not round_date:
+        err("TAS FRESHNESS: data da rodada de ROI nao encontrada na pagina oficial")
+    sections = [
+        ("convites_emitidos", r"ROIs invited.*?(?=The lowest scores invited:)", r"Subclass\s+(190|491)\s*-\s*(\d+)\s+invitations", "roi_invitation=true"),
+        ("roi_score_minimo", r"The lowest scores invited:.*?(?=Number of ROIs on hand)", r"Subclass\s+(190|491)\s*-\s*(\d+)\s+points", "tas_roi_scale=true"),
+        ("rois_em_estoque", r"Number of ROIs on hand.*?(?=Nomination places available)", r"Subclass\s+(190|491)\s*-\s*(\d+)\s+ROIs", "status=submitted_after_round"),
+        ("vagas_nomeacao_disponiveis", r"Nomination places available:.*?(?=Nomination applications lodged)", r"Subclass\s+(190|491)\s*-\s*(\d+)\s+places", "allocation_balance=true"),
+        ("aplicacoes_nomeacao_pendentes", r"Nomination applications lodged.*?(?=Invitations issued but application)", r"Subclass\s+(190|491)\s*-\s*(\d+)\s+applications", "status=lodged_not_decided"),
+        ("convites_sem_aplicacao", r"Invitations issued but application.*?(?=Oldest nomination application)", r"Subclass\s+(190|491)\s*-\s*(\d+)\s+invitations", "status=invited_not_lodged"),
+        ("roi_score_media_movel_6_semanas", r"Six-week rolling average invitation point score:.*?(?=Upon review)", r"Subclass\s+(190|491)\s*-\s*(\d+)\s+points", "tas_roi_scale=true;window=6_weeks"),
+    ]
+    added = 0
+    for metric, section_pattern, value_pattern, extra in sections:
+        section = re.search(section_pattern, text, re.I | re.S)
+        if not section:
+            err(f"TAS: secao oficial ausente para {metric}")
+            continue
+        for visto, value in re.findall(value_pattern, section.group(0), re.I):
+            out.append(row(
+                nivel="estadual", jurisdicao="TAS", visto=visto,
+                data_round=round_date, ocupacao="agregado", anzsco="",
+                metrica=metric, valor=value, unidade_extra=extra,
+                **_meta_kw(meta),
+            ))
+            added += 1
+    log(f"TAS: {added} metricas agregadas da rodada ROI {round_date or 'sem data'}; ocupacao=NOT_PUBLISHED")
     return out
 
 
@@ -1644,11 +1858,11 @@ def write_log(n_by_j: dict, n_total: int) -> None:
     lines.append("## Regras aplicadas")
     lines.append("")
     lines.append("- Federal: JSON oculto `#ctl00_PlaceHolderMain_PageSchemaHiddenField_Input` em invitation-rounds e previous-rounds.")
-    lines.append("- ACT: PDF 2025-26 Invitation round rankings (scores de matrix por unit group ANZSCO).")
-    lines.append("- WA: PDFs oficiais de last-invited por ocupacao entre maio de 2025 e maio de 2026; subclass 190/491 permanece `n/a` quando o PDF nao a identifica. Totais SNMP continuam em metricas separadas.")
+    lines.append("- ACT: PDFs 2025-26 e 2026-27 Invitation round rankings (scores de matrix por unit group ANZSCO).")
+    lines.append("- WA: PDFs oficiais de last-invited por ocupacao ate outubro de 2026; subclass 190/491 permanece `n/a` quando o PDF nao a identifica. Totais SNMP continuam em metricas separadas.")
     lines.append("- SA: HTML invitations-issued por mes (contagens por sub-major group 190/491). Colunas year-to-date nao foram repetidas.")
     lines.append("- NSW/VIC/QLD/NT: `metrica=publicacao`, `valor=NOT_PUBLISHED` (pagina oficial existe, sem resultados por ocupacao).")
-    lines.append("- TAS: NOT_PUBLISHED por ocupacao; nominações entregues nao sao classificadas como convites.")
+    lines.append("- TAS: convites e scores ROI agregados sao preservados em metricas proprias; resultados por ocupacao continuam NOT_PUBLISHED.")
     lines.append("- Celulas vazias / '-' foram omitidas; `N/A` e `Not invited` gravados como `N/A`.")
     (OUT_DIR / "extracao-log.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -1658,11 +1872,15 @@ def main() -> None:
     rows: list[dict] = []
     rows.extend(parse_federal(manifesto))
     rows.extend(parse_federal_state_totals(manifesto))
-    rows.extend(parse_act(manifesto))
+    rows.extend(parse_act_pdf(manifesto, "dados/estados/act/2025-26-Invitation-round-rankings.pdf"))
+    rows.extend(parse_act_pdf(manifesto, "dados/estados/act/2026-27-Invitation-round-rankings.pdf", include_summary=True))
     rows.extend(parse_wa_pdf(manifesto))
     rows.extend(parse_wa_html(manifesto))
     rows.extend(parse_sa(manifesto))
     rows.extend(parse_gaps_and_tas(manifesto))
+
+    audit_wa_freshness(rows, manifesto)
+    audit_all_freshness(rows, manifesto)
 
     enrichment = enrich_occupations(rows)
     log(

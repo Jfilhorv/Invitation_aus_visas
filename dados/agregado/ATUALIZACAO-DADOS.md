@@ -8,14 +8,44 @@ Não existe um calendário nacional único. Cada fonte deve ser monitorada separ
 
 | Fonte | Próxima atualização conhecida | Frequência prática | O que pode mudar |
 |---|---|---|---|
-| Home Affairs — SkillSelect | A próxima rodada federal 189 é esperada até **30 de setembro de 2026**. A data é uma expectativa oficial, não uma garantia. | Periódica durante o program year | Total de EOIs, tie-break, ocupações e scores mínimos publicados |
+| Home Affairs — SkillSelect | Última rodada publicada em **15 de outubro de 2026**; nenhuma próxima data oficial registrada nesta atualização. | Periódica durante o program year | Total de EOIs, tie-break, ocupações e scores mínimos publicados |
 | Home Affairs — allocations | Quando forem divulgadas ou revisadas as alocações do program year | Normalmente por program year, com possíveis revisões | Alocações 190 e 491 por estado e território |
-| ACT | O ACT informa que publicará um calendário provisório depois de receber a alocação 2026–27 | Rodadas regulares quando o programa está ativo | Matrix scores, rankings e resultados por unit group |
-| WA | Sem calendário fixo confiável | Verificar a página do SNMP e novos PDFs de rounds | Last invited EOI, critérios por ocupação e totais 190/491 |
+| ACT | Próximas semanas provisórias: **25 Jan, 22 Mar e 24 May 2027** | Rodadas regulares quando o programa está ativo | Matrix scores, rankings e resultados por unit group |
+| WA | Rodadas mensais previstas; última publicada em **14 Oct 2026** | Verificar a página do SNMP e novos PDFs de rounds | Last invited EOI, critérios por ocupação e totais 190/491 |
 | SA | Sem calendário fixo garantido | Verificar o índice oficial de “Invitations issued” | Convites 190/491 por sub-major group ANZSCO |
-| NSW, VIC, QLD, TAS e NT | Conforme cada governo publicar | Revisão periódica das páginas oficiais | Totais, allocations, regras e eventual surgimento de detalhe ocupacional |
+| TAS | Última rodada publicada em **29 Oct 2026** | Página corrente é sobrescrita regularmente | Convites, score ROI mínimo, fila e vagas por subclass |
+| NSW, VIC, QLD e NT | Conforme cada governo publicar | Revisão periódica das páginas oficiais | Totais, allocations, regras e eventual surgimento de detalhe ocupacional |
 
 “Sem nova publicação” não significa que não houve convites. Significa apenas que não existe um novo resultado oficial compatível com o modelo do projeto.
+
+## Busca obrigatória para WA
+
+Em toda atualização, verificar nesta ordem:
+
+1. a aba **Current invitation round** da [página oficial do SNMP](https://migration.wa.gov.au/our-services-support/state-nominated-migration-program);
+2. a tabela do program year, comparando todos os meses e os totais 190/491 com o último snapshot local;
+3. todos os links cujo texto ou arquivo contenha **last invited EOI**, **last invited by occupation** ou equivalente;
+4. a pasta mensal oficial indicada pelos links (`/sites/default/files/YYYY-MM/`), sem adivinhar URLs;
+5. a página de [notícias do Migration WA](https://migration.wa.gov.au/news), usada para localizar anúncios, mas não para substituir os resultados tabulares;
+6. redes sociais e páginas de agentes apenas como alerta de investigação — nunca como fonte incorporada.
+
+O extrator executa uma auditoria de frescor e cobertura histórica de WA. Ele registra o mês mais recente dos totais e dos PDFs ocupacionais, emite `WA FRESHNESS` quando a página oficial possui um mês mais novo ou um PDF ligado ainda não arquivado, e lista `WA HISTORY GAP` quando existe total mensal sem fonte ocupacional preservada. Fevereiro, abril e setembro de 2026 são lacunas já investigadas e documentadas; qualquer outro mês sem cobertura ocupacional é erro bloqueante. A atualização não deve ser commitada enquanto um novo aviso não for investigado.
+
+## Auditoria obrigatória de todas as jurisdições
+
+O extrator também confronta automaticamente:
+
+| Fonte | Verificação de frescor |
+|---|---|
+| Federal | Data da rodada corrente na página versus data federal mais recente do dataset |
+| ACT | Data da Canberra Matrix round e todos os PDFs anuais de rankings ligados na biblioteca |
+| WA | Último mês dos totais, último PDF ocupacional, todos os PDFs ligados na página corrente e meses históricos com total sem fonte ocupacional |
+| SA | Todos os artigos `invitations-issued` ligados pelo índice oficial versus o manifesto |
+| TAS | Data da rodada ROI na página corrente versus data mais recente extraída |
+| NSW, VIC, QLD e NT | Integridade e conteúdo mínimo dos snapshots oficiais monitorados; detalhe ocupacional permanece `NOT_PUBLISHED` enquanto não surgir uma tabela oficial |
+| Todas | Existência local e SHA-256 de cada fonte marcada como válida no manifesto |
+
+Qualquer divergência gera um aviso com o nome da jurisdição seguido de `FRESHNESS`. Não fazer commit nem publicar o dashboard enquanto houver aviso sem explicação no log.
 
 ## Regra de inclusão
 
