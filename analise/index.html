@@ -4384,31 +4384,34 @@
     initTheme();
     refresh();
   </script>
-  <script data-goatcounter="https://jfilhorv.goatcounter.com/count"
-          data-goatcounter-settings='{"path":"/Invitation_aus_visas/analise/"}'
-          async src="https://gc.zgo.at/count.js"></script>
+  <script data-goatcounter="https://jfilhorv.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
   <script>
-    (() => {
-      const counter = document.getElementById("pageViewCount");
-      const pagePath = "/Invitation_aus_visas/analise";
-      const countUrl = `https://jfilhorv.goatcounter.com/counter/${encodeURIComponent(pagePath)}.json?no_branding=1&start=2020-01-01`;
-      const loadCount = () => fetch(countUrl, { mode:"cors", cache:"no-store" })
-        .then((response) => response.ok ? response.json() : null)
-        .then((data) => {
-          if (data?.count != null) {
-            counter.textContent = String(data.count);
-            counter.closest(".visit-counter")?.setAttribute("aria-label", `${data.count} page visits`);
-          } else {
-            if (counter.textContent === "—") counter.textContent = "0";
-          }
-        })
-        .catch(() => {
-          if (counter.textContent === "—") counter.textContent = "0";
-        });
+    (function () {
+      var el = document.getElementById('pageViewCount');
+      if (!el) return;
 
-      loadCount();
-      window.setTimeout(loadCount, 1500);
-      window.setInterval(loadCount, 10000);
+      var url = 'https://jfilhorv.goatcounter.com/counter/TOTAL.json?no_branding=1';
+      el.textContent = '';
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            var count = data && (data.count || data.count_unique);
+            if (count !== undefined && count !== null) {
+              el.textContent = String(count);
+              var wrapper = el.closest('.visit-counter');
+              if (wrapper) wrapper.setAttribute('aria-label', count + ' total visits');
+            }
+          } catch (e) {
+            // Keep it empty on errors.
+          }
+        }
+      };
+      xhr.send();
     })();
   </script>
 </body>
