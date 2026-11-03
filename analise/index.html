@@ -1771,7 +1771,7 @@
       <a class="brand-lockup" href="./" title="Return to the initial dashboard view" aria-label="Return to the initial dashboard view"><div class="brand-mark" aria-hidden="true"><img src="./logo-ias.png" alt="" /></div><span class="brand-copy"><h1 class="bt-page-title">Invitations · occupation history</h1><span class="brand-subtitle">Australian skilled migration evidence</span></span></a>
       <div class="top-right">
         <div class="top-meta" id="topMeta">…</div>
-        <span class="visit-counter" title="Total views" aria-label="Total views"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg><span id="pageViewCount">—</span></span>
+        <span class="visit-counter" title="Page visits" aria-label="Page visits"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg><span id="pageViewCount">—</span></span>
         <nav class="shortcut-nav" aria-label="Main navigation">
           <a class="shortcut-tile current" href="./index.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg><span>Home</span></a>
           <a class="shortcut-tile" id="analyticsShortcut" href="./analytics.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg><span>Analytics</span></a>
@@ -4390,13 +4390,14 @@
   <script>
     (() => {
       const counter = document.getElementById("pageViewCount");
-      const countUrl = "https://jfilhorv.goatcounter.com/counter/TOTAL.json?no_branding=1";
+      const pagePath = "/Invitation_aus_visas/analise";
+      const countUrl = `https://jfilhorv.goatcounter.com/counter/${encodeURIComponent(pagePath)}.json?no_branding=1&start=2020-01-01`;
       const loadCount = () => fetch(countUrl, { mode:"cors", cache:"no-store" })
         .then((response) => response.ok ? response.json() : null)
         .then((data) => {
           if (data?.count != null) {
             counter.textContent = String(data.count);
-            counter.closest(".visit-counter")?.setAttribute("aria-label", `${data.count} total views`);
+            counter.closest(".visit-counter")?.setAttribute("aria-label", `${data.count} page visits`);
           } else {
             if (counter.textContent === "—") counter.textContent = "0";
           }
