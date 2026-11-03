@@ -4390,7 +4390,8 @@
       var el = document.getElementById('pageViewCount');
       if (!el) return;
 
-      var url = 'https://jfilhorv.goatcounter.com/counter/TOTAL.json?no_branding=1';
+      var pagePath = '/Invitation_aus_visas/analise/';
+      var url = 'https://jfilhorv.goatcounter.com/counter/' + encodeURIComponent(pagePath) + '.json?no_branding=1&start=2020-01-01';
       el.textContent = '';
 
       var xhr = new XMLHttpRequest();
@@ -4404,7 +4405,7 @@
             if (count !== undefined && count !== null) {
               el.textContent = String(count);
               var wrapper = el.closest('.visit-counter');
-              if (wrapper) wrapper.setAttribute('aria-label', count + ' total visits');
+              if (wrapper) wrapper.setAttribute('aria-label', count + ' page visits');
             }
           } catch (e) {
             // Keep it empty on errors.
