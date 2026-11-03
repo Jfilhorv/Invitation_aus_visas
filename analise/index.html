@@ -4384,6 +4384,9 @@
     initTheme();
     refresh();
   </script>
+  <script data-goatcounter="https://jfilhorv.goatcounter.com/count"
+          data-goatcounter-settings='{"path":"/Invitation_aus_visas/analise/"}'
+          async src="https://gc.zgo.at/count.js"></script>
   <script>
     (() => {
       const counter = document.getElementById("pageViewCount");
@@ -4395,20 +4398,15 @@
           if (data?.count != null) {
             counter.textContent = String(data.count);
             counter.closest(".visit-counter")?.setAttribute("aria-label", `${data.count} page views`);
+          } else {
+            counter.textContent = "0";
+            counter.closest(".visit-counter")?.setAttribute("aria-label", "0 page views");
           }
         })
-        .catch(() => {});
+        .catch(() => { counter.textContent = "0"; });
 
       loadCount();
-      if (location.hostname === "jfilhorv.github.io") {
-        const tracker = document.createElement("script");
-        tracker.async = true;
-        tracker.src = "https://gc.zgo.at/count.js";
-        tracker.dataset.goatcounter = "https://jfilhorv.goatcounter.com/count";
-        tracker.dataset.goatcounterSettings = JSON.stringify({ path });
-        document.head.appendChild(tracker);
-        window.setTimeout(loadCount, 1500);
-      }
+      window.setTimeout(loadCount, 1800);
     })();
   </script>
 </body>
