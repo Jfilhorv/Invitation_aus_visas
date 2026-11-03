@@ -58,6 +58,17 @@
     }
 
     .top-meta { color: var(--bt-text-secondary); }
+    .visit-counter {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      min-width:22px;
+      color:var(--bt-text-secondary);
+      font:600 10px/1 var(--bt-font-mono-finance);
+      font-variant-numeric:tabular-nums;
+      opacity:.72;
+    }
+    .visit-counter svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:1.7; }
     .top-link {
       color: var(--bt-text);
       text-decoration: none;
@@ -1760,6 +1771,7 @@
       <a class="brand-lockup" href="./" title="Return to the initial dashboard view" aria-label="Return to the initial dashboard view"><div class="brand-mark" aria-hidden="true"><img src="./logo-ias.png" alt="" /></div><span class="brand-copy"><h1 class="bt-page-title">Invitations · occupation history</h1><span class="brand-subtitle">Australian skilled migration evidence</span></span></a>
       <div class="top-right">
         <div class="top-meta" id="topMeta">…</div>
+        <span class="visit-counter" title="Page views" aria-label="Page views"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg><span id="pageViewCount">—</span></span>
         <nav class="shortcut-nav" aria-label="Main navigation">
           <a class="shortcut-tile current" href="./index.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg><span>Home</span></a>
           <a class="shortcut-tile" id="analyticsShortcut" href="./analytics.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg><span>Analytics</span></a>
@@ -4371,6 +4383,33 @@
     syncSortControls();
     initTheme();
     refresh();
+  </script>
+  <script>
+    (() => {
+      const counter = document.getElementById("pageViewCount");
+      const path = "/Invitation_aus_visas/analise/";
+      const countUrl = `https://jfilhorv.goatcounter.com/counter/${encodeURIComponent(path)}.json?no_branding=1`;
+      const loadCount = () => fetch(countUrl, { mode:"cors", cache:"no-store" })
+        .then((response) => response.ok ? response.json() : null)
+        .then((data) => {
+          if (data?.count != null) {
+            counter.textContent = String(data.count);
+            counter.closest(".visit-counter")?.setAttribute("aria-label", `${data.count} page views`);
+          }
+        })
+        .catch(() => {});
+
+      loadCount();
+      if (location.hostname === "jfilhorv.github.io") {
+        const tracker = document.createElement("script");
+        tracker.async = true;
+        tracker.src = "https://gc.zgo.at/count.js";
+        tracker.dataset.goatcounter = "https://jfilhorv.goatcounter.com/count";
+        tracker.dataset.goatcounterSettings = JSON.stringify({ path });
+        document.head.appendChild(tracker);
+        window.setTimeout(loadCount, 1500);
+      }
+    })();
   </script>
 </body>
 </html>
