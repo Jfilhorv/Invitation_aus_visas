@@ -1957,6 +1957,9 @@
     let lowerView = "history";
     let currentHistoryRows = [];
     let allHistoryRows = [];
+    const RANK_BATCH_SIZE = 80;
+    let rankRenderLimit = RANK_BATCH_SIZE;
+    let rankListSignature = "";
     const PROGRAM_METRICS = new Set(["nomeacoes_recebidas", "alocacao_nomeacoes"]);
     const programRows = raw.filter((r) => PROGRAM_METRICS.has(r.metrica) && Number.isFinite(Number(r.valor)));
     const publishedInvitationScopes = new Set(raw.filter((r) =>
@@ -2677,6 +2680,13 @@
 
     function renderRank() {
       const list = visibleOccupations();
+      const signature = list.map((occupation) => occupation.key).join("|");
+      if (signature !== rankListSignature) {
+        rankListSignature = signature;
+        rankRenderLimit = RANK_BATCH_SIZE;
+        const scroller = document.querySelector(".rank-scroll");
+        if (scroller) scroller.scrollTop = 0;
+      }
 
       const body = $("rankBody");
       if (!list.length) {
@@ -2684,8 +2694,8 @@
         return;
       }
 
-      body.innerHTML = list
-        .slice(0, 500)
+      const rendered = list.slice(0, rankRenderLimit);
+      body.innerHTML = rendered
         .map((o) => {
           const active = selected && selected.key === o.key ? "active" : "";
           const deltaClass = o.delta > 0 ? "positive" : o.delta < 0 ? "negative" : "neutral";
@@ -4275,6 +4285,24 @@
     document.querySelectorAll(".occ-table thead th.sortable").forEach((th) => {
       th.addEventListener("click", () => setColSort(th.dataset.col));
     });
+    function extendRankList(scroller = null) {
+      const total = visibleOccupations().length;
+      if (rankRenderLimit >= total) return false;
+      if (scroller && scroller.scrollTop + scroller.clientHeight < scroller.scrollHeight - 180) return false;
+      if (!scroller) {
+        const panel = document.querySelector(".rank-scroll");
+        if (!panel || panel.getBoundingClientRect().bottom > window.innerHeight + 220) return false;
+      }
+      rankRenderLimit = Math.min(total, rankRenderLimit + RANK_BATCH_SIZE);
+      const previousTop = scroller?.scrollTop || 0;
+      renderRank();
+      if (scroller) scroller.scrollTop = previousTop;
+      return true;
+    }
+    document.querySelector(".rank-scroll")?.addEventListener("scroll", (event) => {
+      extendRankList(event.currentTarget);
+    }, { passive:true });
+    window.addEventListener("scroll", () => extendRankList(), { passive:true });
 
     document.querySelectorAll(".tab[data-mode]").forEach((tab) => {
       tab.addEventListener("click", () => {
