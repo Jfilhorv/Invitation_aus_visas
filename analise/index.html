@@ -566,6 +566,12 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      container-type: inline-size;
+      container-name: occupation-list;
+    }
+    .panel-right {
+      container-type:inline-size;
+      container-name:history-panel;
     }
 
     .panel-h {
@@ -1743,6 +1749,66 @@
       .filters-compact { padding-left:6px; }
       .global-kpi { border-radius:14px; }
       .panel { border-radius:15px; }
+
+      /* Keep the occupation picker usable without making the whole page
+         hundreds of rows tall on phones and small tablets. */
+      .panel-left {
+        height:auto;
+        overflow:visible;
+      }
+      .rank-scroll {
+        flex:0 0 auto;
+        width:100%;
+        max-height:min(58vh, 480px);
+        overflow-x:hidden;
+        overflow-y:auto;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-gutter:auto;
+      }
+      .occ-table {
+        width:100%;
+        min-width:0;
+        table-layout:fixed;
+      }
+      .occ-table thead th,
+      .occ-table tbody td {
+        padding-left:3px;
+        padding-right:3px;
+      }
+      .occ-table :is(th, td):nth-child(1) { width:7%; }
+      .occ-table :is(th, td):nth-child(2) { width:12%; }
+      .occ-table :is(th, td):nth-child(3) { width:27%; }
+      .occ-table :is(th, td):nth-child(4) { width:10%; }
+      .occ-table :is(th, td):nth-child(5) { width:10%; }
+      .occ-table :is(th, td):nth-child(6) { width:10%; }
+      .occ-table :is(th, td):nth-child(7) { width:11%; }
+      .occ-table :is(th, td):nth-child(8) { width:13%; }
+      .occ-table thead th {
+        overflow:hidden;
+        font-size:8.5px;
+        letter-spacing:0;
+        text-overflow:clip;
+      }
+      .occ-table tbody td {
+        overflow:hidden;
+        font-size:10px;
+      }
+      .occ-table .code,
+      .occ-table .num { font-size:9.5px; }
+      .occ-table .jur-cell { font-size:9px; }
+      .occ-table .ias-list-dot {
+        transform:scale(.82);
+        transform-origin:center;
+      }
+      .occ-table td.name {
+        overflow-wrap:anywhere;
+      }
+      .occ-table td.name .bt-hint {
+        display:-webkit-box;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:2;
+        overflow:hidden;
+      }
     }
     @media (max-width: 560px) {
       .top { gap:5px; }
@@ -1762,6 +1828,347 @@
       .global-kpi { min-height:217px; grid-template-rows:38px 61px 44px 44px; }
       .global-kpi .s { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
       .global-kpi .v { font-size:1.35rem; }
+      .panel-h { padding:8px 10px; }
+      .search-wrap { padding:8px 10px 10px; }
+      .rank-scroll { max-height:min(56vh, 430px); }
+      .occ-table thead th { padding-left:2px; padding-right:2px; font-size:7.5px; }
+      .occ-table tbody td { padding:4px 2px; }
+      .occ-table td.name { font-size:.66rem; line-height:1.22; }
+      .occ-table td.name .bt-hint { font-size:8px; line-height:1.2; }
+      .occ-table .code,
+      .occ-table .num { font-size:8.5px; }
+      .occ-table .latest-delta { font-size:7px; }
+      .occ-table .ias-list-dot { transform:scale(.74); }
+    }
+
+    /* The occupation table responds to its own panel width, not only to the
+       browser viewport. This keeps Streak visible in split desktop layouts. */
+    @container occupation-list (max-width: 980px) {
+      .rank-scroll { overflow-x:hidden; }
+      .occ-table {
+        width:100%;
+        min-width:0;
+        table-layout:fixed;
+      }
+      .occ-table thead th,
+      .occ-table tbody td {
+        min-width:0;
+        padding-left:2px;
+        padding-right:2px;
+        overflow:hidden;
+      }
+      .occ-table thead th:nth-child(1),
+      .occ-table tbody td:nth-child(1) { width:6% !important; }
+      .occ-table thead th:nth-child(2),
+      .occ-table tbody td:nth-child(2) { width:10% !important; }
+      .occ-table thead th:nth-child(3),
+      .occ-table tbody td:nth-child(3) { width:32% !important; }
+      .occ-table thead th:nth-child(4),
+      .occ-table tbody td:nth-child(4) { width:9% !important; }
+      .occ-table thead th:nth-child(5),
+      .occ-table tbody td:nth-child(5) { width:9% !important; }
+      .occ-table thead th:nth-child(6),
+      .occ-table tbody td:nth-child(6) { width:9% !important; }
+      .occ-table thead th:nth-child(7),
+      .occ-table tbody td:nth-child(7) { width:8% !important; }
+      .occ-table thead th:nth-child(8),
+      .occ-table tbody td:nth-child(8) { width:17% !important; }
+      .occ-table thead th {
+        font-size:clamp(7.5px, 1.05cqi, 9px);
+        font-weight:650;
+        letter-spacing:0;
+        text-overflow:clip;
+      }
+      .occ-table tbody td {
+        font-size:clamp(8.5px, 1.35cqi, 11.2px);
+      }
+      .occ-table .code,
+      .occ-table .num { font-size:clamp(8px, 1.25cqi, 10.3px); }
+      .occ-table td.name {
+        font-size:clamp(9.5px, 1.45cqi, 12.2px);
+        line-height:1.25;
+        overflow-wrap:anywhere;
+      }
+      .occ-table td.name .bt-hint {
+        font-size:clamp(7.5px, 1.15cqi, 9.2px);
+        line-height:1.2;
+      }
+      .occ-table .ias-list-dot {
+        transform:scale(.72);
+        transform-origin:center;
+      }
+      .occ-table .latest-delta { font-size:8px; }
+      .occ-table .streak-value { font-size:9px; }
+      :root:not([data-theme="dark"]) .occ-table thead th { color:#4b4b4b; }
+      :root:not([data-theme="dark"]) .occ-table tbody td { color:#242424; }
+      .occ-table thead th:nth-child(1) {
+        padding-left:2px;
+        padding-right:1px;
+        font-size:7px;
+      }
+      .occ-table tbody td.jur-cell {
+        padding-left:2px;
+        padding-right:1px;
+        white-space:normal;
+      }
+      .occ-table .jur-list {
+        width:100%;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:1px;
+      }
+      .occ-table .jur-pill {
+        flex:0 0 auto;
+        box-sizing:border-box;
+        max-width:100%;
+        min-width:14px;
+        padding:1px 2px;
+        font-size:6px;
+        font-weight:700;
+      }
+      .occ-table .jur-more { font-size:6px; }
+    }
+
+    /* Chart controls and series respond to the history panel width. */
+    @container history-panel (max-width: 1050px) {
+      .estado-bar {
+        gap:5px;
+        padding-left:10px;
+        padding-right:10px;
+      }
+      .chart-switch {
+        min-width:0;
+        max-width:calc(100% - 74px);
+        overflow-x:auto;
+        overflow-y:hidden;
+        flex-wrap:nowrap;
+        scrollbar-width:none;
+      }
+      .chart-switch::-webkit-scrollbar { display:none; }
+      .chart-switch > .chart-toggle {
+        flex:0 0 auto;
+        min-height:28px;
+        padding:4px 8px 4px 11px;
+        font-size:10px;
+      }
+      .chart-style-switch {
+        flex:0 0 auto;
+        margin-left:0;
+        padding-left:4px;
+      }
+      .legend {
+        gap:4px;
+        padding:4px 10px 8px;
+        font-size:.53rem;
+      }
+      .legend::before {
+        flex:0 0 auto;
+        margin-right:3px;
+        font-size:.5rem;
+      }
+      .legend span {
+        min-width:0;
+        padding:2px 5px 2px 4px;
+      }
+      .legend i {
+        width:8px;
+        height:8px;
+        margin-right:4px;
+      }
+    }
+
+    @container history-panel (max-width: 680px) {
+      .chart-switch {
+        order:20;
+        flex:1 1 calc(100% - 72px);
+        max-width:calc(100% - 72px);
+      }
+      .chart-style-switch { order:21; }
+      .chart-switch > .chart-toggle {
+        padding-inline:9px 7px;
+        font-size:9px;
+      }
+      .legend {
+        align-content:flex-start;
+        padding-left:8px;
+        padding-right:8px;
+      }
+      .legend span {
+        max-width:100%;
+        white-space:normal;
+        line-height:1.2;
+      }
+    }
+
+    .mobile-dashboard-actions,
+    .mobile-sheet-head,
+    .mobile-sheet-scrim { display:none; }
+
+    @media (max-width: 720px) {
+      body.mobile-sheet-open { overflow:hidden; }
+      .global-kpis {
+        display:flex;
+        gap:10px;
+        padding:0 8px 5px;
+        overflow-x:auto;
+        scroll-snap-type:x mandatory;
+        scrollbar-width:none;
+      }
+      .global-kpis::-webkit-scrollbar { display:none; }
+      .global-kpi {
+        flex:0 0 min(82vw, 310px);
+        min-height:96px;
+        scroll-snap-align:start;
+      }
+      .mobile-dashboard-actions {
+        position:sticky;
+        top:4px;
+        z-index:35;
+        display:grid;
+        grid-template-columns:1fr 1.35fr;
+        gap:8px;
+        margin:0 8px 8px;
+        padding:6px;
+        border:1px solid var(--bt-divider);
+        border-radius:14px;
+        background:color-mix(in srgb,var(--bt-paper) 94%,transparent);
+        box-shadow:var(--bt-shadow-4);
+        backdrop-filter:blur(12px);
+      }
+      .mobile-dashboard-action {
+        min-width:0;
+        height:38px;
+        padding:0 10px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:7px;
+        border:1px solid color-mix(in srgb,#e23084 38%,var(--bt-divider));
+        border-radius:11px;
+        background:var(--bt-paper);
+        color:var(--bt-text);
+        font:650 11px/1 var(--bt-font);
+      }
+      .mobile-dashboard-action svg {
+        width:15px;
+        height:15px;
+        flex:0 0 15px;
+        fill:none;
+        stroke:currentColor;
+        stroke-width:1.8;
+      }
+      .mobile-dashboard-action .mobile-action-label {
+        min-width:0;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+      }
+      .mobile-filter-count {
+        min-width:18px;
+        height:18px;
+        padding:0 5px;
+        display:grid;
+        place-items:center;
+        border-radius:999px;
+        background:#e23084;
+        color:#fff;
+        font:750 9px/1 var(--bt-font-mono);
+      }
+      .mobile-filter-count:empty,
+      .mobile-filter-count[data-count="0"] { display:none; }
+      .body { display:block; margin-inline:5px; }
+      .panel-right { width:100%; }
+      .hist-head { height:auto; min-height:70px; padding:10px 12px 8px; }
+      .hist-head h2 { font-size:1.05rem; }
+      .chart-box { height:245px; flex-basis:245px; padding-inline:8px; }
+      .legend { padding-bottom:10px; }
+
+      .mobile-sheet-scrim {
+        position:fixed;
+        inset:0;
+        z-index:70;
+        display:block;
+        border:0;
+        background:rgba(18,22,25,.38);
+        opacity:0;
+        visibility:hidden;
+        pointer-events:none;
+        transition:opacity .2s ease,visibility .2s ease;
+      }
+      .mobile-sheet-scrim.open {
+        opacity:1;
+        visibility:visible;
+        pointer-events:auto;
+      }
+      .mobile-sheet-head {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        min-height:48px;
+        padding:8px 12px;
+        border-bottom:1px solid var(--bt-divider);
+        color:var(--bt-text);
+        font:700 14px/1 var(--bt-font);
+      }
+      .mobile-sheet-close {
+        width:32px;
+        height:32px;
+        padding:0;
+        border:1px solid var(--bt-divider);
+        border-radius:50%;
+        background:var(--bt-paper);
+        color:var(--bt-text);
+        font:500 20px/1 var(--bt-font);
+      }
+      .filters-compact,
+      .panel-left {
+        position:fixed;
+        z-index:80;
+        left:8px;
+        right:8px;
+        bottom:8px;
+        width:auto;
+        max-height:min(84dvh, 720px);
+        border:1px solid color-mix(in srgb,#e23084 36%,var(--bt-divider));
+        border-radius:18px;
+        background:var(--bt-paper);
+        box-shadow:0 24px 70px rgba(0,0,0,.24);
+        opacity:0;
+        visibility:hidden;
+        pointer-events:none;
+        transform:translateY(calc(100% + 24px));
+        transition:transform .26s cubic-bezier(.23,1,.32,1),opacity .18s ease,visibility .26s;
+      }
+      .filters-compact.mobile-open,
+      .panel-left.mobile-open {
+        opacity:1;
+        visibility:visible;
+        pointer-events:auto;
+        transform:translateY(0);
+      }
+      .filters-compact {
+        min-height:0;
+        padding:0 12px 14px;
+        display:grid;
+        grid-template-columns:68px minmax(0,1fr);
+        align-items:center;
+        gap:8px 10px;
+        overflow-x:hidden;
+        overflow-y:auto;
+      }
+      .filters-compact .mobile-sheet-head { grid-column:1 / -1; margin:0 -12px 2px; }
+      .filters-compact .filter-label { font-size:9px; }
+      .filters-compact :is(select,input) { width:100% !important; }
+      .filters-compact .scope-segment { width:100%; justify-content:space-between; }
+      .filters-compact .scope-chip { min-width:0; flex:1 1 auto; padding-inline:6px; }
+      .filters-compact .filter-spacer { display:none; }
+      .filters-compact #filterSummary { grid-column:1 / -1; justify-content:flex-start; flex-wrap:wrap; min-width:0; white-space:normal; }
+      .filters-compact #btnClear { grid-column:2; justify-self:end; }
+      .panel-left { top:auto; height:min(84dvh,720px); overflow:hidden; }
+      .panel-left .panel-h { display:none; }
+      .panel-left > .mobile-sheet-head { flex:0 0 auto; }
+      .panel-left .rank-scroll { max-height:none; flex:1 1 auto; }
     }
   </style>
 </head>
@@ -1794,6 +2201,7 @@
     </div>
 
     <div class="filters-compact" aria-label="Filters">
+      <div class="mobile-sheet-head"><span>Filters</span><button type="button" class="mobile-sheet-close" data-close-mobile-sheet aria-label="Close filters">×</button></div>
       <span class="filter-label">Scope</span>
       <div class="scope-segment" id="scopeSegment" role="group" aria-label="Jurisdiction scope">
         <button type="button" class="scope-chip" data-scope="ALL" aria-pressed="true">ALL</button>
@@ -1833,8 +2241,14 @@
       <div class="global-kpi" data-next-outlook role="link" tabindex="0" aria-label="Open the next activity watchlist"><div class="k"><span>Next announced federal round</span><span class="info-wrap"><button class="info-trigger" type="button" aria-label="About the expected next federal round" aria-expanded="false">i</button><span class="info-popover" role="tooltip">The federal date is published by the Australian Department of Home Affairs. State and territory dates are managed separately. Open this card to see the complete watchlist, including estimates and jurisdictions awaiting an announcement.</span></span></div><div class="v" id="gNextRound">Not currently announced</div><div class="s" id="nextRoundOfficial" hidden><span class="kpi-status">Official</span></div><div class="s" id="nextRoundCoverage" hidden>No official future date</div></div>
     </section>
 
+    <div class="mobile-dashboard-actions" aria-label="Mobile dashboard actions">
+      <button type="button" class="mobile-dashboard-action" id="mobileFiltersButton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span class="mobile-action-label">Filters</span><span class="mobile-filter-count" id="mobileFilterCount" data-count="0"></span></button>
+      <button type="button" class="mobile-dashboard-action" id="mobileOccupationButton"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><span class="mobile-action-label" id="mobileOccupationLabel">Choose occupation</span></button>
+    </div>
+
     <div class="body">
       <aside class="bt-panel panel panel-left">
+        <div class="mobile-sheet-head"><span>Choose occupation</span><button type="button" class="mobile-sheet-close" data-close-mobile-sheet aria-label="Close occupations">×</button></div>
         <div class="panel-h">
           <h2>Occupations</h2>
         </div>
@@ -1909,6 +2323,7 @@
         </div>
       </section>
     </div>
+    <button type="button" class="mobile-sheet-scrim" id="mobileSheetScrim" aria-label="Close mobile panel"></button>
   </div>
 
   <script src="./anzsco-hierarchy.js?v=20260902"></script>
@@ -1984,6 +2399,31 @@
     const totalListedOccupations = new Set(scoreRows.map((r) => r.identidade_ocupacional).filter(Boolean)).size;
 
     const $ = (id) => document.getElementById(id);
+
+    function closeMobileSheets() {
+      document.querySelector(".filters-compact")?.classList.remove("mobile-open");
+      document.querySelector(".panel-left")?.classList.remove("mobile-open");
+      $("mobileSheetScrim")?.classList.remove("open");
+      document.body.classList.remove("mobile-sheet-open");
+    }
+
+    function openMobileSheet(type) {
+      if (!window.matchMedia("(max-width: 720px)").matches) return;
+      closeMobileSheets();
+      const target = type === "filters" ? document.querySelector(".filters-compact") : document.querySelector(".panel-left");
+      target?.classList.add("mobile-open");
+      $("mobileSheetScrim")?.classList.add("open");
+      document.body.classList.add("mobile-sheet-open");
+      window.setTimeout(() => {
+        if (type === "filters") target?.querySelector("select, button")?.focus();
+        else $("fBusca")?.focus();
+      }, 180);
+    }
+
+    function syncMobileOccupationLabel() {
+      const label = $("mobileOccupationLabel");
+      if (label) label.textContent = selected?.nome || "Choose occupation";
+    }
 
     const CATEGORY_LABELS = { visto_de_convite: "Invitation visa" };
     const METRIC_LABELS = {
@@ -2729,7 +3169,10 @@
       body.querySelectorAll("tr[data-key]").forEach((tr) => {
         tr.addEventListener("click", () => {
           const occ = occupations.find((o) => o.key === tr.dataset.key);
-          if (occ) selectOccupation(occ, { showScores: true });
+          if (occ) {
+            selectOccupation(occ, { showScores: true });
+            closeMobileSheets();
+          }
         });
       });
     }
@@ -2738,6 +3181,7 @@
       const list = visibleOccupations();
       if (!list.length) {
         selected = null;
+        syncMobileOccupationLabel();
         renderRank();
         if (lowerView !== "history") {
           $("histEmpty").hidden = true;
@@ -2767,6 +3211,7 @@
       }
       selected = occ;
       chartEstados = new Set(occ.juris);
+      syncMobileOccupationLabel();
       rebuildRoundOptions();
       renderRank();
       renderHistory(occ);
@@ -3922,6 +4367,11 @@
       $("filterSummary").innerHTML = activeChips.map((chip) =>
         `<button type="button" class="active-filter-chip" data-clear-filter="${chip.key}" title="Remove ${escapeAttr(chip.label)}">${escapeHtml(chip.label)}<span class="x">×</span></button>`
       ).join("");
+      const mobileFilterCount = $("mobileFilterCount");
+      if (mobileFilterCount) {
+        mobileFilterCount.dataset.count = String(activeChips.length);
+        mobileFilterCount.textContent = activeChips.length ? String(activeChips.length) : "";
+      }
       $("filterSummary").querySelectorAll("[data-clear-filter]").forEach((button) => button.addEventListener("click", () => {
         const key = button.dataset.clearFilter;
         if (key === "state") { selectedStates = new Set(filterStates); renderGlobalStateFilter(); }
@@ -4188,6 +4638,14 @@
       select.value = selectedRound;
     }
 
+    $("mobileFiltersButton")?.addEventListener("click", () => openMobileSheet("filters"));
+    $("mobileOccupationButton")?.addEventListener("click", () => openMobileSheet("occupations"));
+    $("mobileSheetScrim")?.addEventListener("click", closeMobileSheets);
+    document.querySelectorAll("[data-close-mobile-sheet]").forEach((button) => button.addEventListener("click", closeMobileSheets));
+    window.addEventListener("resize", () => {
+      if (!window.matchMedia("(max-width: 720px)").matches) closeMobileSheets();
+    });
+
     document.querySelectorAll("[data-scope]").forEach((button) => button.addEventListener("click", () => {
       const state = button.dataset.scope === "ALL" ? "" : button.dataset.scope;
       selectedStates = state ? new Set([state]) : new Set(filterStates);
@@ -4272,6 +4730,10 @@
     document.addEventListener("click", closeInfoPopovers);
     document.addEventListener("keydown", (event) => {
       if (event.key !== "Escape") return;
+      if (document.querySelector(".filters-compact.mobile-open, .panel-left.mobile-open")) {
+        closeMobileSheets();
+        return;
+      }
       if (document.querySelector(".info-wrap.open")) {
         closeInfoPopovers();
         return;
